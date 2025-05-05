@@ -6,15 +6,10 @@
 
 // Themes
 import './styles/main.scss';
-import './styles/themes/abductor.scss';
-import './styles/themes/cardtable.scss';
 import './styles/themes/hackerman.scss';
-import './styles/themes/malfunction.scss';
-import './styles/themes/neutral.scss';
 import './styles/themes/ntos_healthy.scss';
 import './styles/themes/ntos_rusty.scss';
 import './styles/themes/ntos.scss';
-import './styles/themes/paper.scss';
 import './styles/themes/retro.scss';
 import './styles/themes/syndicate.scss';
 import './styles/themes/som.scss';
@@ -23,7 +18,7 @@ import './styles/themes/xeno.scss';
 import { perf } from 'common/perf';
 import { setupGlobalEvents } from 'tgui-core/events';
 import { setupHotKeys } from 'tgui-core/hotkeys';
-import { setupHotReloading } from 'tgui-dev-server/link/client.cjs';
+import { setupHotReloading } from 'tgui-dev-server/link/client.mjs';
 
 import { setGlobalStore } from './backend';
 import { loadIconRefMap } from './icons';
@@ -63,11 +58,14 @@ function setupApp() {
   Byond.subscribe((type, payload) => store.dispatch({ type, payload }));
 
   // Enable hot module reloading
-  if (module.hot) {
+  if (import.meta.webpackHot) {
     setupHotReloading();
-    module.hot.accept(['./debug', './layouts', './routes'], () => {
-      renderApp();
-    });
+    import.meta.webpackHot.accept(
+      ['./debug', './layouts', './routes', './App'],
+      () => {
+        render(<App />);
+      },
+    );
   }
 }
 

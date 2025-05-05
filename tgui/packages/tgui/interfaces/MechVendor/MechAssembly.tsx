@@ -97,47 +97,50 @@ export const MechAssembly = (props) => {
 
   // /TODO: replace collapsibles with tooltips instead (see any tg ui with underlined text)
   return (
-    <Stack>
-      <Stack.Item>
-        <Stack vertical maxWidth={'166px'}>
-          <Stack.Item>
-            <BodypartPicker
-              displayingpart="R_ARM"
-              selectedBodypart={selectedBodypart}
-              setSelectedBodypart={setSelectedBodypart}
-            />
-          </Stack.Item>
-          <Stack.Item>
-            <BodypartPicker
-              displayingpart="CHEST"
-              selectedBodypart={selectedBodypart}
-              setSelectedBodypart={setSelectedBodypart}
-            />
-          </Stack.Item>
-          <Stack.Item>
-            <Input
-              fluid
-              placeholder={'Mech name'}
-              value={selected_name}
-              onChange={(e, value) => act('set_name', { new_name: value })}
-            />
-          </Stack.Item>
-          <Stack.Item>
-            <Section title={'Mech parameters'}>
-              <Collapsible
-                color={'transparent'}
-                title={'Integrity: ' + current_stats.health}
-              >
-                <Box maxWidth={'160px'}>
-                  Determines maximum integrity of mecha.
-                </Box>
-              </Collapsible>
-              <Collapsible
-                color={'transparent'}
-                title={
-                  'L scatter angle: ' +
-                  (current_stats.left_scatter + left_weapon_scatter) +
-                  '°'
+    <>
+      {failReason && (
+        <Modal align="center" position="relative" width="300px" left="200px">
+          <Box mb={2}>
+            {failReason.split('\n').map((reason, index) => (
+              <Box key={index}>{reason}</Box>
+            ))}
+          </Box>
+          <Button onClick={() => setFailReason('')}>Close</Button>
+        </Modal>
+      )}
+      <Stack fill>
+        <Stack.Item>
+          <Stack vertical maxWidth={'166px'}>
+            <Stack.Item>
+              <BodypartPicker
+                displayingpart="R_ARM"
+                selectedBodypart={selectedBodypart}
+                setSelectedBodypart={setSelectedBodypart}
+              />
+            </Stack.Item>
+            <Stack.Item>
+              <BodypartPicker
+                displayingpart="CHEST"
+                selectedBodypart={selectedBodypart}
+                setSelectedBodypart={setSelectedBodypart}
+              />
+            </Stack.Item>
+            <Stack.Item>
+              <Input
+                fluid
+                placeholder={'Mech name'}
+                value={selected_name}
+                onChange={(value) => act('set_name', { new_name: value })}
+              />
+            </Stack.Item>
+            <Stack.Item>
+              <Button.Confirm
+                fluid
+                onClick={() =>
+                  act('set_all', {
+                    new_primary: primaryKey,
+                    new_secondary: secondaryKey,
+                  })
                 }
               >
                 <Box maxWidth={'160px'}>Scatter angle for left arm.</Box>

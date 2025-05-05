@@ -7,33 +7,87 @@
 @use '../base.scss';
 @use '../colors.scss';
 
-$text-color: rgba(255, 255, 255, 0.75) !default;
-$background-color: hsl(0, 0%, 21.2%) !default;
-$shadow-color-core: hsl(0, 0%, 8.6%) !default;
-$shadow-color: rgba(0, 0, 0, 0.1) !default;
-
 .TitleBar {
-  background-color: $background-color;
-  border-bottom: 1px solid $shadow-color-core;
-  box-shadow: 0 2px 2px $shadow-color;
-  box-shadow: 0 base.rem(2px) base.rem(2px) $shadow-color;
   user-select: none;
-  -ms-user-select: none;
-}
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: vp(100vw);
+  height: base.rem(32px);
+  background-color: var(--titlebar-background);
+  border-bottom: var(--border-thickness-tiny) solid var(--titlebar-shadow-core);
+  box-shadow: 0px 0px base.em(6px) base.em(-1px) var(--titlebar-shadow-color);
+  z-index: 101; // More than Dimmer
 
-.TitleBar__clickable {
-  color: color.change($text-color, $alpha: 0.5);
-  background-color: $background-color;
-  transition:
-    color 250ms ease-out,
-    background-color 250ms ease-out;
+  &__dragZone {
+    position: absolute;
+    inset: 0;
+  }
 
-  &:hover {
-    color: rgba(255, 255, 255, 1);
-    background-color: hsl(0, 100%, 40%);
-    transition:
-      color 0ms,
-      background-color 0ms;
+  &__statusIcon {
+    text-align: center;
+    font-size: base.rem(20px);
+    transition: color var(--transition-time-slow);
+  }
+
+  &__title {
+    pointer-events: none;
+    display: inline-block;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--titlebar-text);
+    font-size: base.rem(14px);
+  }
+
+  &__buttons {
+    pointer-events: all;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    margin: 0 base.rem(9px);
+    z-index: 102;
+  }
+
+  &__KitchenSink {
+    background-color: hsl(
+      from var(--color-green) h s calc(l - var(--adjust-hover))
+    );
+    color: var(--color-text-fixed-white);
+    text-align: center;
+    border-radius: 0;
+
+    &:hover {
+      background-color: var(--color-green) !important;
+    }
+  }
+
+  &__close {
+    cursor: var(--cursor-pointer);
+    opacity: 0.5;
+    pointer-events: all;
+    align-content: center;
+    text-align: center;
+    font-size: base.rem(16px);
+    height: 100%;
+    color: var(--color-text);
+    transition-property: background-color, opacity;
+    transition-duration: var(--transition-time-medium);
+    z-index: 102;
+
+    &:hover {
+      opacity: 1;
+      background-color: var(--button-background-danger);
+      transition-duration: 0s;
+    }
+  }
+
+  &__statusIcon,
+  &__close {
+    width: base.rem(45px);
+    min-width: base.rem(45px);
+    max-width: base.rem(45px);
   }
 }
 
