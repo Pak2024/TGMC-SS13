@@ -125,7 +125,7 @@
 	if(severity <= 0)
 		return
 
-	if(TIMER_COOLDOWN_CHECK(src, COOLDOWN_MOB_EX_ACT))
+	if(TIMER_COOLDOWN_FINISHED(src, COOLDOWN_MOB_EX_ACT))
 		return
 
 	if(lying_angle)

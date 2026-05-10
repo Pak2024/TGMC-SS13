@@ -95,7 +95,7 @@
 	try_send_signal()
 
 /obj/item/assembly/signaler/proc/try_send_signal()
-	if(TIMER_COOLDOWN_CHECK(src, COOLDOWN_SIGNALLER_SEND))
+	if(TIMER_COOLDOWN_FINISHED(src, COOLDOWN_SIGNALLER_SEND))
 		balloon_alert(usr, "Recharging")
 		return
 	TIMER_COOLDOWN_START(src, COOLDOWN_SIGNALLER_SEND, 1 SECONDS)
