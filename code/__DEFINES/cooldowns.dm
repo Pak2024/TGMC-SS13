@@ -12,9 +12,11 @@
 #define COOLDOWN_ZOOM "zoom"
 #define COOLDOWN_BUMP "bump"
 #define COOLDOWN_ENTANGLE "entangle"
+#define COOLDOWN_ELECTROCUTED "cooldown_electrocuted"
 #define COOLDOWN_NEST "nest"
 #define COOLDOWN_BUMP_ATTACK "bump_attack"
 #define COOLDOWN_TASTE "taste"
+#define COOLDOWN_VENTSOUND "vendsound"
 #define COOLDOWN_ARMOR_LIGHT "armor_light"
 #define COOLDOWN_ARMOR_ACTION "armor_action"
 #define COOLDOWN_FRIENDLY_FIRE_CAUSED "friendly_fire_caused"
@@ -49,6 +51,7 @@
 #define COOLDOWN_ITEM_TRICK "cooldown_item_trick"
 #define COOLDOWN_RAVAGER_FLAMER_ACT "cooldown_ravager_flamer_act"
 #define COOLDOWN_DROPPOD_TARGETTING "cooldown_droppod_targetting"
+#define COOLDOWN_TRY_TTS "cooldown_try_tts"
 #define COOLDOWN_EVACUATION "evacuation"
 #define COOLDOWN_SENTIENT_HUGGER "sentient_hugger"
 #define COOLDOWN_EVASION_ACTIVATION "cooldown_evasion_activation"
@@ -109,7 +112,10 @@
 #define TIMER_COOLDOWN_START(cd_source, cd_index, cd_time) LAZYSET(cd_source.cooldowns, cd_index, addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(end_cooldown), cd_source, cd_index), cd_time))
 
 /// Returns TRUE if still cooling down, FALSE otherwise
-#define TIMER_COOLDOWN_FINISHED(cd_source, cd_index) LAZYACCESS(cd_source.cooldowns, cd_index)
+#define TIMER_COOLDOWN_RUNNING(cd_source, cd_index) LAZYACCESS(cd_source.cooldowns, cd_index)
+
+/// Checks if a timer based cooldown is finished.
+#define TIMER_COOLDOWN_FINISHED(cd_source, cd_index) (!TIMER_COOLDOWN_RUNNING(cd_source, cd_index))
 
 #define TIMER_COOLDOWN_END(cd_source, cd_index) LAZYREMOVE(cd_source.cooldowns, cd_index)
 

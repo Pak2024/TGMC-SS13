@@ -35,7 +35,7 @@
 		return
 	if(!should_show())
 		return FALSE
-	if(owner.stat != CONSCIOUS || TIMER_COOLDOWN_FINISHED(owner, COOLDOWN_HUD_ORDER))
+	if(owner.stat != CONSCIOUS || TIMER_COOLDOWN_RUNNING(owner, COOLDOWN_HUD_ORDER))
 		return FALSE
 
 /datum/action/innate/message_squad/action_activate()
@@ -94,3 +94,12 @@
 				message = text
 			))
 			SEND_SOUND(faction_receiver, S)
+
+	var/list/tts_listeners = filter_tts_listeners(human_owner, alert_receivers, null, RADIO_TTS_COMMAND)
+	if(!length(tts_listeners))
+		return
+	var/list/treated_message = human_owner?.treat_message(text) //we only treat the text here since it adds stutter to the text announcement otherwise
+	var/list/extra_filters = list(TTS_FILTER_RADIO)
+	if(isrobot(human_owner))
+		extra_filters += TTS_FILTER_SILICON
+	INVOKE_ASYNC(SStts, TYPE_PROC_REF(/datum/controller/subsystem/tts, queue_tts_message), human_owner, treated_message["tts_message"], human_owner.get_default_language(), human_owner.voice, human_owner.voice_filter, tts_listeners, FALSE, pitch = human_owner.pitch, special_filters = extra_filters.Join("|"), directionality = FALSE)

@@ -861,7 +861,7 @@ directive is properly returned.
  * distance_max: used to check if originated_turf is close to obj.loc
 */
 /atom/proc/turn_light(mob/user = null, toggle_on , cooldown = 1 SECONDS, sparks = FALSE, forced = FALSE, light_again = FALSE)
-	if(TIMER_COOLDOWN_CHECK(src, COOLDOWN_LIGHT) && !forced)
+	if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_LIGHT) && !forced)
 		return STILL_ON_COOLDOWN
 	if(cooldown <= 0)
 		cooldown = 1 SECONDS

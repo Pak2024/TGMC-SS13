@@ -25,7 +25,7 @@
 	. = ..()
 	if(!.)
 		return
-	if(owner.stat || TIMER_COOLDOWN_FINISHED(owner, COOLDOWN_SKILL_ORDERS))
+	if(owner.stat || TIMER_COOLDOWN_RUNNING(owner, COOLDOWN_SKILL_ORDERS))
 		return FALSE
 
 /datum/action/skill/issue_order/action_activate()
@@ -133,7 +133,7 @@
 		to_chat(src, span_warning("You cannot give an order while muted."))
 		return
 
-	if(TIMER_COOLDOWN_FINISHED(src, COOLDOWN_SKILL_ORDERS))
+	if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_SKILL_ORDERS))
 		to_chat(src, span_warning("You have recently given an order. Calm down."))
 		return
 
@@ -145,7 +145,7 @@
 		if(!command_aura)
 			return
 
-	if(TIMER_COOLDOWN_FINISHED(src, COOLDOWN_SKILL_ORDERS))
+	if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_SKILL_ORDERS))
 		to_chat(src, span_warning("You have recently given an order. Calm down."))
 		return
 

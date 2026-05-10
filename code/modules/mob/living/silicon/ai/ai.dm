@@ -509,7 +509,7 @@
 	if(owner.stat)
 		to_chat(owner, span_warning("You cannot give orders in your current state."))
 		return FALSE
-	if(TIMER_COOLDOWN_FINISHED(owner, COOLDOWN_HUD_ORDER))
+	if(TIMER_COOLDOWN_RUNNING(owner, COOLDOWN_HUD_ORDER))
 		to_chat(owner, span_warning("Your last order was too recent."))
 		return FALSE
 

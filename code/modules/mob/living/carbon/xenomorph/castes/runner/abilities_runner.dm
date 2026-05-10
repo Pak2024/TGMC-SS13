@@ -132,6 +132,15 @@
 	update_button_icon()
 
 /datum/action/ability/xeno_action/evasion/action_activate()
+	//Since both the button and the evasion extension call this proc directly, check if the cooldown timer exists
+	//The evasion extension removes the cooldown before calling this proc again, so use that to differentiate if it was the player trying to cancel
+	if(evade_active && cooldown_timer)
+		if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_EVASION_ACTIVATION))
+			return
+		evasion_deactivate()
+		return
+
+	use_state_flags = ABILITY_IGNORE_COOLDOWN|ABILITY_IGNORE_PLASMA	//To allow the ability button to be clicked while on cooldown for deactivation purposes
 	succeed_activate()
 	add_cooldown()
 	if(evade_active)
