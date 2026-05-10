@@ -92,6 +92,7 @@ export const DmTarget = new Juke.Target({
     'interface/**',
     'modular_RUtgmc/**',
     `${DME_NAME}.dme`,
+    'tgui/public/tgui.html',
     NamedVersionFile,
   ],
   outputs: ({ get }) => {
@@ -365,5 +366,6 @@ export const TgsTarget = new Juke.Target({
     prependDefines('TGS');
   },
 });
+
 
 export default TGS_MODE ? TgsTarget : BuildTarget;
