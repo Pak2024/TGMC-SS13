@@ -129,7 +129,7 @@ export const GearCustomization = (props) => {
         <Stack.Item grow>
           <Section title={'Undershirt (select one)'}>
             <LabeledList>
-              {clothing['undershirt'][gender]?.map((item, idx) => (
+              {clothing['undershirt'][physique_used]?.map((item, idx) => (
                 <LabeledList.Item key={item} label={item}>
                   <Button.Checkbox
                     inline
@@ -147,7 +147,7 @@ export const GearCustomization = (props) => {
         <Stack.Item grow>
           <Section title={'Underwear (select one)'}>
             <LabeledList>
-              {clothing['underwear'][gender]?.map((item, idx) => (
+              {clothing['underwear'][physique_used]?.map((item, idx) => (
                 <LabeledList.Item key={item} label={item}>
                   <Button.Checkbox
                     inline
