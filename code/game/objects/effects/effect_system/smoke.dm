@@ -125,8 +125,6 @@
 		if(!isxeno(M))
 			M.smokecloak_off()
 			return
-		if(M.has_status_effect(STATUS_EFFECT_XENOMORPH_CLOAKING))
-			M.remove_status_effect(STATUS_EFFECT_XENOMORPH_CLOAKING)
 
 /obj/effect/particle_effect/smoke/proc/apply_smoke_effect(turf/T)
 	T.effect_smoke(src)

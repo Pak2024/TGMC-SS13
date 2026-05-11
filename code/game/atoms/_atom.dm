@@ -288,7 +288,7 @@ directive is properly returned.
 // called by mobs when e.g. having the atom as their machine, pulledby, loc (AKA mob being inside the atom) or buckled var set.
 // see code/modules/mob/mob_movement.dm for more.
 /atom/proc/relaymove(mob/living/user, direct)
-	if(COOLDOWN_CHECK(src, buckle_message_cooldown))
+	if(COOLDOWN_FINISHED(src, buckle_message_cooldown))
 		COOLDOWN_START(src, buckle_message_cooldown, 2.5 SECONDS)
 		balloon_alert(user, "Can't move while buckled!")
 	return

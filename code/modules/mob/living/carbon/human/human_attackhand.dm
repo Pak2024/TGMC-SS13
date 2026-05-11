@@ -334,4 +334,4 @@
 		else
 			final_msg += span_info(pick("There's a full layer of dirt covering you. Maybe it'll work as camo?", "You could go for a shower.", "You've reached a more complete understanding of grime."))
 
-	to_chat(src, examine_block(final_msg.Join("\n")))
+	to_chat(src, custom_boxed_message("blue_box", final_msg.Join("\n")))
