@@ -1,4 +1,3 @@
-import { BooleanLike } from 'tgui-core/react';
 
 export const InternalDamageToDamagedDesc = {
   MECHA_INT_FIRE: 'Internal fire detected',

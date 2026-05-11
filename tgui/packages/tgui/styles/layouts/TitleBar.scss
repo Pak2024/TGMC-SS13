@@ -4,8 +4,9 @@
  */
 
 @use 'sass:color';
-@use '../base.scss';
-@use '../colors.scss';
+@use '../base';
+@use '../colors';
+@use '../functions.scss' as *;
 
 .TitleBar {
   user-select: none;
@@ -89,77 +90,4 @@
     min-width: base.rem(45px);
     max-width: base.rem(45px);
   }
-}
-
-.TitleBar__title {
-  position: absolute;
-  display: inline-block;
-  top: 0;
-  left: 46px;
-  left: base.rem(46px);
-  color: $text-color;
-  font-size: 14px;
-  font-size: base.rem(14px);
-  line-height: 31px;
-  line-height: base.rem(31px);
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.TitleBar__buttons {
-  pointer-events: initial;
-  display: inline-block;
-  width: 100%;
-  margin-left: 10px;
-}
-
-.TitleBar__dragZone {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 32px;
-  height: base.rem(32px);
-}
-
-.TitleBar__statusIcon {
-  position: absolute;
-  top: 0;
-  left: 12px;
-  left: base.rem(12px);
-  transition: color 0.5s;
-  font-size: 20px;
-  font-size: base.rem(20px);
-  line-height: 32px !important;
-  line-height: base.rem(32px) !important;
-}
-
-.TitleBar__close {
-  position: absolute;
-  top: -1px;
-  right: 0;
-  width: 45px;
-  width: base.rem(45px);
-  height: 32px;
-  height: base.rem(32px);
-  font-size: 20px;
-  font-size: base.rem(20px);
-  line-height: 31px;
-  line-height: base.rem(31px);
-  text-align: center;
-}
-
-.TitleBar__devBuildIndicator {
-  position: absolute;
-  top: 6px;
-  top: base.rem(6px);
-  right: 52px;
-  right: base.rem(52px);
-  min-width: 20px;
-  min-width: base.rem(20px);
-  padding: 2px 4px;
-  padding: base.rem(2px) base.rem(4px);
-  background-color: rgba(colors.$good, 0.75);
-  color: hsl(0, 0%, 100%);
-  text-align: center;
 }

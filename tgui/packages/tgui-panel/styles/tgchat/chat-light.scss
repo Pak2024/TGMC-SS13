@@ -1150,11 +1150,13 @@ h2.alert {
 .separator:not(:empty)::before {
   margin-right: 0.25em;
 }
+
 .fieldset_legend {
   background: hsl(0, 0%, 100%); // Chat background color
 
-.separator:not(:empty)::after {
-  margin-left: 0.25em;
+  &:before {
+    background: hsl(0, 0%, 100%); // Chat background color
+  }
 }
 
 .boxed_message {

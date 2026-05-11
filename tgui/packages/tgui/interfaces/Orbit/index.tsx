@@ -13,7 +13,11 @@ import {
 } from 'tgui-core/components';
 import { capitalizeFirst } from 'tgui-core/string';
 
-import { getDisplayColor, getDisplayName, isJobOrNameMatch } from './helpers';
+import {
+  getDisplayColor,
+  getDisplayName,
+  isJobCkeyOrNameMatch,
+} from './helpers';
 import type { Observable, OrbitData } from './types';
 
 export const Orbit = (props) => {
@@ -56,7 +60,7 @@ const ObservableSearch = (props) => {
   function orbitMostRelevant() {
     const mostRelevant = [humans, marines, yautja, survivors, xenos, valhalla]
       .flat()
-      .filter((observable) => isJobOrNameMatch(observable, searchQuery))
+      .filter((observable) => isJobCkeyOrNameMatch(observable, searchQuery))
       .sort((observable) => -(observable.orbiters || 0))[0];
 
     if (mostRelevant !== undefined) {

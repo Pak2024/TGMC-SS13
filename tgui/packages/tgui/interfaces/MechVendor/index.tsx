@@ -2,18 +2,14 @@ import { useState } from 'react';
 import {
   Box,
   Button,
-  Icon,
   LabeledList,
   Modal,
-  ProgressBar,
   Section,
   Stack,
   Tabs,
-  Tooltip,
 } from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
 
-import { useBackend } from '../../backend';
 import { Window } from '../../layouts';
 import { MECHA_ASSEMBLY, MECHA_WEAPONS, MechWeapon, tabs } from './data';
 import { MechAssembly } from './MechAssembly';
