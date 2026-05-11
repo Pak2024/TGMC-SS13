@@ -20,6 +20,7 @@ export const CharacterCustomization = (props) => {
   const { act, data } = useBackend<CharacterCustomizationData>();
   const {
     random_name,
+    gender,
     r_hair,
     g_hair,
     b_hair,
