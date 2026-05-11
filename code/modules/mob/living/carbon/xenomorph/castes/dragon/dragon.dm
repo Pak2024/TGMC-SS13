@@ -2,7 +2,7 @@
 	caste_base_type = /datum/xeno_caste/dragon
 	name = "Dragon"
 	desc = "A massive, ancient beast with scales that shimmer like polished armor. The fiercest and most formidable creature."
-	icon = 'icons/Xeno/castes/dragon.dmi'
+	icon = 'icons/Xeno/castes/dragon/dragon.dmi'
 	icon_state = "Dragon Walking"
 	attacktext = "bites"
 	friendly = "nuzzles"
@@ -50,3 +50,6 @@
 		use_plasma(ROUND_UP(damage_reduction * 5))
 		damage -= damage_reduction
 	return ..()
+
+/mob/living/carbon/xenomorph/dragon/primordial
+	upgrade = XENO_UPGRADE_PRIMO

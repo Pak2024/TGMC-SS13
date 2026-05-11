@@ -1,16 +1,22 @@
+/*
+////////////////////////////////АХТУНГ////////////////////////////////
+//////////////////В ПРОЦЕССЕ ПЕРЕПИЛА ПОД НАШ БИЛД////////////////////
+//////////////////////ВО ВРЕМЯ ПЕРЕНОСА МУТАЦИИ///////////////////////
+//////////////////////////НЕ БУДУТ РАБОТАТЬ///////////////////////////
+//////////////////////////////////////////////////////////////////////
 //*********************//
 //        Shell        //
 //*********************//
 /datum/mutation_upgrade/shell/regenerative_armor
 	name = "Regenerative Armor"
-	desc = "Whenever you passively regenerate health, you will also gain 2.5/5/7.5% of your maximum plasma. This scales with regenerative power."
+	desc = "При пассивной регенерации здоровья, вы также восстанавливаете 2.5/5/7.5% от вашего максимального запаса плазмы. Это масштабируется с силой регенерации."
 	/// For each structure, the percentage (0-1) of the owner's maximum plasma to regenerate.
 	var/percentage_per_structure = 0.025
 
 /datum/mutation_upgrade/shell/regenerative_armor/get_desc_for_alert(new_amount)
 	if(!new_amount)
 		return ..()
-	return "Whenever you regenerate health, you will also gain [PERCENT(get_percentage(new_amount))]% of your maximum plasma. This scales with regenerative power."
+	return "Каждый раз, когда вы восстанавливаете здоровье, вы также будете получать [PERCENT(get_percentage(new_amount))]% от вашего максимального запаса плазмы. Это масштабируется с силой регенерации."
 
 /datum/mutation_upgrade/shell/regenerative_armor/on_mutation_enabled()
 	RegisterSignal(xenomorph_owner, COMSIG_XENOMORPH_HEALTH_REGEN, PROC_REF(on_health_regeneration))
@@ -36,7 +42,7 @@
 //*********************//
 /datum/mutation_upgrade/spur/breath_of_variety
 	name = "Breath of Variety"
-	desc = "Dragon Breath can switch between additional fire types to replace it with different effects: shatter or melting acid. Dragon Breath's cooldown is set to 150/125/100% of its original cooldown."
+	desc = "Дыхание дракона может переключаться между дополнительными типами огня, чтобы заменить его различными эффектами: дробящий или плавящий кислотой. Время восстановления Дыхания дракона устанавливается на 150/125/100% от его первоначального времени восстановления."
 	/// For the first structure, the multiplier of Dragon Breath's initial cooldown duration to add to the ability.
 	var/multiplier_initial = 0.75
 	/// For each structure, the multiplier of Dragon Breath's initial cooldown duration to add to the ability.
@@ -45,7 +51,7 @@
 /datum/mutation_upgrade/spur/breath_of_variety/get_desc_for_alert(new_amount)
 	if(!new_amount)
 		return ..()
-	return "Dragon Breath can switch between additional fire types to replace it with different effects: shatter or melting acid. Dragon Breath's cooldown is set to 150/125/100% [PERCENT((1 + get_multiplier(new_amount)))] of its original cooldown."
+	return "Дыхание дракона может переключаться между дополнительными типами огня, чтобы заменить его различными эффектами: дробящий или плавящий кислотой. Время восстановления Дыхания дракона устанавливается на 150/125/100% [PERCENT((1 + get_multiplier(new_amount)))] от его первоначального времени восстановления."
 
 /datum/mutation_upgrade/spur/breath_of_variety/on_mutation_enabled()
 	. = ..()
@@ -81,7 +87,7 @@
 //*********************//
 /datum/mutation_upgrade/veil/benevolence
 	name = "Benevolence"
-	desc = "You emit all types of pheromones at 2/2.5/3 power in a radius of 14/15/16."
+	desc = "Вы испускаете все типы феромонов с силой 2/2.5/3 в радиусе 14/15/16."
 	/// For the first structure, the amount of power to increase the pheromones by.
 	var/power_increase_initial = 1.5
 	/// For each structure, the amount of power to increase the pheromones by.
@@ -96,7 +102,7 @@
 /datum/mutation_upgrade/veil/benevolence/get_desc_for_alert(new_amount)
 	if(!new_amount)
 		return ..()
-	return "You emit all types of pheromones at [get_power(new_amount)] power in a radius of [get_radius(new_amount)]."
+	return "Вы испускаете все типы феромонов с силой [get_power(new_amount)] в радиусе [get_radius(new_amount)]."
 
 /datum/mutation_upgrade/veil/benevolence/on_structure_update(previous_amount, new_amount)
 	. = ..()
@@ -119,3 +125,4 @@
 /// Returns the radius of the aura(s).
 /datum/mutation_upgrade/veil/benevolence/proc/get_radius(power)
 	return (6 + power) * 2
+*/
