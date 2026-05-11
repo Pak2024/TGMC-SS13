@@ -79,7 +79,7 @@ export const SupplyDropConsole = (_props) => {
                 bad: [0.67, Infinity],
               }}
             >
-              {Math.ceil(timeLeft * 0.1)} sec(s)
+              {Math.ceil(timeLeft / 10)} sec(s)
             </ProgressBar>
           </Section>
           <Button

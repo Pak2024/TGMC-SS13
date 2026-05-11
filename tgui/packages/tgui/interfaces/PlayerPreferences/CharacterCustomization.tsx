@@ -60,11 +60,9 @@ export const CharacterCustomization = (props) => {
                 value={'real_name'}
                 extra={
                   <Box as="span">
-                    <Button
-                      icon="dice"
-                      tooltip="Randomize"
-                      onClick={() => act('randomize_name')}
-                    />
+                    <Button onClick={() => act('randomize_name')}>
+                      Randomize
+                    </Button>
                     <Button.Checkbox
                       inline
                       content="Always Random"
@@ -109,7 +107,7 @@ export const CharacterCustomization = (props) => {
                     inline
                     key={thisgender}
                     content={capitalize(genderToName[thisgender])}
-                    checked={data['gender'] === thisgender}
+                    checked={gender === thisgender}
                     onClick={() =>
                       act('toggle_gender', { newgender: thisgender })
                     }
@@ -219,6 +217,12 @@ export const CharacterCustomization = (props) => {
                 value={'religion'}
                 action={'religion'}
               />
+              <SelectFieldPreference
+                label={'TTS voice'}
+                value={'tts_voice'}
+                action={'tts_voice'}
+              />
+              <TextFieldPreference label={'TTS pitch'} value={'tts_pitch'} />
             </LabeledList>
           </Flex.Item>
         </Flex>

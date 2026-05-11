@@ -5,9 +5,15 @@ import { useBackend } from '../../backend';
 export const GearCustomization = (props) => {
   const { act, data } = useBackend<GearCustomizationData>();
 
-  const { gearsets, gear, clothing, underwear, undershirt, backpack, gender } =
-    data;
-
+  const {
+    gearsets,
+    gear,
+    clothing,
+    underwear,
+    undershirt,
+    backpack,
+    physique_used,
+  } = data;
   // These correspond to the gear slot and you need to update them if the defines change
   const slotMapping = {
     10: 'Head',
@@ -26,7 +32,7 @@ export const GearCustomization = (props) => {
   }
 
   const currentPoints = gear.reduce(
-    (total, name) => total + gearsets[name]?.cost,
+    (total, name) => total + gearsets[name].cost,
     0,
   );
 

@@ -6,12 +6,23 @@ import {
   Section,
   Stack,
 } from 'tgui-core/components';
+import { BooleanLike } from 'tgui-core/react';
 
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
 
-export const NtAccessTerminal = (props) => {
-  const { act, data } = useBackend();
+type NukeDiskProps = {
+  message: string;
+  progress: number;
+  time_left: number;
+  flavor_text: string;
+  running: BooleanLike;
+  segment_time: number;
+  color: string;
+};
+
+export const NukeDiskGenerator = (props) => {
+  const { act, data } = useBackend<NukeDiskProps>();
   const {
     message,
     progress,
@@ -22,16 +33,16 @@ export const NtAccessTerminal = (props) => {
     color,
   } = data;
   return (
-    <Window title="NanoTrasen security override" width={450} height={250}>
+    <Window title="Nuke Disk Generator" width={450} height={250}>
       <Window.Content>
-        <Section title="Run Program">
+        <Section title="Запустить генерацию">
           <Stack fill vertical>
             <Stack.Item>
               <NoticeBox>{flavor_text}</NoticeBox>
             </Stack.Item>
             <Stack.Item>
               <Box width="100%" textAlign="center">
-                Overall Progress:
+                Прогресс генерации:
                 <ProgressBar value={progress} color={color} />
               </Box>
             </Stack.Item>
@@ -40,10 +51,10 @@ export const NtAccessTerminal = (props) => {
                 {running ? (
                   <NoticeBox danger>
                     <Box>
-                      Time left: {time_left} s
+                      Осталось: {time_left} сек.
                       <ProgressBar
                         minValue={0}
-                        MaxValue={segment_time}
+                        maxValue={segment_time}
                         value={(time_left / segment_time) * 10}
                       />
                     </Box>
@@ -53,7 +64,7 @@ export const NtAccessTerminal = (props) => {
                   <NoticeBox>{message}</NoticeBox>
                 )}
                 <Button disabled={running} onClick={() => act('run_program')}>
-                  Run Program
+                  Запустить генерацию
                 </Button>
               </Box>
             </Stack.Item>

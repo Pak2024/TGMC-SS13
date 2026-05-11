@@ -176,7 +176,7 @@ const ObservableSection = (props: {
   }
   const [searchQuery] = useLocalState<string>('searchQuery', '');
   const filteredSection = section.filter((observable) =>
-    isJobOrNameMatch(observable, searchQuery),
+    isJobCkeyOrNameMatch(observable, searchQuery),
   );
 
   filteredSection.sort(sortByDisplayName);

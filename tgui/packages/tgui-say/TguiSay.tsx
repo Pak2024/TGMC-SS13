@@ -18,6 +18,7 @@ type ByondOpen = {
 type ByondProps = {
   maxLength: number;
   lightMode: BooleanLike;
+  scale: BooleanLike;
 };
 
 export function TguiSay() {
@@ -25,6 +26,7 @@ export function TguiSay() {
   const channelIterator = useRef(new ChannelIterator());
   const chatHistory = useRef(new ChatHistory());
   const messages = useRef(byondMessages);
+  const scale = useRef(true);
 
   // I initially wanted to make these an object or a reducer, but it's not really worth it.
   // You lose the granulatity and add a lot of boilerplate.
@@ -110,7 +112,7 @@ export function TguiSay() {
 
   function handleClose(): void {
     innerRef.current?.blur();
-    windowClose();
+    windowClose(scale.current);
 
     setTimeout(() => {
       chatHistory.current.reset();
@@ -229,6 +231,7 @@ export function TguiSay() {
   function handleProps(data: ByondProps): void {
     setMaxLength(data.maxLength);
     setLightMode(!!data.lightMode);
+    scale.current = !!data.scale;
   }
 
   function unloadChat(): void {
@@ -276,7 +279,12 @@ export function TguiSay() {
       >
         {!lightMode && <div className={`shine shine-${theme}`} />}
       </div>
-      <div className={classes(['content', lightMode && 'content-lightMode'])}>
+      <div
+        className={classes(['content', lightMode && 'content-lightMode'])}
+        style={{
+          zoom: scale.current ? '' : `${100 / window.devicePixelRatio}%`,
+        }}
+      >
         <button
           className={`button button-${theme}`}
           onMouseDown={handleButtonClick}

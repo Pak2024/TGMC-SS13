@@ -49,8 +49,11 @@ export const setClientTheme = (name) => {
 
   return Byond.winset({
     // Main windows
+    'infobuttons.background-color': themeColor.BG_BASE,
+    'infobuttons.text-color': themeColor.TEXT,
     'infowindow.background-color': themeColor.BG_BASE,
     'infowindow.text-color': themeColor.TEXT,
+    'info_and_buttons.background-color': themeColor.BG_BASE,
     'info.background-color': themeColor.BG_BASE,
     'info.text-color': themeColor.TEXT,
     'browseroutput.background-color': themeColor.BG_BASE,
@@ -74,8 +77,6 @@ export const setClientTheme = (name) => {
     'github.text-color': themeColor.TEXT,
     'webmap.background-color': themeColor.BUTTON,
     'webmap.text-color': themeColor.TEXT,
-    'boosty.background-color': themeColor.BUTTON,
-    'boosty.text-color': themeColor.TEXT,
     'report-issue.background-color': themeColor.BUTTON,
     'report-issue.text-color': themeColor.TEXT,
     'fullscreen-toggle.background-color': themeColor.BUTTON,

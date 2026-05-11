@@ -29,7 +29,7 @@ export const MarineSelector = (props) => {
     );
 
   return (
-    <Window width={600} height={700}>
+    <Window width={650} height={700}>
       {!!showDesc && (
         <Modal width="400px">
           <Box>{showDesc}</Box>
@@ -87,7 +87,6 @@ const ItemCategory = (props) => {
   const cant_buy =
     (choice === 'choice' && !remaining) ||
     (choice === 'points' && !remaining_points);
-
   return (
     <Section
       title={name}
@@ -256,7 +255,9 @@ const ItemLine = (props) => {
       label={prod_name}
       labelColor="white"
     >
-      {!!prod_desc && <Button onClick={() => setShowDesc(prod_desc)}>?</Button>}
+      {!!product_desc && (
+        <Button onClick={() => setShowDesc(product_desc)}>?</Button>
+      )}
     </LabeledList.Item>
   );
 };
