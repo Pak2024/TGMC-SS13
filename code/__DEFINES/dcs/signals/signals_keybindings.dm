@@ -98,6 +98,9 @@
 #define COMSIG_KB_DEFENDORDER "keybind_defendorder"
 #define COMSIG_KB_RETREATORDER "keybind_retreatorder"
 #define COMSIG_KB_VEHICLEHONK "keybind_vehiclehonk"
+#define COMSIG_ABILITY_PLACE_HOLOGRAM "ability_place_hologram"
+#define COMSIG_ABILITY_SELECT_BUILDTYPE "ability_select_buildtype"
+#define COMSIG_VEHICLEABILITY_TESLA "vehicleability_tesla"
 
 //Item toggle keybinds
 #define COMSIG_ITEM_TOGGLE_JETPACK "item_toggle_jetpack"

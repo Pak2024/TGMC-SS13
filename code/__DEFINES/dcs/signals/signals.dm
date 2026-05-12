@@ -878,3 +878,10 @@
 
 /// From /area/proc/fire_alert() and /area/proc/fire_reset()
 #define COMSIG_AREA_FIRE_ALARM_SET "area_fire_alarm_set"
+
+/// Build/order designator signals.
+#define COMSIG_GLOB_HOLO_BUILD_INITIALIZED "!holo_build_initialized"
+#define COMSIG_GLOB_DESIGNATED_TARGET_SET "!designated_target_set"
+#define COMSIG_MOB_INTERACTION_DESIGNATED "mob_interaction_designated"
+#define COMSIG_DO_OVERWATCH_RADIAL "do_overwatch_radial"
+	#define OVERWATCH_RADIAL_HIDE (1<<0)
