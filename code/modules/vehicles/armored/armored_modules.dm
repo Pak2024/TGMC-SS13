@@ -139,7 +139,7 @@
 /obj/item/tank_module/ability/tesla
 	name = "tesla module"
 	desc = "Allows the driver to briefly electrify the vehicle's hull."
-	icon_state = "smoke_launcher"
+	icon_state = "tesla"
 	tank_mod_flags = TANK_MOD_NOT_FABRICABLE
 	is_driver_module = TRUE
 	flag_controller = VEHICLE_CONTROL_DRIVE
