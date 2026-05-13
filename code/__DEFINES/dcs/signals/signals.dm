@@ -885,3 +885,9 @@
 #define COMSIG_MOB_INTERACTION_DESIGNATED "mob_interaction_designated"
 #define COMSIG_DO_OVERWATCH_RADIAL "do_overwatch_radial"
 	#define OVERWATCH_RADIAL_HIDE (1<<0)
+
+///See if we have any priority escort targets
+#define COMSIG_NPC_FIND_NEW_ESCORT "npc_find_new_escort"
+
+///From /atom/add_slaved_npc()
+#define COMSIG_COMPONENT_ADD_NEW_SLAVE_NPC "component_add_new_slave_npc"

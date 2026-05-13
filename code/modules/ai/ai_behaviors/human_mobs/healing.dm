@@ -8,7 +8,7 @@
 	var/list/self_heal_chat = list("Лечусь, прикройте!", "Я тут подлечусь.", "Где медика черти носят?", "Медик!", "Бинтую раны.", "Это всего лишь царапина.", "Мне нужна помощь!", "Прикройте меня!.")
 
 /datum/ai_behavior/human/late_initialize()
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	. = ..()
 	if(!registered_for_move)
@@ -24,7 +24,7 @@
 		return
 	if(current_action == MOVING_TO_SAFETY)
 		return
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	if(mob_parent.incapacitated() || mob_parent.lying_angle)
 		return
@@ -99,7 +99,7 @@
 		return
 	if(current_action == MOVING_TO_SAFETY)
 		return
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	if(mob_parent.incapacitated() || mob_parent.lying_angle)
 		return

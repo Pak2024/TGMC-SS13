@@ -1,3 +1,30 @@
+/proc/spawn_npc_squad(turf/location, list/role_list, atom/atom_to_escort)
+	if(!isturf(location))
+		location = get_turf(location)
+	if(!location || !length(role_list))
+		return
+	var/list/mob_list = list()
+	var/squad_to_insert_into
+	var/datum/job/job_checked = SSjob.GetJobType(role_list[1])
+	if(job_checked && SSjob.active_squads[job_checked.faction])
+		squad_to_insert_into = pick(SSjob.active_squads[job_checked.faction])
+
+	for(var/i = 1 to length(role_list))
+		var/mob/living/carbon/human/new_human = new()
+		mob_list += new_human
+		var/datum/job/new_job = SSjob.GetJobType(role_list[i])
+		new_human.apply_assigned_role_to_spawn(new_job, new_human.client, squad_to_insert_into, admin_action = TRUE)
+		stoplag()
+
+	for(var/mob/living/carbon/human/dude AS in mob_list)
+		dude.forceMove(location)
+		dude.AddComponent(/datum/component/ai_controller, /datum/ai_behavior/human, atom_to_escort)
+		if(istype(dude.wear_ear, /obj/item/radio/headset/mainship))
+			var/obj/item/radio/headset/mainship/worn_headset = dude.wear_ear
+			worn_headset.update_minimap_icon()
+
+	return mob_list
+
 /obj/effect/ai_node/spawner/human
 	name = "AI human spawner node"
 	use_post_spawn = TRUE //Gotta equip those AI you know

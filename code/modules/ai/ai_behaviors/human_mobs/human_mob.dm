@@ -54,6 +54,8 @@
 	if(mob_parent?.skills?.getRating(SKILL_MEDICAL) >= SKILL_MEDICAL_PRACTICED) //placeholder setter. Some jobs have high med but aren't medics...
 		medical_rating = AI_MED_MEDIC
 		RegisterSignals(SSdcs, list(COMSIG_GLOB_AI_NEED_HEAL, COMSIG_GLOB_MOB_CALL_MEDIC), PROC_REF(mob_need_heal))
+	if(mob_parent?.skills?.getRating(SKILL_CONSTRUCTION) >= SKILL_CONSTRUCTION_PLASTEEL) //placeholder setter. Some jobs have high construction but aren't engineers...
+		RegisterSignal(SSdcs, COMSIG_GLOB_HOLO_BUILD_INITIALIZED, PROC_REF(on_holo_build_init))
 	if(human_ai_behavior_flags & HUMAN_AI_AVOID_HAZARDS)
 		RegisterSignal(SSdcs, COMSIG_GLOB_AI_HAZARD_NOTIFIED, PROC_REF(add_hazard))
 		RegisterSignal(mob_parent, COMSIG_MOVABLE_Z_CHANGED, (PROC_REF(on_change_z)))
@@ -78,7 +80,7 @@
 		COMSIG_MOB_TOGGLEMOVEINTENT,
 	))
 	UnregisterSignal(mob_inventory, list(COMSIG_INVENTORY_DAT_GUN_ADDED, COMSIG_INVENTORY_DAT_MELEE_ADDED))
-	UnregisterSignal(SSdcs, list(COMSIG_GLOB_AI_HAZARD_NOTIFIED, COMSIG_GLOB_MOB_ON_CRIT, COMSIG_GLOB_AI_NEED_HEAL, COMSIG_GLOB_MOB_CALL_MEDIC))
+	UnregisterSignal(SSdcs, list(COMSIG_GLOB_AI_HAZARD_NOTIFIED, COMSIG_GLOB_MOB_ON_CRIT, COMSIG_GLOB_AI_NEED_HEAL, COMSIG_GLOB_MOB_CALL_MEDIC, COMSIG_GLOB_HOLO_BUILD_INITIALIZED))
 	return ..()
 
 /datum/ai_behavior/human/process()
@@ -88,6 +90,9 @@
 		return ..()
 
 	if((medical_rating >= AI_MED_MEDIC) && medic_process())
+		return
+
+	if((mob_parent?.skills?.getRating(SKILL_CONSTRUCTION) >= SKILL_CONSTRUCTION_PLASTEEL) && engineer_process())
 		return
 
 	for(var/datum/action/action in ability_list)
@@ -107,7 +112,7 @@
 	return ..()
 
 /datum/ai_behavior/human/scheduled_move()
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		registered_for_move = FALSE
 		return
 	return ..()
@@ -138,11 +143,11 @@
 	. = ..()
 	if(!.)
 		return
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		mob_parent.a_intent = INTENT_HELP
 
 /datum/ai_behavior/human/look_for_new_state()
-	if(human_ai_state_flags & HUMAN_AI_ANY_HEALING)
+	if(human_ai_state_flags & HUMAN_AI_BUSY_ACTION)
 		return
 	var/mob/living/living_parent = mob_parent
 	switch(current_action)
@@ -297,6 +302,17 @@
 /datum/ai_behavior/human/do_unset_target(atom/old_target, need_new_state = TRUE)
 	if(combat_target == old_target && (human_ai_state_flags & HUMAN_AI_FIRING))
 		stop_fire()
+	if(QDELETED(old_target))
+		if(human_ai_state_flags & HUMAN_AI_HEALING)
+			on_heal_end(old_target)
+		else
+			remove_from_heal_list(old_target)
+		if(human_ai_state_flags & HUMAN_AI_BUILDING)
+			on_engineering_end(old_target)
+		else
+			remove_from_engineering_list(old_target)
+		return ..()
+
 	var/revive_target = FALSE
 	if((medical_rating >= AI_MED_MEDIC) && (old_target in heal_list))
 		var/mob/living/living_target = old_target
@@ -362,6 +378,9 @@
 			return
 		INVOKE_ASYNC(src, PROC_REF(try_heal_other), human)
 		return TRUE
+	if(istype(interactee, /obj/effect/build_designator))
+		INVOKE_ASYNC(src, PROC_REF(try_build_holo), interactee)
+		return TRUE
 	interactee.do_ai_interact(mob_parent)
 	return TRUE
 
@@ -387,8 +406,8 @@
 		return
 	if(attacker)
 		COOLDOWN_START(src, ai_heal_after_dam_cooldown, 4 SECONDS)
-		if((human_ai_state_flags & HUMAN_AI_ANY_HEALING)) //dont just stand there
-			human_ai_state_flags &= ~(HUMAN_AI_ANY_HEALING)
+		if((human_ai_state_flags & HUMAN_AI_BUSY_ACTION)) //dont just stand there
+			human_ai_state_flags &= ~(HUMAN_AI_BUSY_ACTION)
 			late_initialize()
 			return
 		if(current_action == MOVING_TO_SAFETY)
@@ -398,7 +417,7 @@
 
 	if(!(human_ai_behavior_flags & HUMAN_AI_SELF_HEAL))
 		return
-	if((human_ai_state_flags & HUMAN_AI_ANY_HEALING))
+	if((human_ai_state_flags & HUMAN_AI_BUSY_ACTION))
 		return
 
 	var/mob/living/living_mob = mob_parent

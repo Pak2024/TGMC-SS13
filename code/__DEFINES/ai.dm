@@ -99,8 +99,16 @@ GLOBAL_LIST_EMPTY(zombie_spawners)
 #define HUMAN_AI_HEALING (1<<2)
 ///Healing self
 #define HUMAN_AI_SELF_HEALING (1<<3)
+///Building something
+#define HUMAN_AI_BUILDING (1<<4)
 
+///Any action that we generally don't want to interrupt
+#define HUMAN_AI_BUSY_ACTION (HUMAN_AI_HEALING|HUMAN_AI_SELF_HEALING|HUMAN_AI_BUILDING)
 #define HUMAN_AI_ANY_HEALING (HUMAN_AI_HEALING|HUMAN_AI_SELF_HEALING)
+
+//get escort priority ratings - calculates escort target by highest to lowest
+#define AI_ESCORT_RATING_ENSLAVED_WEAK 5
+#define AI_ESCORT_RATING_ENSALVED_STRONG 25
 
 ///We're good to shoot
 #define AI_FIRE_CAN_HIT (1<<0)
