@@ -273,6 +273,8 @@ GLOBAL_PROTECT(exp_specialmap)
 		player = client
 	job = assigned_role
 	set_skills(getSkillsType(job.return_skills_type(player?.prefs)))
+	if(islist(job.job_traits))
+		add_traits(job.job_traits, INNATE_TRAIT)
 	faction = job.faction
 	job.announce(src)
 	GLOB.round_statistics.total_humans_created[faction]++
@@ -344,13 +346,19 @@ GLOBAL_PROTECT(exp_specialmap)
 		return
 
 	var/list/valid_outfits = list()
+	var/species_type = src.species?.species_type || SPECIES_HUMAN
 
 	for(var/datum/outfit/variant AS in assigned_role.outfits)
-		if(initial(variant.species) == src.species.species_type)
+		if(variant.species == species_type)
 			valid_outfits += variant
 
+	if(!length(valid_outfits))
+		valid_outfits = assigned_role.outfits.Copy()
+	if(!length(valid_outfits))
+		stack_trace("Job [assigned_role.type] has multiple_outfits enabled but no valid outfit for [src.type]")
+		return
+
 	var/datum/outfit/chosen_variant = pick(valid_outfits)
-	chosen_variant = new chosen_variant
 	chosen_variant.equip(src)
 
 /datum/job/proc/equip_spawning_squad(mob/living/carbon/human/new_character, datum/squad/assigned_squad, client/player, forced = FALSE)

@@ -39,6 +39,11 @@
 ///Tie an NPC to parent
 /datum/component/npc_controller/proc/register_slave(mob/living/new_slave)
 	SIGNAL_HANDLER
+	if(faction && new_slave.faction == FACTION_NEUTRAL)
+		new_slave.faction = faction
+		if(ishuman(new_slave))
+			var/mob/living/carbon/human/human_slave = new_slave
+			human_slave.hud_set_job(faction)
 	RegisterSignal(new_slave, COMSIG_NPC_FIND_NEW_ESCORT, PROC_REF(get_escort_target))
 	RegisterSignal(new_slave, COMSIG_QDELETING, PROC_REF(unregister_slave))
 	npc_list += new_slave
