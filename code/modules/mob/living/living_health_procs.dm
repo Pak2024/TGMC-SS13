@@ -384,8 +384,7 @@
 
 ///Revive the human up to X health points
 /mob/living/carbon/human/proc/revive_to_crit(should_offer_to_ghost = FALSE, should_zombify = FALSE)
-	if(on_fire || !has_working_organs())
-		species.handle_death(src)
+	if(!species.can_revive_to_crit(src))
 		return
 	if(health > 0)
 		return
@@ -402,8 +401,7 @@
 
 ///Check if we have a mind, and finish the revive if we do
 /mob/living/carbon/human/proc/finish_revive_to_crit(should_offer_to_ghost = FALSE, should_zombify = FALSE)
-	if(on_fire || !has_working_organs())
-		species.handle_death(src)
+	if(!species.can_revive_to_crit(src))
 		return
 	do_jitter_animation(1000)
 	if(!client)
@@ -411,14 +409,18 @@
 			offer_mob()
 			addtimer(CALLBACK(src, PROC_REF(finish_revive_to_crit), FALSE, should_zombify), 10 SECONDS)
 			return
-		if(should_zombify || istype(species, /datum/species/zombie))
-			AddComponent(/datum/component/ai_controller, /datum/ai_behavior/xeno/zombie/patrolling, src) //Zombie patrol
-			a_intent = INTENT_HARM
 	if(should_zombify)
-		set_species("Strong zombie")
+		if(!iszombie(src))
+			set_species("Strong zombie")
 		faction = FACTION_ZOMBIE
+	if(!client && (should_zombify || iszombie(src)))
+		var/datum/component/ai_controller/old_ai = GetComponent(/datum/component/ai_controller)
+		qdel(old_ai)
+		AddComponent(/datum/component/ai_controller, /datum/ai_behavior/xeno/zombie/patrolling)
+		a_intent = INTENT_HARM
 	heal_limbs(-health)
 	set_stat(CONSCIOUS)
 	overlay_fullscreen_timer(0.5 SECONDS, 10, "roundstart1", /atom/movable/screen/fullscreen/black)
 	overlay_fullscreen_timer(2 SECONDS, 20, "roundstart2", /atom/movable/screen/fullscreen/spawning_in)
 	REMOVE_TRAIT(src, TRAIT_IS_RESURRECTING, REVIVE_TO_CRIT_TRAIT)
+	SSmobs.start_processing(src)
