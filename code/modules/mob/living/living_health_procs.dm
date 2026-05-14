@@ -413,13 +413,13 @@
 		if(!iszombie(src))
 			set_species("Strong zombie")
 		faction = FACTION_ZOMBIE
+	heal_limbs(-health)
+	set_stat(CONSCIOUS)
 	if(!client && (should_zombify || iszombie(src)))
 		var/datum/component/ai_controller/old_ai = GetComponent(/datum/component/ai_controller)
 		qdel(old_ai)
 		AddComponent(/datum/component/ai_controller, /datum/ai_behavior/xeno/zombie/patrolling)
 		a_intent = INTENT_HARM
-	heal_limbs(-health)
-	set_stat(CONSCIOUS)
 	overlay_fullscreen_timer(0.5 SECONDS, 10, "roundstart1", /atom/movable/screen/fullscreen/black)
 	overlay_fullscreen_timer(2 SECONDS, 20, "roundstart2", /atom/movable/screen/fullscreen/spawning_in)
 	REMOVE_TRAIT(src, TRAIT_IS_RESURRECTING, REVIVE_TO_CRIT_TRAIT)
