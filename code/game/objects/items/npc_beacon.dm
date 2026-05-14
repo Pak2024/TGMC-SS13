@@ -1,3 +1,4 @@
+
 /obj/item/campaign_beacon
 	name = "campaign beacon"
 	desc = "A bulky beacon that can be deployed in the field."
@@ -12,13 +13,17 @@
 	. = ..()
 	AddComponent(/datum/component/deployable_item, deployable_type, deploy_time, 0)
 
+//the holdable item
 /obj/item/campaign_beacon/npc_beacon
 	name = "\improper N.P.C. beacon"
 	desc = "A bulky device that is used to teleport emergency support units directly into battle. Often used for garrisoning important locations."
+	icon = 'icons/obj/items/npc_beacon.dmi'
 	icon_state = "beacon_undeployed"
 	base_icon_state = "beacon"
 	deployable_type = /obj/structure/npc_beacon
+	deploy_time = 2 SECONDS
 	pixel_w = -4
+	w_class = WEIGHT_CLASS_BULKY
 
 /obj/item/campaign_beacon/npc_beacon/examine(mob/user)
 	. = ..()
@@ -42,6 +47,7 @@
 	base_icon_state = "fc_beacon"
 	deployable_type = /obj/structure/npc_beacon/som_big
 
+//The deployed beacon, although this could be map spawned as well
 /obj/structure/npc_beacon
 	name = "\improper N.P.C. beacon"
 	desc = "A bulky device that is used to teleport emergency support units directly into battle. Often used for garrisoning important locations."
@@ -53,31 +59,20 @@
 	pixel_w = -8
 	///List of jobs that are spawned by this item
 	var/list/job_list
-	///Held item used by the deployable component
-	var/datum/weakref/internal_item
 
 /obj/structure/npc_beacon/Initialize(mapload, obj/item/_internal_item, mob/deployer)
 	. = ..()
+	addtimer(CALLBACK(src, PROC_REF(spawn_mobs)), 3 SECONDS)
 	if(_internal_item)
-		internal_item = WEAKREF(_internal_item)
 		name = _internal_item.name
 		desc = _internal_item.desc
 		icon = _internal_item.icon
-		var/obj/item/campaign_beacon/beacon_item = _internal_item
-		if(istype(beacon_item))
-			base_icon_state = beacon_item.base_icon_state
+		base_icon_state = _internal_item.base_icon_state
 	if(deployer)
 		faction = deployer.faction
 	set_job_list()
 	update_appearance()
 	flick("[base_icon_state]_deploying", src)
-	addtimer(CALLBACK(src, PROC_REF(spawn_mobs)), 3 SECONDS)
-
-/obj/structure/npc_beacon/get_internal_item()
-	return internal_item?.resolve()
-
-/obj/structure/npc_beacon/clear_internal_item()
-	internal_item = null
 
 /obj/structure/npc_beacon/update_icon_state()
 	if(length(job_list))
@@ -98,45 +93,45 @@
 	if(QDELETED(src))
 		return
 	var/turf/spawn_loc = get_turf(src)
-	var/list/slave_list = spawn_npc_squad(spawn_loc, job_list, src)
+	var/list/slave_list = spawn_npc_squad(spawn_loc, job_list)
 	AddComponent(/datum/component/npc_controller, faction, slaved_npc_list = slave_list)
 	job_list = null
 	update_appearance()
 
-	playsound(src, 'sound/magic/lightningbolt.ogg', 50, FALSE)
+	playsound(src, 'sound/magic/lightningbolt.ogg', 50, 0)
 	new /obj/effect/temp_visual/blink_drive(get_turf(src))
 
 /obj/structure/npc_beacon/tgmc_standard
 	job_list = list(
-		/datum/job/terragov/squad/standard,
-		/datum/job/terragov/squad/standard,
+		/datum/job/terragov/squad/standard/npc,
+		/datum/job/terragov/squad/standard/npc,
 	)
 
 /obj/structure/npc_beacon/tgmc_standard/set_job_list()
 	job_list += pickweight(list(
-		/datum/job/terragov/squad/standard = 20,
-		/datum/job/terragov/squad/engineer = 30,
-		/datum/job/terragov/squad/corpsman = 30,
-		/datum/job/terragov/squad/smartgunner = 20,
-		/datum/job/terragov/squad/leader = 10,
+		/datum/job/terragov/squad/standard/npc = 20,
+		/datum/job/terragov/squad/engineer/npc = 30,
+		/datum/job/terragov/squad/corpsman/npc = 30,
+		/datum/job/terragov/squad/smartgunner/npc = 20,
+		/datum/job/terragov/squad/leader/npc = 10,
 	))
 
 /obj/structure/npc_beacon/tgmc_big
 	icon_state = "fc_beacon_activating"
 	base_icon_state = "fc_beacon"
 	job_list = list(
-		/datum/job/terragov/squad/standard,
-		/datum/job/terragov/squad/standard,
-		/datum/job/terragov/squad/smartgunner,
-		/datum/job/terragov/squad/corpsman,
+		/datum/job/terragov/squad/standard/npc,
+		/datum/job/terragov/squad/standard/npc,
+		/datum/job/terragov/squad/smartgunner/npc,
+		/datum/job/terragov/squad/corpsman/npc,
 	)
 
 /obj/structure/npc_beacon/tgmc_big/set_job_list()
 	job_list += pickweight(list(
-		/datum/job/terragov/squad/standard = 15,
-		/datum/job/terragov/squad/engineer = 25,
-		/datum/job/terragov/squad/smartgunner = 20,
-		/datum/job/terragov/squad/leader = 60,
+		/datum/job/terragov/squad/standard/npc = 15,
+		/datum/job/terragov/squad/engineer/npc = 25,
+		/datum/job/terragov/squad/smartgunner/npc = 20,
+		/datum/job/terragov/squad/leader/npc = 60,
 	))
 
 /obj/structure/npc_beacon/som_standard

@@ -891,3 +891,15 @@
 
 ///From /atom/add_slaved_npc()
 #define COMSIG_COMPONENT_ADD_NEW_SLAVE_NPC "component_add_new_slave_npc"
+
+#define COMSIG_ATOM_CHECK_CLIMBABLE "atom_check_climbable"
+#define COMSIG_ATOM_TRY_CLIMBABLE "atom_try_climbable"
+	#define COMPONENT_MOVABLE_CAN_CLIMB (1<<0)
+	#define TURF_COVERED (1<<0)
+
+#define COMSIG_MOB_DROPPING_ITEM "mob_dropping_item"
+#define COMSIG_FACE_HUGGER_DEATH "face_hugger_death"
+#define COMSIG_GLOB_AI_ZOMBIE_RALLY "!ai_zombie_rally"
+#define COMSIG_GLOB_ZOMBIE_TUNNEL_DESTROYED "!zombie_tunnel_destroyed"
+#define COMSIG_PUPPET_CHANGE_ALL_ORDER "puppet_change_all_order"
+#define COMSIG_PUPPET_CHANGE_ORDER "puppet_change_order"

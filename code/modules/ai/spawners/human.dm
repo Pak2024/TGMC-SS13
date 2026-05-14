@@ -1,7 +1,8 @@
-/proc/spawn_npc_squad(turf/location, list/role_list, atom/atom_to_escort)
+///Spawns a number of human mobs at a given location, based of a list of jobs
+/proc/spawn_npc_squad(turf/location, list/role_list)
 	if(!isturf(location))
 		location = get_turf(location)
-	if(!location || !length(role_list))
+	if(!location)
 		return
 	var/list/mob_list = list()
 	var/squad_to_insert_into
@@ -13,13 +14,13 @@
 		var/mob/living/carbon/human/new_human = new()
 		mob_list += new_human
 		var/datum/job/new_job = SSjob.GetJobType(role_list[i])
-		new_human.apply_assigned_role_to_spawn(new_job, new_human.client, squad_to_insert_into, admin_action = TRUE)
+		new_human.apply_assigned_role_to_spawn(new_job, new_human.client, squad_to_insert_into, TRUE)
 		stoplag()
 
 	for(var/mob/living/carbon/human/dude AS in mob_list)
 		dude.forceMove(location)
-		dude.AddComponent(/datum/component/ai_controller, /datum/ai_behavior/human, atom_to_escort)
-		if(istype(dude.wear_ear, /obj/item/radio/headset/mainship))
+		dude.AddComponent(/datum/component/ai_controller, /datum/ai_behavior/human)
+		if(istype(dude.wear_ear, /obj/item/radio/headset/mainship)) //due to the lagginess of spawning in mobs, this won't proc at the right time normally
 			var/obj/item/radio/headset/mainship/worn_headset = dude.wear_ear
 			worn_headset.update_minimap_icon()
 
@@ -30,7 +31,7 @@
 	use_post_spawn = TRUE //Gotta equip those AI you know
 
 /obj/effect/ai_node/spawner/human/deathsquad
-	spawn_types = list(/mob/living/carbon/human/node_pathing = 1)
+	spawn_types = /mob/living/carbon/human/node_pathing
 	spawn_amount = 4
 	spawn_delay = 10 SECONDS
 	max_amount = 10

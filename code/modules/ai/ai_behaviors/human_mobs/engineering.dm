@@ -2,9 +2,9 @@
 	///A list of engineering related actions
 	var/list/engineering_list = list()
 	///Chat lines for trying to build
-	var/list/building_chat = list("Строю.", "Строю, прикройте!", "Прикройте меня!", "Начинаю строительство.", "Работаю.", "Я над этим работаю.")
+	var/list/building_chat = list("Building.", "Building, cover me!", "Give me some cover!", "Starting construction.", "Working here.", "Working.", "Cover me, building here.", "Cover me!", "I'm working on it.", "Something need building?", "Work, work.")
 	///Chat lines for being unable to build something
-	var/list/unable_to_build_chat = list("Не смогу построить.", "Недостаточно материалов.", "Я не могу это построить.", "Негатив.", "Нужен кто-то другой.")
+	var/list/unable_to_build_chat = list("Can we build it? No, it's FUBAR.", "Unable to build.", "I can't build that.", "Negative.", "Get someone else on it!", "Can't do it, sorry.")
 
 ///Checks if we should be building anything
 /datum/ai_behavior/human/proc/engineer_process()
@@ -22,8 +22,10 @@
 		return
 
 	var/atom/engie_target
-	var/target_dist = 10
+	var/target_dist = 10 //lets just check screen range, more or less
 	for(var/atom/potential AS in engineering_list)
+		if(QDELETED(potential))
+			remove_from_engineering_list(potential)
 		var/dist = get_dist(mob_parent, potential)
 		if(dist >= target_dist)
 			continue
@@ -53,9 +55,10 @@
 	human_ai_state_flags &= ~HUMAN_AI_BUILDING
 	if(QDELETED(old_target))
 		remove_from_engineering_list(old_target)
+	unset_target(old_target)
 	late_initialize()
 
-///Decides if we should do something when a new build hologram appears
+///Decides if we should do something when another mob goes crit
 /datum/ai_behavior/human/proc/on_holo_build_init(datum/source, obj/effect/build_designator/new_holo)
 	SIGNAL_HANDLER
 	if(new_holo.faction != mob_parent.faction)
@@ -71,6 +74,7 @@
 ///Tries to build a holo designation
 /datum/ai_behavior/human/proc/try_build_holo(obj/effect/build_designator/hologram)
 	if(hologram.builder)
+		//Someone else is building it, but we put it at the end of the queue in case its not completed
 		remove_from_engineering_list(hologram)
 		add_to_engineering_list(hologram)
 		return
@@ -90,9 +94,31 @@
 	if(!building_stack)
 		remove_from_engineering_list(hologram)
 		try_speak(pick(unable_to_build_chat))
-		human_ai_state_flags &= ~HUMAN_AI_BUILDING
 		return
 
 	try_speak(pick(building_chat))
 	hologram.attackby(building_stack, mob_parent)
 	on_engineering_end(hologram)
+
+///Repairs an object if possible
+/datum/ai_behavior/human/proc/repair_obj(obj/repair_target)
+	if(repair_target.obj_integrity >= repair_target.max_integrity)
+		remove_from_engineering_list(repair_target)
+		on_engineering_end(repair_target)
+		return
+	var/obj/item/tool/weldingtool/welder = equip_tool(TOOL_WELDER)
+	if(!welder)
+		remove_from_engineering_list(repair_target)
+		on_engineering_end(repair_target)
+		return
+
+	human_ai_state_flags |= HUMAN_AI_BUILDING
+	var/repair_success = FALSE
+	if(repair_target.welder_act(mob_parent, welder))
+		repair_success = TRUE
+
+	store_tool(welder)
+
+	if(!repair_success || (!QDELETED(repair_target) && repair_target.obj_integrity >= repair_target.max_integrity))
+		remove_from_engineering_list(repair_target)
+	on_engineering_end(repair_target)

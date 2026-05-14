@@ -2,6 +2,9 @@
 /mob/living/proc/get_brute_loss(organic_only = FALSE)
 	return bruteloss
 
+/mob/living/proc/getBruteLoss(organic_only = FALSE)
+	return get_brute_loss(organic_only)
+
 ///We straight up set bruteloss/brute damage to a desired amount unless godmode is enabled
 /mob/living/proc/set_brute_loss(amount)
 	if(status_flags & GODMODE)
@@ -17,6 +20,9 @@
 
 /mob/living/proc/get_fire_loss(organic_only = FALSE)
 	return fireloss
+
+/mob/living/proc/getFireLoss(organic_only = FALSE)
+	return get_fire_loss(organic_only)
 
 ///We straight up set fireloss/burn damage to a desired amount unless godmode is enabled
 /mob/living/proc/set_fire_loss(amount)
@@ -35,6 +41,9 @@
 /mob/living/proc/get_oxy_loss()
 	return oxyloss
 
+/mob/living/proc/getOxyLoss()
+	return get_oxy_loss()
+
 /mob/living/proc/adjust_oxy_loss(amount)
 	if(status_flags & GODMODE)
 		return FALSE	//godmode
@@ -48,6 +57,9 @@
 
 /mob/living/proc/get_tox_loss()
 	return toxloss
+
+/mob/living/proc/getToxLoss()
+	return get_tox_loss()
 
 /mob/living/proc/adjust_tox_loss(amount)
 	if(status_flags & GODMODE)
@@ -128,6 +140,9 @@
 
 /mob/living/proc/get_clone_loss()
 	return cloneloss
+
+/mob/living/proc/getCloneLoss()
+	return get_clone_loss()
 
 /mob/living/proc/adjust_clone_loss(amount)
 	if(status_flags & GODMODE)
