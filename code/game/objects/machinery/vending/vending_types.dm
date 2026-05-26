@@ -145,24 +145,16 @@
 	icon_deny = "med-deny"
 	icon_vend = "med-vend"
 	//product_ads = "Go save some lives!;The best stuff for your medbay.;Only the finest tools.;Natural chemicals!;This stuff saves lives.;Don't you want some?;Ping!"
-	req_access = list(ACCESS_MARINE_MEDBAY, ACCESS_MARINE_CHEMISTRY) //only doctors and researchers can access these
 	products = list(
 		"Pill Bottle" = list(
-			/obj/item/storage/pill_bottle/bicaridine = 15,
-			/obj/item/storage/pill_bottle/kelotane = 15,
-			/obj/item/storage/pill_bottle/tramadol = 15,
-			/obj/item/storage/pill_bottle/tricordrazine = 15,
-			/obj/item/storage/pill_bottle/combatmix = 15,
-			/obj/item/storage/pill_bottle/dylovene = 15,
-			/obj/item/storage/pill_bottle/inaprovaline = 15,
-			/obj/item/storage/pill_bottle/isotonic = 15,
-			/obj/item/storage/pill_bottle/paracetamol = 6,
-			/obj/item/storage/pill_bottle/dexalin = 6,
-			/obj/item/storage/pill_bottle/spaceacillin = 6,
-			/obj/item/storage/pill_bottle/alkysine = 6,
-			/obj/item/storage/pill_bottle/imidazoline = 6,
-			/obj/item/storage/pill_bottle/imialky = 6,
+			/obj/item/storage/pill_bottle/inaprovaline = -1,
+			/obj/item/storage/pill_bottle/dexalin = -1,
+			/obj/item/storage/pill_bottle/spaceacillin = -1,
+			/obj/item/storage/pill_bottle/alkysine = -1,
+			/obj/item/storage/pill_bottle/imidazoline = -1,
+			/obj/item/storage/pill_bottle/imialky = -1,
 			/obj/item/storage/pill_bottle/hypervene = 6,
+			/obj/item/storage/pill_bottle/quickclot = 4,
 			/obj/item/storage/pill_bottle/russian_red = 4,
 		),
 		"Hypospray" = list (
@@ -202,14 +194,26 @@
 			/obj/item/storage/reagent_tank/tricordrazine = 1,
 			/obj/item/storage/reagent_tank/bktt = 1,
 		),
-		"Misc" = list(
-			/obj/item/tool/research/xeno_analyzer = -1,
-			/obj/item/tool/research/excavation_tool = -1,
+		"Surgical Equipment" = list(
 			/obj/item/storage/pouch/surgery = -1,
 			/obj/item/armor_module/storage/uniform/surgery_webbing = -1,
 			/obj/item/reagent_containers/spray/surgery = -1,
 			/obj/item/tool/soap = 3,
-			/obj/item/clothing/glasses/hud/health = 6,
+			/obj/item/tool/surgery/scalpel/manager = -1,
+			/obj/item/tool/surgery/hemostat = -1,
+			/obj/item/tool/surgery/retractor = -1,
+			/obj/item/tool/surgery/cautery = -1,
+			/obj/item/tool/surgery/circular_saw = -1,
+			/obj/item/tool/surgery/surgical_membrane = -1,
+			/obj/item/tool/surgery/bonegel = -1,
+			/obj/item/tool/surgery/bonesetter = -1,
+			/obj/item/tool/surgery/FixOVein = -1,
+			/obj/item/tool/surgery/suture = -1,
+		),
+		"Misc" = list(
+			/obj/item/tool/research/xeno_analyzer = -1,
+			/obj/item/tool/research/excavation_tool = -1,
+			/obj/item/clothing/glasses/hud/health = 8,
 			/obj/item/roller = 6,
 		),
 	)

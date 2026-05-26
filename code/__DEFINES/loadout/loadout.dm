@@ -133,6 +133,9 @@ GLOBAL_LIST_INIT(loadout_linked_vendor, list(
 	SQUAD_CORPSMAN = list(
 		/obj/machinery/vending/medical/shipside,
 	),
+	SYNTHETIC = list(
+		/obj/machinery/vending/medical/shipside,
+	),
 	VENDOR_FACTION_CRASH = list(
 		/obj/machinery/vending/weapon/crash,
 		/obj/machinery/vending/uniform_supply,
