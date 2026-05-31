@@ -40,7 +40,7 @@
 /// How many points a medic can spend on pills
 #define MEDIC_TOTAL_BUY_POINTS 45
 /// How many points an engineer can spend
-#define ENGINEER_TOTAL_BUY_POINTS 75
+#define ENGINEER_TOTAL_BUY_POINTS 65
 /// How many points the field commander can spend
 #define COMMANDER_TOTAL_BUY_POINTS 45
 /// How many points the synthetic can spend
