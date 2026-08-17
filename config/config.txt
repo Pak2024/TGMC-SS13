@@ -290,3 +290,6 @@ TGUI_MAX_CHUNK_COUNT 32
 
 ## Discord bot invite URL for registration
 DISCORD_BOT_URL https://discord.com/...
+
+LOBBY_ART_IMAGES 1
+LOBBY_ART_IMAGES macxeno

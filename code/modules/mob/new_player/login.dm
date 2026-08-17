@@ -19,4 +19,6 @@
 
 	sight |= SEE_TURFS
 
+	initialize_lobby_screen()
+
 	client?.play_title_music()

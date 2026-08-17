@@ -35,6 +35,8 @@
 	var/refreshing = FALSE
 	/// Topic state used to determine status/interactability.
 	var/datum/ui_state/state = null
+	/// Optional custom window (e.g. lobby_browser). If set, pooled window is not used.
+	var/datum/tgui_window/custom_window
 	/// Rate limit client refreshes to prevent DoS.
 	COOLDOWN_DECLARE(refresh_cooldown)
 
@@ -52,7 +54,7 @@
  *
  * return datum/tgui The requested UI.
  */
-/datum/tgui/New(mob/user, datum/src_object, interface, title, ui_x, ui_y)
+/datum/tgui/New(mob/user, datum/src_object, interface, title, ui_x, ui_y, datum/tgui_window/custom_window)
 	log_tgui(user,
 		"new [interface]",
 		src_object = src_object)
@@ -63,6 +65,7 @@
 	if(title)
 		src.title = title
 	src.state = src_object.ui_state(user)
+	src.custom_window = custom_window
 	// Deprecated
 	if(ui_x && ui_y)
 		src.window_size = list(ui_x, ui_y)
@@ -82,12 +85,15 @@
 /datum/tgui/proc/open()
 	if(!user.client)
 		return FALSE
-	if(window)
+	if(window && !custom_window)
 		return FALSE
 	process_status()
 	if(status < UI_UPDATE)
 		return FALSE
-	window = SStgui.request_pooled_window(user)
+	if(custom_window)
+		window = custom_window
+	else
+		window = SStgui.request_pooled_window(user)
 	if(!window)
 		return FALSE
 	opened_at = world.time

@@ -33,6 +33,7 @@
 @include meta.load-css('./interfaces/StripMenu.scss');
 @include meta.load-css('./interfaces/CrewManifest.scss');
 @include meta.load-css('./interfaces/HiveLeaders.scss');
+@include meta.load-css('./interfaces/LobbyMenu.scss');
 
 // Layouts
 @include meta.load-css('./layouts/Layout.scss');

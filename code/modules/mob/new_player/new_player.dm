@@ -14,6 +14,12 @@
 	///The job we tried to join but were warned it would cause an unbalance. It's saved for later use
 	var/datum/job/saved_job
 	var/cached_highest_job = null
+	/// The window that we display the main menu in
+	var/datum/tgui_window/lobby_window
+	/// The message that we are displaying to the user. If a list, each list element is displayed on its own line
+	var/lobby_confirmation_message
+	/// The callback that we will execute when the user confirms the message
+	var/datum/callback/execute_on_confirm
 
 
 /mob/new_player/Initialize(mapload)
@@ -34,6 +40,7 @@
 	assigned_role = null
 	assigned_squad = null
 	new_character = null
+	QDEL_NULL(lobby_window)
 	return ..()
 
 
@@ -241,9 +248,17 @@
 /mob/new_player/proc/close_spawn_windows(mob/user)
 	if(!user)
 		user = src
-	DIRECT_OUTPUT(user, browse(null, "window=latechoices")) //closes late choices window
-	DIRECT_OUTPUT(user, browse(null, "window=playersetup")) //closes the player setup window
+	DIRECT_OUTPUT(user, browse(null, "window=latechoices"))
+	DIRECT_OUTPUT(user, browse(null, "window=playersetup"))
 	user.stop_sound_channel(CHANNEL_LOBBYMUSIC)
+
+	// Закрываем TGUI лобби
+	var/datum/tgui/ui = SStgui.get_open_ui(user, user)
+	if(ui)
+		ui.close()
+	if(client)
+		winset(client, "lobby_browser", "is-visible=false;is-disabled=true")
+		winset(client, "mapwindow.status_bar", "is-visible=true")
 
 
 /mob/new_player/get_species()
@@ -421,12 +436,12 @@
 		return
 	ready = !ready
 	if(ready)
-		GLOB.ready_players += src
+		GLOB.ready_players |= src
 		cached_highest_job = get_highest_priority_job()
 	else
 		GLOB.ready_players -= src
 		cached_highest_job = null
-	to_chat(src, span_warning("You are now [ready? "" : "not "]ready."))
+	to_chat(src, span_notice("You are now [ready ? "" : "not "]ready."))
 
 ///Attempts to latejoin the player
 /mob/new_player/proc/attempt_late_join(queue_override = FALSE)
@@ -480,3 +495,129 @@
 				break
 
 	return highest_job
+
+/mob/new_player/proc/initialize_lobby_screen()
+	if(!client)
+		return
+
+	var/datum/tgui/ui = SStgui.get_open_ui(src, src)
+	if(ui)
+		ui.close()
+
+	winset(client, "lobby_browser", "is-disabled=false;is-visible=true")
+	winset(client, "mapwindow.status_bar", "is-visible=false")
+
+	lobby_window = new(client, "lobby_browser")
+	lobby_window.initialize(
+		strict_mode = FALSE,
+		assets = list(
+			get_asset_datum(/datum/asset/simple/tgui),
+			get_asset_datum(/datum/asset/simple/lobby_art),
+			get_asset_datum(/datum/asset/simple/lobby_files),
+		)
+	)
+
+	ui_interact(src)
+
+
+/mob/new_player/ui_assets(mob/user)
+	return list(
+		get_asset_datum(/datum/asset/simple/lobby_art),
+		get_asset_datum(/datum/asset/simple/lobby_files),
+	)
+
+
+/mob/new_player/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "LobbyMenu", null, null, null, lobby_window)
+		ui.open()
+
+
+/mob/new_player/ui_state(mob/user)
+	return GLOB.always_state
+
+
+/mob/new_player/ui_data(mob/user)
+	var/list/data = list()
+
+	data["character_name"] = client?.prefs ? client.prefs.real_name : client?.key
+	data["round_start"] = !SSticker || SSticker.current_state <= GAME_STATE_PREGAME
+	data["readied"] = ready
+	data["confirmation_message"] = lobby_confirmation_message
+	data["preference_issues"] = list()
+	data["lobby_author"] = null
+	data["xeno_prefix"] = ""
+	data["xeno_postfix"] = ""
+
+	if(SSticker?.current_state == GAME_STATE_PREGAME)
+		if(SSticker.time_left > 0)
+			var/seconds = round(SSticker.time_left / 10)
+			var/minutes = round(seconds / 60)
+			seconds = seconds % 60
+			data["time_to_start"] = "[minutes]:[seconds < 10 ? "0[seconds]" : seconds]"
+		else
+			data["time_to_start"] = "DELAYED"
+	else if(SSticker?.current_state == GAME_STATE_PLAYING)
+		data["round_time"] = DisplayTimeText(world.time - SSticker.round_start_time)
+
+	data["players"] = length(GLOB.player_list)
+	data["players_ready"] = length(GLOB.ready_players)
+
+	var/larva_queue = 0
+	if(GLOB.hive_datums)
+		var/datum/hive_status/hive = GLOB.hive_datums[XENO_HIVE_NORMAL]
+		if(hive)
+			larva_queue = LAZYLEN(hive.candidates)
+	data["larva_queue"] = larva_queue
+
+	return data
+
+
+/mob/new_player/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+	. = ..()
+	if(.)
+		return
+
+	switch(action)
+		if("preferences")
+			client?.prefs.ShowChoices(src)
+			return TRUE
+
+		if("ready")
+			toggle_ready()
+			return TRUE
+
+		if("observe")
+			try_to_observe()
+			return TRUE
+
+		if("late_join")
+			attempt_late_join()
+			return TRUE
+
+		if("manifest")
+			view_manifest()
+			return TRUE
+
+		if("xenomanifest")
+			view_xeno_manifest()
+			return TRUE
+
+		if("lore")
+			view_lore()
+			return TRUE
+
+		if("confirm")
+			if(execute_on_confirm)
+				execute_on_confirm.Invoke()
+				execute_on_confirm = null
+				lobby_confirmation_message = null
+			return TRUE
+
+		if("cancel")
+			execute_on_confirm = null
+			lobby_confirmation_message = null
+			return TRUE
+
+	return FALSE

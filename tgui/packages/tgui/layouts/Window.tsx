@@ -36,6 +36,8 @@ const DEFAULT_SIZE: [number, number] = [400, 600];
 type Props = Partial<{
   buttons: ReactNode;
   canClose: BooleanLike;
+  /** Fills the entire parent browser (lobby-style). No drag/resize. */
+  fitted: BooleanLike;
   height: number;
   theme: string;
   title: string;
@@ -46,6 +48,7 @@ type Props = Partial<{
 export const Window = (props: Props) => {
   const {
     canClose = true,
+    fitted = false,
     theme,
     title,
     children,
@@ -58,8 +61,6 @@ export const Window = (props: Props) => {
   const { debugLayout = false } = useDebug();
   const [isReadyToRender, setIsReadyToRender] = useState(false);
 
-  // We need to set the window to be invisible before we can set its geometry
-  // Otherwise, we get a flicker effect when the window is first rendered
   useLayoutEffect(() => {
     Byond.winset(Byond.windowId, {
       'is-visible': false,
@@ -72,27 +73,36 @@ export const Window = (props: Props) => {
   useEffect(() => {
     if (!suspended && isReadyToRender) {
       const updateGeometry = () => {
-        const options = {
-          ...config.window,
-          size: DEFAULT_SIZE,
-        };
-
-        if (width && height) {
-          options.size = [width, height];
+        if (fitted) {
+          // Fullscreen inside parent browser — no geometry memory
+          Byond.winset(Byond.windowId, {
+            'is-visible': true,
+            'titlebar': false,
+            'can-resize': false,
+            'can-close': false,
+          });
+        } else {
+          const options = {
+            ...config.window,
+            size: DEFAULT_SIZE as [number, number],
+          };
+          if (width && height) {
+            options.size = [width, height];
+          }
+          if (config.window?.key) {
+            setWindowKey(config.window.key);
+          }
+          recallWindowGeometry(options);
+          Byond.winset(Byond.windowId, {
+            'is-visible': true,
+          });
         }
-        if (config.window?.key) {
-          setWindowKey(config.window.key);
-        }
-        recallWindowGeometry(options);
-        Byond.winset(Byond.windowId, {
-          'is-visible': true,
-        });
         Byond.sendMessage('visible');
         logger.log('set to visible');
       };
 
       Byond.winset(Byond.windowId, {
-        'can-close': Boolean(canClose),
+        'can-close': fitted ? false : Boolean(canClose),
       });
       logger.log('mounting');
       updateGeometry();
@@ -101,11 +111,10 @@ export const Window = (props: Props) => {
         logger.log('unmounting');
       };
     }
-  }, [isReadyToRender, width, height, scale]);
+  }, [isReadyToRender, width, height, scale, fitted, canClose]);
 
   const dispatch = globalStore.dispatch;
 
-  // Determine when to show dimmer
   const showDimmer =
     config.user &&
     (config.user.observer
@@ -113,35 +122,51 @@ export const Window = (props: Props) => {
       : config.status < UI_INTERACTIVE);
 
   return suspended ? null : (
-    <Layout className="Window" theme={theme}>
-      <TitleBar
-        title={title || decodeHtmlEntities(config.title)}
-        status={config.status}
-        onDragStart={dragStartHandler}
-        onClose={() => {
-          logger.log('pressed close');
-          dispatch(backendSuspendStart());
-        }}
-        canClose={canClose}
+    <Layout
+      className={classes(['Window', fitted && 'Window--fitted'])}
+      theme={theme}
+    >
+      {!fitted && (
+        <TitleBar
+          title={title || decodeHtmlEntities(config.title)}
+          status={config.status}
+          onDragStart={dragStartHandler}
+          onClose={() => {
+            logger.log('pressed close');
+            dispatch(backendSuspendStart());
+          }}
+          canClose={canClose}
+        >
+          {buttons}
+        </TitleBar>
+      )}
+      <div
+        className={classes(['Window__rest', debugLayout && 'debug-layout'])}
+        style={
+          fitted
+            ? { position: 'fixed', inset: 0, width: '100%', height: '100%' }
+            : undefined
+        }
       >
-        {buttons}
-      </TitleBar>
-      <div className={classes(['Window__rest', debugLayout && 'debug-layout'])}>
         {!suspended && children}
         {showDimmer && <div className="Window__dimmer" />}
       </div>
-      <div
-        className="Window__resizeHandle__e"
-        onMouseDown={resizeStartHandler(1, 0) as any}
-      />
-      <div
-        className="Window__resizeHandle__s"
-        onMouseDown={resizeStartHandler(0, 1) as any}
-      />
-      <div
-        className="Window__resizeHandle__se"
-        onMouseDown={resizeStartHandler(1, 1) as any}
-      />
+      {!fitted && (
+        <>
+          <div
+            className="Window__resizeHandle__e"
+            onMouseDown={resizeStartHandler(1, 0) as any}
+          />
+          <div
+            className="Window__resizeHandle__s"
+            onMouseDown={resizeStartHandler(0, 1) as any}
+          />
+          <div
+            className="Window__resizeHandle__se"
+            onMouseDown={resizeStartHandler(1, 1) as any}
+          />
+        </>
+      )}
     </Layout>
   );
 };
@@ -157,7 +182,6 @@ type ContentProps = Partial<{
 
 const WindowContent = (props: ContentProps) => {
   const { className, fitted, children, ...rest } = props;
-
   return (
     <Layout.Content
       className={classes(['Window__content', className])}
