@@ -14,7 +14,6 @@ import './styles/themes/retro.scss';
 import './styles/themes/syndicate.scss';
 import './styles/themes/som.scss';
 import './styles/themes/xeno.scss';
-import './styles/themes/crt-lobby.scss';
 
 import { perf } from 'common/perf';
 import { setupGlobalEvents } from 'tgui-core/events';

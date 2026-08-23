@@ -177,8 +177,6 @@ Administrative related.
 
 /datum/config_entry/flag/see_own_notes
 
-/datum/config_entry/str_list/lobby_art_images
-
 /datum/config_entry/number/note_fresh_days
 	config_entry_value = 30
 	min_val = 0
