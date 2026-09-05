@@ -9,6 +9,7 @@ import string
 import random
 import json
 from flask import Flask, request, send_file, abort, make_response
+from num2words import num2words
 
 tts_sample_rate = 48000 # Set to 40000 if you're using RVC, or whatever sample rate your endpoint is going to send the audio in.
 app = Flask(__name__)
@@ -26,10 +27,42 @@ def hhmmss_to_seconds(string):
     new_time += float(separated_times[2])
     return new_time
 
+def prepare_tts_text(text):
+    vowels = set("АЕЁИОУЫЭЮЯ")
+    letter_names = {
+        'А':'а', 'Б':'бэ', 'В':'вэ', 'Г':'гэ', 'Д':'дэ', 'Е':'е', 'Ё':'ё',
+        'Ж':'жэ', 'З':'зэ', 'И':'и', 'Й':'и-краткое', 'К':'ка', 'Л':'эл',
+        'М':'эм', 'Н':'эн', 'О':'о', 'П':'пэ', 'Р':'эр', 'С':'эс', 'Т':'тэ',
+        'У':'у', 'Ф':'фэ', 'Х':'ха', 'Ц':'цэ', 'Ч':'че', 'Ш':'ша', 'Щ':'ща',
+        'Э':'э', 'Ю':'ю', 'Я':'я'
+    }
+    exceptions = ["СМИ", "РО", "ФОБ", "ВУЗ", "МИД"]
+    def replace_acronym(match):
+        word = match.group(0)
+        if word in exceptions:
+            return word
+
+        word_vowels = [c for c in word if c in vowels]
+        if not word_vowels or (len(word_vowels) == 1 and (word[0] in vowels or word[-1] in vowels)):
+            return "-".join([letter_names.get(c, c) for c in word])
+        return word
+
+    def replace_digits(match):
+        try:
+            num = int(match.group(0))
+            return num2words(num, lang='ru')
+        except:
+            return match.group(0)
+
+    text = re.sub(r'\d+', replace_digits, text)
+    text = re.sub(r'\b[А-ЯЁ]{2,}\b', replace_acronym, text)
+    return text
+
 def text_to_speech_handler(endpoint, voice, text, filter_complex, pitch, special_filters = []):
     filter_complex = filter_complex.replace("\"", "")
     data_bytes = io.BytesIO()
     final_audio = pydub.AudioSegment.empty()
+    text = prepare_tts_text(text)
 
     print(f"--> Входящий запрос: voice='{voice}', pitch='{pitch}', text='{text[:40]}...'", flush=True)
 

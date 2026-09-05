@@ -139,7 +139,7 @@ def text_to_speech_blips():
 
 		result_sound = None
 		for i, letter in enumerate(text):
-			if not letter.isalpha():
+			if not letter.isalpha() or letter.isnumeric():
 				continue
 
 			if letter == ' ':
