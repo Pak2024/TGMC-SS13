@@ -1,6 +1,5 @@
 import os
 import io
-import gc
 import subprocess
 import requests
 import re
@@ -17,6 +16,7 @@ segmenter = pysbd.Segmenter(language="ru", clean=True)
 radio_starts = ["./on1.wav", "./on2.wav"]
 radio_ends = ["./off1.wav", "./off2.wav", "./off3.wav", "./off4.wav"]
 authorization_token = os.getenv("TTS_AUTHORIZATION_TOKEN", "coolio")
+tts_backend_url = os.getenv("TTS_BACKEND_URL", "http://tts:5003").rstrip("/")
 
 def hhmmss_to_seconds(string):
     new_time = 0
@@ -35,7 +35,7 @@ def text_to_speech_handler(endpoint, voice, text, filter_complex, pitch, special
 
     for sentence in segmenter.segment(text):
         try:
-            response = requests.get(f"http://tts:5003/" + endpoint, json={ 'text': sentence, 'voice': voice, 'pitch': pitch }, timeout=300)
+            response = requests.get(f"{tts_backend_url}/" + endpoint, json={ 'text': sentence, 'voice': voice, 'pitch': pitch }, timeout=300)
             if response.status_code != 200:
                 print(f"Ошибка TTS 5003 Код: {response.status_code}, Ответ: {response.text}", flush=True)
                 abort(500)
@@ -91,7 +91,7 @@ def text_to_speech_handler(endpoint, voice, text, filter_complex, pitch, special
     response.headers['audio-length'] = length
     return response
 
-@app.route("/tts")
+@app.route("/tts", methods=["GET", "POST"])
 def text_to_speech_normal():
     if authorization_token != request.headers.get("Authorization", ""):
         abort(401)
@@ -109,7 +109,7 @@ def text_to_speech_normal():
     filter_complex = request.args.get("filter", '')
     return text_to_speech_handler("generate-tts", voice, text, filter_complex, pitch, special_filters)
 
-@app.route("/tts-blips")
+@app.route("/tts-blips", methods=["GET", "POST"])
 def text_to_speech_blips():
     if authorization_token != request.headers.get("Authorization", ""):
         abort(401)
@@ -130,12 +130,11 @@ def voices_list():
     if authorization_token != request.headers.get("Authorization", ""):
         abort(401)
 
-    response = requests.get(f"http://tts:5003/tts-voices")
+    response = requests.get(f"{tts_backend_url}/tts-voices")
     return response.content
 
 @app.route("/health-check")
 def tts_health_check():
-    gc.collect()
     return "OK", 200
 
 @app.route("/pitch-available")
@@ -143,13 +142,11 @@ def pitch_available():
     if authorization_token != request.headers.get("Authorization", ""):
         abort(401)
 
-    response = requests.get(f"http://tts:5003/pitch-available")
+    response = requests.get(f"{tts_backend_url}/pitch-available")
     if response.status_code != 200:
         abort(500)
     return make_response("Pitch available", 200)
 
 if __name__ == "__main__":
-    if os.getenv('TTS_LD_LIBRARY_PATH', "") != "":
-        os.putenv('LD_LIBRARY_PATH', os.getenv('TTS_LD_LIBRARY_PATH'))
     from waitress import serve
-    serve(app, host="0.0.0.0", port=5002, threads=4, backlog=16, connection_limit=32, channel_timeout=15)
+    serve(app, host="0.0.0.0", port=5002, threads=4, backlog=16, connection_limit=32, channel_timeout=120)

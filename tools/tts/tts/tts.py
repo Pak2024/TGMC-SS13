@@ -1,7 +1,6 @@
 import os
 import io
 import json
-import gc
 import random
 import torch
 import soundfile as sf
@@ -140,7 +139,7 @@ def text_to_speech_blips():
 
 		result_sound = None
 		for i, letter in enumerate(text):
-			if not letter.isalpha() or letter.isnumeric():
+			if not letter.isalpha():
 				continue
 
 			if letter == ' ':
@@ -192,9 +191,6 @@ def voices_list():
 
 @app.route("/health-check", methods=['GET'])
 def tts_health_check():
-	gc.collect()
-	if request_count > 2048:
-		return f"EXPIRED: {request_count}", 500
 	return f"OK: {request_count}", 200
 
 @app.route("/pitch-available", methods=['GET'])
@@ -202,9 +198,6 @@ def pitch_available():
 	abort(500)
 
 if __name__ == "__main__":
-	if os.getenv('TTS_LD_LIBRARY_PATH', "") != "":
-		os.environ['LD_LIBRARY_PATH'] = os.getenv('TTS_LD_LIBRARY_PATH')
-
 	from waitress import serve
-	print("TTS Server started on port 5003")
-	serve(app, host="0.0.0.0", port=5003, threads=4, backlog=8, connection_limit=24, channel_timeout=10)
+	print(f"TTS Server started on port 5003 (device={DEVICE})", flush=True)
+	serve(app, host="0.0.0.0", port=5003, threads=2, backlog=8, connection_limit=24, channel_timeout=120)
