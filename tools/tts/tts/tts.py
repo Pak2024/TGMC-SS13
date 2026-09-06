@@ -53,13 +53,16 @@ voice_name_mapping_reversed = {v: k for k, v in voice_name_mapping.items()}
 def get_request_data():
 	text = ""
 	voice = "random"
+	pitch = "0"
 
 	if request.is_json:
 		text = request.json.get("text", "")
 		voice = request.json.get("voice", request.args.get("voice", "xenia"))
+		pitch = request.json.get("pitch", request.args.get("pitch", "0"))
 	else:
 		text = request.args.get("text", "")
 		voice = request.args.get("voice", "xenia")
+		pitch = request.args.get("pitch", "0")
 
 	if use_voice_name_mapping and voice in voice_name_mapping_reversed:
 		voice = voice_name_mapping_reversed[voice]
@@ -67,20 +70,41 @@ def get_request_data():
 	if voice not in SILERO_VOICES:
 		voice = "random"
 
-	return text, voice
+	return text, voice, pitch
 
 @app.route("/tts", methods=['GET', 'POST'])
 @app.route("/generate-tts", methods=['GET', 'POST'])
 def text_to_speech():
 	global request_count
-	text, voice = get_request_data()
+	text, voice, pitch = get_request_data()
 
 	if not text:
 		return "No text provided", 400
 
+	use_ssml = False
+	if pitch and pitch != "0":
+		try:
+			p_val = int(pitch)
+			pitch_map = {
+				-2: "x-low",
+				-1: "low",
+				0: "medium",
+				1: "high",
+				2: "x-high"
+			}
+			p_val = max(-2, min(2, p_val))
+			p_str = pitch_map.get(p_val, "medium")
+			text = f'<speak><prosody pitch="{p_str}">{text}</prosody></speak>'
+			use_ssml = True
+		except ValueError:
+			pass
+
 	try:
 		with torch.no_grad():
-			audio = model.apply_tts(text=text, speaker=voice, sample_rate=SAMPLE_RATE)
+			if use_ssml:
+				audio = model.apply_tts(ssml_text=text, speaker=voice, sample_rate=SAMPLE_RATE)
+			else:
+				audio = model.apply_tts(text=text, speaker=voice, sample_rate=SAMPLE_RATE)
 
 		buffer = io.BytesIO()
 
@@ -99,7 +123,7 @@ def text_to_speech():
 @app.route("/generate-tts-blips", methods=['GET', 'POST'])
 def text_to_speech_blips():
 	global request_count
-	text, voice = get_request_data()
+	text, voice, pitch = get_request_data()
 	text = text.upper()
 
 	if not text:
@@ -195,7 +219,7 @@ def tts_health_check():
 
 @app.route("/pitch-available", methods=['GET'])
 def pitch_available():
-	abort(500)
+	return "OK", 200
 
 if __name__ == "__main__":
 	from waitress import serve
