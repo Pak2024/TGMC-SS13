@@ -218,6 +218,11 @@ Administrative related.
 	config_entry_value = 15
 	min_val = 0
 
+/// Max lines retained per STUI log tab (System Tabbed User Interface).
+/datum/config_entry/number/STUI_length
+	config_entry_value = 150
+	min_val = 10
+
 /datum/config_entry/number/afk_period	//time in ds until a player is considered inactive
 	config_entry_value = 3000
 	integer = FALSE
@@ -493,16 +498,8 @@ This maintains a list of ip addresses that are able to bypass topic filtering.
 /datum/config_entry/number/tgui_max_chunk_count
 	default = 32
 
-// DISCORD ROLE STUFFS
+/datum/config_entry/string/KAIN_API_URL
 
-/datum/config_entry/string/discord_token
+/datum/config_entry/string/KAIN_API_TOKEN
 
-//yes ID is a number but config is a string
-
-/datum/config_entry/string/discord_guildid
-
-/datum/config_entry/string/discord_boosty_roleid_tier_1
-
-/datum/config_entry/string/discord_boosty_roleid_tier_2
-
-/datum/config_entry/string/discord_boosty_roleid_tier_3
+/datum/config_entry/string/discord_bot_url

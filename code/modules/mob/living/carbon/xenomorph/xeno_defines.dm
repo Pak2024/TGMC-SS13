@@ -25,6 +25,8 @@
 	// *** Melee Attacks *** //
 	///The amount of damage a xenomorph caste will do with a 'slash' attack.
 	var/melee_damage = 10
+	///The amount of armour pen their melee attacks have
+	var/melee_ap = 0
 	/// The damage typing of the melee damage.
 	var/melee_damage_type = BRUTE
 	/// The armor typing of the melee damage.
@@ -410,11 +412,12 @@ GLOBAL_LIST_INIT(strain_list, init_glob_strain_list())
 	// *** Carrier vars *** //
 	var/selected_hugger_type = /obj/item/clothing/mask/facehugger
 
+	// *** Globadier vars *** //
+	var/obj/item/explosive/grenade/globadier/selected_grenade = /obj/item/explosive/grenade/globadier
+
 	// *** Behemoth vars *** //
-	/// Whether we are currently charging or not.
-	var/behemoth_charging = FALSE
-	/// The amount of Wrath currently stored.
-	var/wrath_stored = 0
+	/// References our currently held Earth Pillar.
+	var/obj/structure/xeno/earth_pillar/held_pillar
 
 	// *** Bull vars *** //
 	var/bull_charging = FALSE
@@ -441,8 +444,24 @@ GLOBAL_LIST_INIT(strain_list, init_glob_strain_list())
 	var/huggers = 0
 	///Boiler acid ammo
 	var/corrosive_ammo = 0
+	///Количество спрайтов поврежедний (effects_icon)
+	var/max_wound_states = 3
+	///Текущий скин
+	var/datum/xenomorph_skin/current_skin
 
 	///The resting cooldown
 	COOLDOWN_DECLARE(xeno_resting_cooldown)
 	///The unresting cooldown
 	COOLDOWN_DECLARE(xeno_unresting_cooldown)
+
+///Called whenever a xeno slashes a human
+/mob/living/carbon/xenomorph/proc/onhithuman(attacker, target) //For globadiers lifesteal debuff
+	SIGNAL_HANDLER
+	if(!ishuman(target))
+		return
+	var/mob/living/carbon/human/victim = target
+	if(!victim.has_status_effect(STATUS_EFFECT_LIFEDRAIN))
+		return
+	var/mob/living/carbon/xenomorph/xeno = attacker
+	var/healamount = xeno.maxHealth * 0.06 //% of the xenos max health
+	HEAL_XENO_DAMAGE(xeno, healamount, FALSE)

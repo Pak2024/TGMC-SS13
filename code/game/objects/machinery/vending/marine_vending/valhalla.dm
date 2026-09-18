@@ -84,7 +84,6 @@
 		),
 		"Equipment" = list(
 			/obj/item/clothing/glasses/hud/xenohud = -1,
-			/obj/item/clothing/glasses/night/imager_goggles = -1,
 			/obj/item/clothing/glasses/night_vision = -1,
 			/obj/item/cell/night_vision_battery = -1,
 			/obj/item/clothing/mask/gas/swat = -1,
@@ -445,5 +444,17 @@
 			/obj/item/ammo_magazine/tank/sarden_clip = -1,
 			/obj/item/ammo_magazine/tank/icc_lowvel_cannon = -1,
 			/obj/item/ammo_magazine/tank/icc_lowvel_cannon/high_explosive = -1,
+		),
+		"Recon Assault Vehicle" = list(
+			/obj/item/armored_weapon/lvrt_sarden = -1,
+			/obj/item/armored_weapon/lvrt_cannon = -1,
+			/obj/item/armored_weapon/lvrt_flamer = -1,
+			/obj/item/armored_weapon/coaxial = -1,
+			/obj/item/ammo_magazine/tank/sarden_clip = -1,
+			/obj/item/ammo_magazine/tank/sarden_clip/high_explosive = -1,
+			/obj/item/ammo_magazine/tank/lowvel_cannon_recon = -1,
+			/obj/item/ammo_magazine/tank/lowvel_cannon_recon/high_explosive = -1,
+			/obj/item/ammo_magazine/tank/lowvel_high_explosive_fragmenting_antipersonnel = -1,
+			/obj/item/ammo_magazine/tank/lowvel_canister = -1,
 		),
 	)
