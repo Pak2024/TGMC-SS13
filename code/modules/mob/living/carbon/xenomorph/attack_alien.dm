@@ -80,7 +80,7 @@
 	for(var/i in damage_mod)
 		damage += i
 
-	var/armor_pen
+	var/armor_pen = X.xeno_caste.melee_ap
 	for(var/i in armor_mod)
 		armor_pen += i
 
@@ -107,8 +107,10 @@
 	var/attack_effect = islist(X.attack_effect) ? pick(X.attack_effect) : X.attack_effect
 	X.do_attack_animation(src, attack_effect)
 
+	var/datum/xenomorph_skin/skin_datum = X.current_skin
+	var/chosen_sound = (skin_datum?.attack_sound && prob(skin_datum.attack_sound_chance)) ? skin_datum.attack_sound : X.attack_sound
 	//The normal attack proceeds
-	playsound(loc, X.attack_sound, 25, 1)
+	playsound(loc, chosen_sound, 25, 1)
 	X.visible_message("[attack_message1]", \
 	"[attack_message2]")
 
@@ -205,11 +207,11 @@
 		return FALSE
 
 //Every other type of nonhuman mob //MARKER OVERRIDE
-/mob/living/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/mob/living/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	if(xeno_attacker.status_flags & INCORPOREAL)
 		return FALSE
 
-	if (xeno_attacker.fortify || xeno_attacker.behemoth_charging)
+	if (xeno_attacker.fortify)
 		return FALSE
 
 	switch(xeno_attacker.a_intent)

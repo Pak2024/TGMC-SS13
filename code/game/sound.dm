@@ -297,6 +297,8 @@ A good representation is: 'byond applies a volume reduction to the sound every X
 			soundin = pick('sound/weapons/guns/fire/mp38_1.ogg', 'sound/weapons/guns/fire/mp38_2.ogg')
 		if(SFX_SLAM)
 			soundin = pick('sound/effects/slam1.ogg', 'sound/effects/slam2.ogg', 'sound/effects/slam3.ogg')
+		if(SFX_THROW)
+			soundin = pick('sound/effects/throwing/swoosh1.ogg', 'sound/effects/throwing/swoosh2.ogg', 'sound/effects/throwing/swoosh3.ogg', 'sound/effects/throwing/swoosh4.ogg', 'sound/effects/throwing/throw.ogg')
 
 		// Xeno
 		if(SFX_ACID_HIT)
@@ -345,10 +347,6 @@ A good representation is: 'byond applies a volume reduction to the sound every X
 			soundin = pick('sound/voice/alien/queen/command.ogg','sound/voice/alien/queen/command2.ogg','sound/voice/alien/queen/command3.ogg')
 		if(SFX_ALIEN_VENTPASS)
 			soundin = pick('sound/effects/alien/ventpass1.ogg', 'sound/effects/alien/ventpass2.ogg')
-		if(SFX_BEHEMOTH_STEP_SOUNDS)
-			soundin = pick('sound/effects/footstep/alien/large1.ogg', 'sound/effects/footstep/alien/large2.ogg', 'sound/effects/footstep/alien/large3.ogg')
-		if(SFX_BEHEMOTH_ROLLING)
-			soundin = 'sound/effects/alien/behemoth/roll.ogg'
 		if(SFX_BEHEMOTH_EARTH_PILLAR_HIT)
 			soundin = pick('sound/effects/alien/behemoth/earth_pillar_hit_1.ogg', 'sound/effects/alien/behemoth/earth_pillar_hit_2.ogg', 'sound/effects/alien/behemoth/earth_pillar_hit_3.ogg', 'sound/effects/alien/behemoth/earth_pillar_hit_4.ogg', 'sound/effects/alien/behemoth/earth_pillar_hit_5.ogg', 'sound/effects/alien/behemoth/earth_pillar_hit_6.ogg')
 

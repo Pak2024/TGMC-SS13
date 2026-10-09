@@ -155,6 +155,8 @@
 #define COMSIG_XENOABILITY_SPRAY_ACID "xenoability_spray_acid"
 #define COMSIG_XENOABILITY_DASH "xenoability_dash"
 #define COMSIG_XENOABILITY_ACID_DASH "xenoability_acid_dash"
+#define COMSIG_XENOABILITY_ACID_DASH_MELTER "xenoability_acid_dash_melter"
+#define COMSIG_XENOABILITY_ACIDIC_MISSILE "xenoability_acidic_missile"
 #define COMSIG_XENOABILITY_SHORT_SPRAY_ACID "xenoability_short_spray_acid"
 #define COMSIG_XENOABILITY_XENO_SPIT "xenoability_xeno_spit"
 #define COMSIG_XENOABILITY_HIDE "xenoability_hide"
@@ -165,6 +167,8 @@
 #define COMSIG_XENOABILITY_RALLY_MINION "xenoability_rally_minion"
 #define COMSIG_XENOABILITY_MINION_BEHAVIOUR "xenoability_minion_behavior"
 #define COMSIG_XENOABILITY_SILENCE "xenoability_silence"
+#define COMSIG_XENOABILITY_PLACE_PATTERN "xenoability_place_pattern"
+#define COMSIG_XENOABILITY_SELECT_PATTERN "xenoability_select_pattern"
 
 #define COMSIG_XENOABILITY_DODGE "xenoability_dodge"
 #define COMSIG_XENOABILITY_IMPALE "xenoability_impale"
@@ -189,6 +193,7 @@
 #define COMSIG_XENOABILITY_ROOT "xenoability_root"
 #define COMSIG_XENOABILITY_BOMBARD "xenoability_bombard"
 #define COMSIG_XENOABILITY_ACID_SHROUD "xenoability_acid_shroud"
+#define COMSIG_XENOABILITY_ACID_SHROUD_MELTER "xenoability_acid_shroud_melter"
 #define COMSIG_XENOABILITY_ACID_SHROUD_SELECT "xenoability_acid_shroud_select"
 
 #define COMSIG_XENOABILITY_THROW_HUGGER "xenoability_throw_hugger"
@@ -220,6 +225,10 @@
 #define COMSIG_XENOABILITY_TOLERATE "xenoability_bulltolerate"
 
 #define COMSIG_XENOABILITY_TAIL_SWEEP "xenoability_tail_sweep"
+#define COMSIG_XENOABILITY_ENCASED_PLATES "xenoability_encased_plates"
+#define COMSIG_XENOABILITY_PLATE_BASH "xenoability_plate_bash"
+#define COMSIG_XENOABILITY_REFLECTIVE_SHIELD "xenoability_reflective_shield"
+#define COMSIG_XENOABILITY_SHIELD_SHATTER "xenoability_shield_shatter"
 #define COMSIG_XENOABILITY_FORWARD_CHARGE "xenoability_forward_charge"
 #define COMSIG_XENOABILITY_CREST_DEFENSE "xenoability_crest_defense"
 #define COMSIG_XENOABILITY_FORTIFY "xenoability_fortify"
@@ -299,6 +308,11 @@
 #define COMSIG_XENOABILITY_HIVE_SUMMON "xenoability_hive_summon"
 
 #define COMSIG_XENOABILITY_SCATTER_SPIT "xenoability_scatter_spit"
+#define COMSIG_XENOABILITY_TOSS_GRENADE "xenoability_toss_grenade"
+#define COMSIG_XENOABILITY_PICK_GRENADE "xenoability_pick_grenade"
+#define COMSIG_XENOABILITY_ACID_MINE "xenoability_acid_mine"
+#define COMSIG_XENOABILITY_GAS_MINE "xenoability_gas_mine"
+#define COMSIG_XENOABILITY_ACID_ROCKET "xenoability_acid_rocket"
 #define COMSIG_XENOABILITY_SLIME_GRENADE "xenoability_slime_grenade"
 
 #define COMSIG_XENOABILITY_PSYCHIC_SHIELD "xenoability_psychic_shield"
@@ -315,21 +329,26 @@
 
 #define COMSIG_XENOABILITY_BANELING_EXPLODE "xenoability_baneling_explode"
 
-#define COMSIG_XENOABILITY_BEHEMOTH_ROLL "xenoability_behemoth_roll"
-#define COMSIG_XENOABILITY_LANDSLIDE "xenoability_landslide"
-#define COMSIG_XENOABILITY_CANCEL_LANDSLIDE "xenoability_cancel_landslide"
 #define COMSIG_XENOABILITY_EARTH_RISER "xenoability_earth_riser"
 #define COMSIG_XENOABILITY_EARTH_RISER_ALTERNATE "xenoability_earth_riser_alternate"
-#define COMSIG_XENOABILITY_EARTH_PILLAR_THROW "xenoability_earth_pillar_throw"
-#define COMSIG_XENOABILITY_SEISMIC_FRACTURE "xenoability_seismic_fracture"
+#define COMSIG_XENOABILITY_BEHEMOTH_SEIZE "xenoability_behemoth_seize"
+#define COMSIG_XENOABILITY_BEHEMOTH_SEIZE_ALTERNATE "xenoability_behemoth_seize_alternate"
+#define COMSIG_XENOABILITY_LANDSLIDE "xenoability_landslide"
+#define COMSIG_XENOABILITY_GEOCRUSH "xenoability_geocrush"
 #define COMSIG_XENOABILITY_PRIMAL_WRATH "xenoability_primal_wrath"
+
+#define COMSIG_XENOABILITY_ABDUCT "xenoability_abduct"
+#define COMSIG_XENOABILITY_DISLOCATE "xenoability_dislocate"
+#define COMSIG_XENOABILITY_ITEM_THROW "xenoability_item_throw"
+#define COMSIG_XENOABILITY_TAIL_LASH "xenoability_tail_lash"
+#define COMSIG_XENOABILITY_TAIL_LASH_SELECT "xenoability_tail_lash_select"
+#define COMSIG_XENOABILITY_ADVANCE_OPPRESSOR "xenoability_advance_oppressor"
 
 #define COMSIG_XENOABILITY_BURROW "xenoability_burrow"
 #define COMSIG_XENOABILITY_LEASH_BALL "xenoability_leash_ball"
 #define COMSIG_XENOABILITY_CREATE_SPIDERLING "xenoability_create_spiderling"
 #define COMSIG_XENOABILITY_ATTACH_SPIDERLINGS "xenoability_attach_spiderlings"
 #define COMSIG_XENOABILITY_WEB_SPIT "xenoability_web_spit"
-#define COMSIG_XENOABILITY_CREATE_HUGGER "xenoability_create_hugger"
 #define COMSIG_XENOABILITY_UNLEASH_SPIDERLINGS "xenoability_unleash_spiderlings"
 #define COMSIG_XENOABILITY_RECALL_SPIDERLINGS "xenoability_recall_spiderlings"
 
@@ -359,6 +378,7 @@
 #define COMSIG_XENOABILITY_CHIMERA_BLINK "xenoability_chimera_blink"
 #define COMSIG_XENOABILITY_CHIMERA_WARP_BLAST "xenoability_chimera_warp_blast"
 #define COMSIG_XENOABILITY_CHIMERA_BODYSWAP "xenoability_chimera_bodyswap"
+#define COMSIG_XENOABILITY_CHIMERA_STEALTH "xenoability_chimera_stealth"
 #define COMSIG_XENOABILITY_CHIMERA_CRIPPLING_STRIKE "xenoability_chimera_crippling_strike"
 
 #define COMSIG_XENOABILITY_CRESTTOSS_BEHIND "xenoability_cresttoss_behind"

@@ -42,7 +42,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_THROW_HUGGER,
 	)
-	cooldown_duration = 3 SECONDS
+	cooldown_duration = 2 SECONDS
 
 /datum/action/ability/activable/xeno/throw_hugger/get_cooldown()
 	return xeno_owner.xeno_caste.hugger_delay
@@ -80,7 +80,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 
 	if(!cooldown_timer)
 		xeno_owner.dropItemToGround(F)
-		playsound(xeno_owner, 'sound/effects/throw.ogg', 30, TRUE)
+		playsound(xeno_owner, SFX_THROW, 30, TRUE)
 		F.stat = CONSCIOUS //Hugger is conscious
 		F.leaping = FALSE //Hugger is not leaping
 		F.facehugger_register_source(xeno_owner) //Set us as the source
@@ -154,7 +154,7 @@ GLOBAL_LIST_INIT(hugger_images_list,  list(
 	action_icon_state = "spawn_hugger"
 	action_icon = 'icons/Xeno/actions/carrier.dmi'
 	ability_cost = 150
-	cooldown_duration = 8 SECONDS
+	cooldown_duration = 5 SECONDS
 	keybinding_signals = list(
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_SPAWN_HUGGER,
 	)

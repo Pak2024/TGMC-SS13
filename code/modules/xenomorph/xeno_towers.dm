@@ -24,6 +24,32 @@
 /obj/structure/xeno/evotower/ex_act(severity)
 	take_damage(severity * 2.5, BRUTE, BOMB)
 
+/obj/structure/xeno/mutationtower
+	name = "mutation tower"
+	desc = "A sickly outcrop from the ground. It seems to ooze a strange chemical that accelerates the hive's mutations."
+	icon = 'icons/Xeno/2x2building.dmi'
+	icon_state = "mutationtower"
+	pixel_x = -16
+	pixel_y = -16
+	obj_integrity = 600
+	max_integrity = 600
+	xeno_structure_flags = CRITICAL_STRUCTURE|IGNORE_WEED_REMOVAL
+	///Bonus biomass generated per minute by this tower.
+	var/boost_amount = 0.75
+
+/obj/structure/xeno/mutationtower/Initialize(mapload, _hivenumber)
+	. = ..()
+	GLOB.hive_datums[hivenumber].mutationtowers += src
+	set_light(2, 2, LIGHT_COLOR_RED)
+	SSminimaps.add_marker(src, MINIMAP_FLAG_XENO, image('icons/UI_icons/map_blips.dmi', null, "tower", MINIMAP_BLIPS_LAYER))
+
+/obj/structure/xeno/mutationtower/Destroy()
+	GLOB.hive_datums[hivenumber].mutationtowers -= src
+	return ..()
+
+/obj/structure/xeno/mutationtower/ex_act(severity)
+	take_damage(severity * 2.5, BRUTE, BOMB)
+
 /obj/structure/xeno/psychictower
 	name = "Psychic Relay"
 	desc = "A sickly outcrop from the ground. It seems to allow for more advanced growth of the Xenomorphs."
@@ -82,7 +108,7 @@
 	return ..()
 
 // Clicking on the tower brings up a radial menu that allows you to select the type of pheromone that this tower will emit.
-/obj/structure/xeno/pherotower/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/structure/xeno/pherotower/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	var/phero_choice = show_radial_menu(xeno_attacker, src, GLOB.pheromone_images_list, radius = 35, require_near = TRUE)
 
 	if(!phero_choice)

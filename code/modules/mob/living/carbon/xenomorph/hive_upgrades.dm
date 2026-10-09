@@ -215,6 +215,13 @@ GLOBAL_LIST_INIT(tier_to_primo_upgrade, list(
 	icon = "evotower"
 	building_type = /obj/structure/xeno/evotower
 
+/datum/hive_upgrade/building/mutationtower
+	name = "Mutation Tower"
+	desc = "Constructs a tower that increases passive biomass generation by 0.5 per minute per tower."
+	psypoint_cost = 300
+	icon = "mutationtower"
+	building_type = /obj/structure/xeno/mutationtower
+
 /datum/hive_upgrade/building/psychictower
 	name = "Psychic Relay"
 	desc = "Constructs a tower that increases the number of available slots of higher tier castes."
@@ -320,7 +327,7 @@ GLOBAL_LIST_INIT(tier_to_primo_upgrade, list(
 /datum/hive_upgrade/primordial/tier_four
 	name = PRIMORDIAL_TIER_FOUR
 	desc = "Unlocks the primordial upgrade for the last tier xenomorphs."
-	psypoint_cost = 800
+	psypoint_cost = 1000
 	icon = "primo_t4"
 
 /datum/hive_upgrade/primordial/tier_three
