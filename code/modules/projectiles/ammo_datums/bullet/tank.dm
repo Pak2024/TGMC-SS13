@@ -73,7 +73,7 @@
 
 /datum/ammo/rocket/homing/microrocket /// this is basically a tgmc version of the above
 	name = "homing HE microrocket"
-	shell_speed = 0.3
+	shell_speed = 0.5
 	damage = 75
 	penetration = 40
 	sundering = 10
@@ -86,7 +86,7 @@
 	name = "TOW-III missile"
 	icon_state = "rocket_he"
 	ammo_behavior_flags = AMMO_TARGET_TURF|AMMO_SNIPER|AMMO_SPECIAL_PROCESS|AMMO_IFF
-	shell_speed = 0.3
+	shell_speed = 0.8
 	turn_rate = 10
 	damage = 60
 	penetration = 30
@@ -126,8 +126,8 @@
 /datum/ammo/bullet/minigun/ltaap
 	name = "chaingun bullet"
 	damage = 30
-	penetration = 10
-	sundering = 0
+	penetration = 35
+	sundering = 1
 	ammo_behavior_flags = AMMO_BALLISTIC|AMMO_IFF|AMMO_SNIPER
 	damage_falloff = 2
 	accurate_range = 7
@@ -149,7 +149,7 @@
 	name = "spraying flames"
 	icon_state = "spray_flamer"
 	max_range = 7
-	shell_speed = 0.3
+	shell_speed = 0.8
 	damage = 6
 	burn_time = 0.3 SECONDS
 
@@ -203,6 +203,52 @@
 		proj.proj_max_range -= 5
 		return
 	proj.proj_max_range = 0
+
+/datum/ammo/rocket/lowvel_heat
+	name = "Low Velocity HEAT shell"
+	icon_state = "recoilless_rifle_heat"
+	hud_state = "shell_heat"
+	ammo_behavior_flags = AMMO_SNIPER
+	shell_speed = 1
+	damage = 200
+	penetration = 100
+	sundering = 0
+
+/datum/ammo/rocket/lowvel_heat/drop_nade(turf/target_turf)
+	cell_explosion(target_turf, 50, 25)
+
+/datum/ammo/rocket/lowvel_high_explosive
+	name = "Low Velocity HE shell"
+	damage = 50
+	penetration = 100
+	sundering = 10
+	ammo_behavior_flags = AMMO_SNIPER // We want this to specifically go over onscreen range.
+	shell_speed = 1
+
+/datum/ammo/rocket/lowvel_high_explosive/drop_nade(turf/target_turf)
+	cell_explosion(target_turf, 125, 60)
+
+/datum/ammo/rocket/lowvel_high_explosive_fragmenting_antipersonnel
+	name = "Low Velocity HEFA shell"
+	icon_state = "recoilless_rifle_le"
+	hud_state = "shell_le"
+	damage = 50
+	penetration = 100
+	sundering = 10
+	ammo_behavior_flags = AMMO_SNIPER // We want this to specifically go over onscreen range.
+	shell_speed = 1
+
+/datum/ammo/rocket/lowvel_high_explosive_fragmenting_antipersonnel/drop_nade(turf/target_turf)
+	cell_explosion(target_turf, 125, 40)
+	create_shrapnel(target_turf, 20, shrapnel_type = /datum/ammo/bullet/shrapnel/metal)
+
+/datum/ammo/flamethrower/blue/lowvel_flamer
+	name = "spraying flames"
+	icon_state = "spray_flamer"
+	max_range = 7
+	shell_speed = 0.8
+	damage = 50
+	burn_time = 0.7 SECONDS
 
 /datum/ammo/rocket/icc_lowvel_heat
 	name = "Low Velocity HEAT shell"

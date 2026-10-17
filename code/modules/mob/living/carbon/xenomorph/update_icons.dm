@@ -82,7 +82,7 @@
 /mob/living/carbon/xenomorph/update_fire()
 	if(!fire_overlay)
 		return
-	var/fire_light = min(fire_stacks * 0.2 , 3)
+	var/fire_light = clamp(3 + max(fire_stacks - 5, 0) / 10, 3, 4.5)
 	if(!on_fire)
 		fire_light = 0
 	if(fire_light == fire_luminosity)
@@ -106,8 +106,9 @@
 		wound_overlay.icon_state = "none"
 		return
 	if(health > health_threshold_crit)
-		health_thresholds = CEILING((health * 4) / (maxHealth), 1) //From 1 to 4, in 25% chunks
-		if(health_thresholds > 3)
+		var/health_chunks = max_wound_states + 1
+		health_thresholds = CEILING((health * health_chunks) / (maxHealth), 1) //From 1 to 4 (по дефолту), in 25% chunks
+		if(health_thresholds > max_wound_states)
 			wound_overlay.icon_state = "none"
 			return //Injuries appear at less than 75% health
 	else if(health_threshold_dead)

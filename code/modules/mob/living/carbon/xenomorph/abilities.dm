@@ -498,7 +498,7 @@
 	if(xeno_owner.current_aura && xeno_owner.current_aura.aura_types[1] == phero_choice)
 		xeno_owner.balloon_alert(xeno_owner, "Stop emitting")
 		QDEL_NULL(xeno_owner.current_aura)
-		if(isxenoqueen(xeno_owner))
+		if(xeno_owner.hive?.living_xeno_ruler == xeno_owner)
 			xeno_owner.hive?.update_leader_pheromones()
 		xeno_owner.hud_set_pheromone()
 		return fail_activate()
@@ -507,7 +507,7 @@
 	xeno_owner.balloon_alert(xeno_owner, "[phero_choice]")
 	playsound(xeno_owner.loc, SFX_ALIEN_DROOL, 25)
 
-	if(isxenoqueen(xeno_owner))
+	if(xeno_owner.hive?.living_xeno_ruler == xeno_owner)
 		xeno_owner.hive?.update_leader_pheromones()
 	xeno_owner.hud_set_pheromone() //Visual feedback that the xeno has immediately started emitting pheromones
 	succeed_activate()
@@ -636,6 +636,8 @@
 		KEYBINDING_NORMAL = COMSIG_XENOABILITY_CORROSIVE_ACID,
 	)
 	use_state_flags = ABILITY_USE_BUCKLED
+	/// How much to reduce acid delay? Lower is faster. Multiplicative.
+	var/acid_speed_multiplier = 1
 	var/obj/effect/xenomorph/acid/acid_type = /obj/effect/xenomorph/acid
 
 /datum/action/ability/activable/xeno/corrosive_acid/can_use_ability(atom/A, silent = FALSE, override_flags)
@@ -675,7 +677,7 @@
 		A = existing_acid.acid_t // Swap the target to the target of the acid
 
 
-	var/aciddelay = A.get_acid_delay()
+	var/aciddelay = max(0, A.get_acid_delay() * acid_speed_multiplier);
 	if(SSmonitor.gamestate == SHUTTERS_CLOSED && CHECK_BITFIELD(SSticker.mode?.round_type_flags, MODE_ALLOW_XENO_QUICKBUILD) && SSresinshaping.active)
 		current_acid_type = /obj/effect/xenomorph/acid/strong //if it is before shutters open, everyone gets strong acid
 		aciddelay = 0
@@ -1261,11 +1263,8 @@
 	// Caster gets 5 biomass immediately
 	xeno_owner.biomass = min(xeno_owner.biomass + 5, 50)
 
-	// All living xenos (including caster) get +0.05 passive biomass gain
-	for(var/mob/living/carbon/xenomorph/xeno AS in GLOB.alive_xeno_list_hive[xeno_owner.hivenumber])
-		if(xeno.xeno_caste.caste_flags & CASTE_IS_A_MINION)
-			continue
-		xeno.biomass_gain_bonus += 0.05
+	// All non-minion xenos in this hive get +0.05 passive biomass gain.
+	xeno_owner.hive.biomass_gain_bonus += 0.05
 
 	ADD_TRAIT(victim, TRAIT_PSY_DRAINED, TRAIT_PSY_DRAINED)
 	if(HAS_TRAIT(victim, TRAIT_UNDEFIBBABLE))
@@ -1383,13 +1382,181 @@
 	victim.dead_ticks = 0
 	ADD_TRAIT(victim, TRAIT_STASIS, TRAIT_STASIS)
 	xeno_owner.eject_victim(TRUE, starting_turf)
-	for(var/mob/living/carbon/xenomorph/xeno AS in GLOB.alive_xeno_list_hive[xeno_owner.hivenumber])
-		if(xeno.xeno_caste.caste_flags & CASTE_IS_A_MINION)
-			continue
-		xeno.biomass_gain_bonus += 0.05
+	// All non-minion xenos in this hive get +0.05 passive biomass gain.
+	xeno_owner.hive.biomass_gain_bonus += 0.05
 	if(owner.client)
 		var/datum/personal_statistics/personal_statistics = GLOB.personal_statistics_list[owner.ckey]
 		personal_statistics.cocooned++
+
+/////////////////////////////////
+// pattern building
+/////////////////////////////////
+
+//Pattern Defines, for the radial menu.
+#define CROSS_3X3 /datum/buildingpattern/cross3x3
+#define SQUARE_2X2 /datum/buildingpattern/square2x2
+#define SQUARE_3X3 /datum/buildingpattern/square3x3
+#define HOLLOW_CROSS /datum/buildingpattern/hollow_cross3x3
+
+//List of all images used for Patterns, in the radial selection menu
+GLOBAL_LIST_INIT(pattern_images_list, list(
+	CROSS_3X3 = image('icons/Xeno/patterns.dmi', icon_state = "cross3x3"),
+	SQUARE_2X2 = image('icons/Xeno/patterns.dmi', icon_state = "square2x2"),
+	SQUARE_3X3 = image('icons/Xeno/patterns.dmi', icon_state = "square3x3"),
+	HOLLOW_CROSS = image('icons/Xeno/patterns.dmi', icon_state = "hollowcross3x3"),
+))
+
+/datum/action/ability/activable/xeno/place_pattern
+	name = "Place Pattern"
+	desc = "Place a pattern of hive walls."
+	action_icon_state = "square2x2"
+	action_icon = 'icons/Xeno/patterns.dmi'
+	target_flags = ABILITY_TURF_TARGET
+	gamemode_flags = ABILITY_ALL_GAMEMODE
+	keybinding_signals = list(
+		KEYBINDING_NORMAL = COMSIG_XENOABILITY_PLACE_PATTERN,
+		KEYBINDING_ALTERNATE = COMSIG_XENOABILITY_SELECT_PATTERN,
+	)
+	use_state_flags = ABILITY_USE_LYING
+	var/datum/buildingpattern/selected_pattern = new /datum/buildingpattern/square2x2
+	/// Holograms are used to show the pattern before placing it
+	var/list/atom/holograms = list()
+	/// timerid before we cleanup the holograms
+	var/cleanup_timer
+	/// how long a hologram lasts without movement
+	var/cleanup_time = 4 SECONDS
+
+/datum/action/ability/activable/xeno/place_pattern/alternate_action_activate()
+	INVOKE_ASYNC(src, PROC_REF(select_pattern))
+
+/datum/action/ability/activable/xeno/place_pattern/give_action(mob/living/L)
+	. = ..()
+	//if its not prep, remove the ability instantly
+	if(!(SSmonitor.gamestate == SHUTTERS_CLOSED && CHECK_BITFIELD(SSticker.mode?.round_type_flags, MODE_ALLOW_XENO_QUICKBUILD) && SSresinshaping.active))
+		remove_action(owner)
+	RegisterSignals(SSdcs, list(COMSIG_GLOB_OPEN_SHUTTERS_EARLY, COMSIG_GLOB_OPEN_TIMED_SHUTTERS_LATE, COMSIG_GLOB_TADPOLE_LANDED_OUT_LZ, COMSIG_GLOB_DROPPOD_LANDED), PROC_REF(toggle_off))
+
+///Seperate proc that calls remove_action, to block any signal shenanigans.
+/datum/action/ability/activable/xeno/place_pattern/proc/toggle_off()
+	SIGNAL_HANDLER
+	remove_action(owner)
+
+/datum/action/ability/activable/xeno/place_pattern/remove_action(mob/living/L)
+	. = ..()
+	UnregisterSignal(SSdcs, list(COMSIG_GLOB_OPEN_SHUTTERS_EARLY, COMSIG_GLOB_OPEN_TIMED_SHUTTERS_LATE, COMSIG_GLOB_TADPOLE_LANDED_OUT_LZ, COMSIG_GLOB_DROPPOD_LANDED))
+
+/datum/action/ability/activable/xeno/place_pattern/on_selection()
+	RegisterSignal(owner, COMSIG_ATOM_MOUSE_ENTERED, PROC_REF(show_hologram_call))
+
+/datum/action/ability/activable/xeno/place_pattern/on_deselection()
+	UnregisterSignal(owner, COMSIG_ATOM_MOUSE_ENTERED)
+	cleanup_holograms()
+
+// don't slow down the other signals
+/datum/action/ability/activable/xeno/place_pattern/proc/show_hologram_call(mob/user, atom/target)
+	SIGNAL_HANDLER
+	INVOKE_ASYNC(src, PROC_REF(show_hologram), user, target)
+
+/// move or create a hologram on mousemove, and also start the cleanup timer and check turf validity
+/datum/action/ability/activable/xeno/place_pattern/proc/show_hologram(mob/user, atom/target)
+	SIGNAL_HANDLER
+	var/list/target_turfs = get_target_turfs(target)
+	if(!length(target_turfs))
+		// no turfs? means the mouse is offscreen so we can cleanup
+		cleanup_holograms()
+		return
+	var/index = 1
+	var/create_new = length(holograms) != length(target_turfs)
+	if(create_new)
+		cleanup_holograms()
+	for(var/turf/target_turf AS in target_turfs)
+		if(create_new)
+			create_hologram(target_turf)
+		else
+			move_hologram(target_turf, holograms[index])
+		check_turf_validity(target_turf, holograms[index])
+		index++
+	start_cleanup_timer()
+
+/// check if the turf is valid or not for the selected build type, and apply a matrix color if not
+/datum/action/ability/activable/xeno/place_pattern/proc/check_turf_validity(turf/target_turf, obj/effect/hologram)
+	var/datum/action/ability/activable/xeno/secrete_resin/secrete_resin = locate() in xeno_owner.actions
+	if(!secrete_resin)
+		return
+	hologram.remove_filter("invalid_turf_filter")
+	if(is_valid_for_resin_structure(target_turf, FALSE, xeno_owner.selected_resin) != NO_ERROR)
+		hologram.add_filter("invalid_turf_filter", 1, color_matrix_filter(rgb(233, 23, 23)))
+
+/// creates the hologram and quickly fades it in, step_size is increased to make movement smoother
+/datum/action/ability/activable/xeno/place_pattern/proc/create_hologram(turf/target_turf)
+	var/atom/selected = xeno_owner.selected_resin
+	var/obj/effect/build_hologram/hologram = new(target_turf, selected, FALSE, xeno_owner)
+	hologram.alpha = 0
+	hologram.layer = selected.layer + 1
+	hologram.step_size = 4 * ICON_SIZE_ALL
+	animate(hologram, 1 SECONDS, alpha = initial(hologram.alpha))
+	holograms += hologram
+
+/datum/action/ability/activable/xeno/place_pattern/proc/move_hologram(turf/target_turf, obj/effect/hologram)
+	hologram.abstract_move(target_turf)
+
+/datum/action/ability/activable/xeno/place_pattern/proc/start_cleanup_timer()
+	delete_timer()
+	cleanup_timer = addtimer(CALLBACK(src, PROC_REF(cleanup_holograms)), cleanup_time, TIMER_STOPPABLE)
+
+/datum/action/ability/activable/xeno/place_pattern/proc/delete_timer()
+	deltimer(cleanup_timer)
+	cleanup_timer = null
+
+/datum/action/ability/activable/xeno/place_pattern/proc/cleanup_holograms()
+	delete_timer()
+	QDEL_LIST(holograms)
+
+///Selects the pattern from a radial menu
+/datum/action/ability/activable/xeno/place_pattern/proc/select_pattern()
+	var/pattern_choice = show_radial_menu(owner, owner, GLOB.pattern_images_list, radius = 48)
+	if(!pattern_choice)
+		return
+	selected_pattern = new pattern_choice
+	var/datum/buildingpattern/pattern = pattern_choice
+	var/image/pattern_icon = GLOB.pattern_images_list[pattern_choice]
+	action_icon_state = pattern_icon.icon_state
+	update_button_icon()
+	xeno_owner.balloon_alert(xeno_owner, pattern.overheadmsg)
+	cleanup_holograms()
+
+/datum/action/ability/activable/xeno/place_pattern/use_ability(atom/A)
+	var/datum/action/ability/activable/xeno/secrete_resin/secrete_resin = locate() in xeno_owner.actions
+	if(!istype(secrete_resin))
+		xeno_owner.balloon_alert(xeno_owner, "secrete resin ability missing!")
+		return FALSE
+	var/list/target_turfs = get_target_turfs(A)
+	if(!length(target_turfs))
+		xeno_owner.balloon_alert(xeno_owner, "no valid ground found")
+		return FALSE
+	for(var/turf/target_turf as anything in target_turfs)
+		secrete_resin.preshutter_build_resin(target_turf)
+
+/// gets turfs based on the current active pattern with the pattern offsets around the target atom
+/datum/action/ability/activable/xeno/place_pattern/proc/get_target_turfs(atom/A)
+	var/turf/sourceturf = get_turf(A)
+	if(!sourceturf)
+		return list()
+	var/starty = sourceturf.y + selected_pattern.offset_y
+	var/iterx
+	var/startz = sourceturf.z
+	var/turf/targetturf
+
+	var/list/turfs = list()
+	for(var/layer in selected_pattern.pattern)
+		iterx = sourceturf.x + selected_pattern.offset_x
+		for(var/tile in splittext(layer, ""))
+			if(tile == "X")
+				targetturf = locate(iterx, starty, startz)
+				turfs += targetturf
+			iterx = iterx - 1
+		starty = starty + 1
+	return turfs
 
 /////////////////////////////////
 // blessing Menu
@@ -1407,3 +1574,26 @@
 /datum/action/ability/xeno_action/blessing_menu/action_activate()
 	xeno_owner.hive.purchases.interact(xeno_owner)
 	return succeed_activate()
+
+// ***************************************
+// *********** Xeno Warnings
+// ***************************************
+/obj/effect/temp_visual/xeno_warning
+	icon = 'icons/xeno/Effects.dmi'
+	icon_state = "generic_warning"
+	layer = BELOW_MOB_LAYER
+
+/obj/effect/temp_visual/xeno_warning/Initialize(mapload, _duration = 0.5 SECONDS, _color = COLOR_VIOLET)
+	. = ..()
+	duration = _duration
+	color = _color
+	animate(src, time = duration - 0.5 SECONDS)
+	animate(alpha = 0, time = 0.5 SECONDS, easing = CIRCULAR_EASING|EASE_OUT)
+	notify_ai_hazard()
+
+/// Warns nearby players, in any way or form, of an incoming ability and the range it will affect.
+/proc/xeno_warning(list/turf/target_turfs, duration, color)
+	if(!length(target_turfs))
+		CRASH("do_warning([length(target_turfs)]): improper argument")
+	for(var/turf/target_turf AS in target_turfs)
+		new /obj/effect/temp_visual/xeno_warning(target_turf, duration, color)

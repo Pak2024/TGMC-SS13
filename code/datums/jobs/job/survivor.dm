@@ -144,9 +144,11 @@ Good luck, but do not expect to survive."})
 	title = SURVIVOR
 	skills_type = /datum/skills/civilian/survivor/master
 	outfit = /datum/outfit/job/survivor/rambo
+	job_points_needed = 6
 	job_flags = JOB_FLAG_ROUNDSTARTJOINABLE
 	html_description = {"
 		<b>Difficulty</b>: Astonishing<br /><br />
 		<b>Gamemode Availability</b>: Distress Signal, Nuclear War<br /><br /><br />
 		<b>Duty</b>: Survive with the resources you have against the swarms of xenomorphs intil help arrives.
 	"}
+	job_desc = "Выживайте теми ресурсами что у вас есть, пока не подоспеет помощь."

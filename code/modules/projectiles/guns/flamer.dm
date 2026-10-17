@@ -141,8 +141,8 @@
 		return
 
 	var/image/lit_overlay = image(icon, src, lit_overlay_icon_state)
-	lit_overlay.pixel_x += lit_overlay_offset_x
-	lit_overlay.pixel_y += lit_overlay_offset_y
+	lit_overlay.pixel_w += lit_overlay_offset_x
+	lit_overlay.pixel_z += lit_overlay_offset_y
 	. += lit_overlay
 
 /obj/item/weapon/gun/flamer/turn_light(mob/user, toggle_on)
@@ -283,6 +283,9 @@
 					msg_admin_ff("[ADMIN_TPMONTY(user)] flamed [ADMIN_TPMONTY(human_caught)] with \a [name] in [ADMIN_VERBOSEJMP(turf_to_ignite)].")
 				else
 					log_combat(user, human_caught, "flamed", src)
+
+		if(fire_color == FLAME_COLOR_LIME)
+			mob_caught.apply_melting_stacks(3)
 
 		mob_caught.take_overall_damage(rand(burn_level, (burn_level * mob_flame_damage_mod)), BURN, FIRE, updating_health = TRUE, max_limbs = 4) // Make it so its the amount of heat or twice it for the initial blast.
 		mob_caught.adjust_fire_stacks(rand(5, (burn_level * mob_flame_damage_mod)))
@@ -473,7 +476,7 @@
 		/obj/item/attachable/magnetic_harness,
 	)
 
-/turf/proc/ignite(fire_lvl, burn_lvl, f_color, fire_stacks = 0, fire_damage = 0)
+/turf/proc/ignite(fire_lvl, burn_lvl, f_color, fire_stacks = 0, fire_damage = 0, fire_type = /obj/fire/flamer)
 	//extinguish any flame present
 	var/obj/fire/flamer/old_fire = locate(/obj/fire/flamer) in src
 	if(old_fire)
@@ -482,7 +485,7 @@
 		old_fire.set_fire(new_burn_ticks, new_burn_level, f_color, fire_stacks, fire_damage)
 		return
 
-	new /obj/fire/flamer(src, fire_lvl, burn_lvl, f_color, fire_stacks, fire_damage)
+	new fire_type(src, fire_lvl, burn_lvl, f_color, fire_stacks, fire_damage)
 	for(var/obj/structure/flora/jungle/vines/vines in src)
 		QDEL_NULL(vines)
 
@@ -505,8 +508,8 @@ GLOBAL_LIST_EMPTY(flamer_particles)
 	fade = 1 SECONDS
 	grow = -0.01
 	velocity = list(0, 0)
-	position = generator(GEN_BOX, list(-16, -16), list(16, 16), NORMAL_RAND)
-	drift = generator(GEN_VECTOR, list(0, -0.2), list(0, 0.2))
+	position = generator(GEN_BOX, list(-22, -22), list(22, 22), NORMAL_RAND)
+	drift = generator(GEN_VECTOR, list(-0.6, -0.2), list(0.6, 0.2))
 	gravity = list(0, 0.95)
 	scale = generator(GEN_VECTOR, list(0.3, 0.3), list(1,1), NORMAL_RAND)
 	rotation = 30
