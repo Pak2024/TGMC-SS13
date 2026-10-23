@@ -519,8 +519,7 @@
 /obj/structure/bed{
 	pixel_y = 13
 	},
-/obj/item/bedsheet/purple{
-	},
+/obj/item/bedsheet/purple,
 /obj/item/bedsheet/purple{
 	pixel_y = 13
 	},
@@ -584,8 +583,7 @@
 /obj/structure/bed{
 	pixel_y = 13
 	},
-/obj/item/bedsheet/purple{
-	},
+/obj/item/bedsheet/purple,
 /obj/item/bedsheet/purple{
 	pixel_y = 13
 	},
@@ -1820,7 +1818,7 @@
 "aYN" = (
 /obj/structure/cable,
 /obj/machinery/light/mainship,
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "aYU" = (
@@ -7434,7 +7432,7 @@
 /obj/machinery/atmospherics/pipe/simple/cyan/hidden/layer1{
 	dir = 10
 	},
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "eoO" = (
@@ -9673,6 +9671,10 @@
 	},
 /turf/open/floor/carpet,
 /area/mainship/living/commandbunks)
+"fzw" = (
+/obj/machinery/vending/MarineMed,
+/turf/open/floor/mainship/orange/full,
+/area/mainship/squads/bravo)
 "fzF" = (
 /obj/effect/spawner/random/misc/plant,
 /obj/structure/closet/walllocker/hydrant/extinguisher{
@@ -10075,14 +10077,8 @@
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/hallways/hangar)
 "fPJ" = (
-/obj/machinery/computer/camera_advanced/remote_fob,
-/obj/structure/sign/semiotic/landingzone{
-	pixel_x = 15;
-	pixel_y = 24
-	},
-/obj/structure/sign/semiotic/terminal{
-	pixel_y = 24
-	},
+/obj/effect/turf_decal/warning_stripes/cargo,
+/obj/machinery/vending/tool,
 /turf/open/floor/mainship/metal,
 /area/mainship/hallways/hangar)
 "fPT" = (
@@ -10451,6 +10447,12 @@
 	},
 /turf/open/floor/mainship/metal,
 /area/mainship/command/cic)
+"gdW" = (
+/obj/structure/table/mainship,
+/obj/effect/turf_decal/tile/transparent/yellow/diagonal_centre,
+/obj/item/clothing/under/marine/bravo_hawaii,
+/turf/open/floor/mainship/metal,
+/area/mainship/squads/bravo)
 "gfo" = (
 /obj/item/megaphone,
 /obj/machinery/light/mainship{
@@ -10853,7 +10855,7 @@
 /obj/machinery/atmospherics/pipe/simple/cyan/hidden/layer1{
 	dir = 4
 	},
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "gvu" = (
@@ -10882,6 +10884,10 @@
 	},
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/hallways/starboard_hallway)
+"gwg" = (
+/obj/machinery/vending/medical/shipside,
+/turf/open/floor/mainship/orange/full,
+/area/mainship/squads/bravo)
 "gwG" = (
 /obj/machinery/atmospherics/pipe/simple/scrubbers/hidden/layer3{
 	dir = 8
@@ -14321,7 +14327,9 @@
 	},
 /obj/machinery/power/smes{
 	charge = 0;
-	name = "SMES #2"
+	name = "SMES #2";
+	input_level = 200000;
+	output_level = 190000
 	},
 /obj/structure/cable,
 /turf/open/floor/mainship/stripesquare,
@@ -15664,11 +15672,11 @@
 /turf/open/floor/mainship/metal/full,
 /area/mainship/living/numbertwobunks)
 "jwz" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 8
 	},
-/turf/open/floor/mainship/metal,
+/obj/machinery/vending/medical/shipside,
+/turf/open/floor/mainship/red/full,
 /area/mainship/squads/alpha)
 "jwE" = (
 /obj/effect/turf_decal/siding/metal{
@@ -16914,11 +16922,11 @@
 /turf/open/floor/prison/whitegreen/full,
 /area/mainship/medical/lounge)
 "klN" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 8
 	},
-/turf/open/floor/mainship/metal,
+/obj/machinery/vending/medical/shipside,
+/turf/open/floor/mainship/blue/full,
 /area/mainship/squads/delta)
 "klV" = (
 /obj/machinery/holopad,
@@ -17114,6 +17122,13 @@
 	},
 /turf/open/floor/mainship/metal/green,
 /area/mainship/medical/upper_medical)
+"krL" = (
+/obj/structure/table/mainship,
+/obj/item/clothing/under/marine/bravo_hawaii,
+/turf/open/floor/mainship/orange{
+	dir = 4
+	},
+/area/mainship/squads/bravo)
 "krW" = (
 /obj/structure/cable,
 /obj/effect/turf_decal/siding/metal{
@@ -17895,14 +17910,18 @@
 /turf/open/floor/grass,
 /area/mainship/living/starboard_garden)
 "kNR" = (
-/obj/machinery/landinglight/lz2{
-	dir = 1
+/obj/structure/sign/semiotic/terminal{
+	pixel_y = -24
 	},
-/obj/effect/turf_decal/warning_stripes/thin,
+/obj/structure/sign/semiotic/landingzone{
+	pixel_y = -24;
+	pixel_x = 14
+	},
+/obj/machinery/computer/camera_advanced/remote_fob,
 /obj/machinery/camera/autoname{
 	dir = 1
 	},
-/turf/open/floor/mainship/metal/full,
+/turf/open/floor/mainship/metal,
 /area/mainship/hallways/hangar)
 "kOe" = (
 /obj/structure/disposaloutlet,
@@ -21026,6 +21045,12 @@
 	dir = 1
 	},
 /area/mainship/hallways/port_hallway)
+"mzU" = (
+/obj/machinery/vending/boozeomat/gold/nopower,
+/turf/open/floor/mainship/orange{
+	dir = 1
+	},
+/area/mainship/squads/bravo)
 "mAw" = (
 /obj/effect/turf_decal/woodsiding{
 	dir = 10
@@ -21167,8 +21192,6 @@
 /turf/open/floor/wood,
 /area/mainship/living/commandbunks)
 "mDQ" = (
-/obj/effect/turf_decal/warning_stripes/cargo,
-/obj/machinery/vending/tool,
 /obj/machinery/light/mainship{
 	dir = 1
 	},
@@ -22516,13 +22539,11 @@
 /turf/open/floor/mainship/metal,
 /area/mainship/hallways/hangar)
 "npM" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 8
 	},
-/turf/open/floor/mainship/emerald{
-	dir = 9
-	},
+/obj/machinery/vending/medical/shipside,
+/turf/open/floor/mainship/emerald/full,
 /area/mainship/squads/charlie)
 "npP" = (
 /turf/open/floor/mainship/terragov/north{
@@ -23496,6 +23517,7 @@
 /obj/structure/disposalpipe/segment/corner{
 	dir = 4
 	},
+/obj/structure/prop/golden_sclupture,
 /turf/open/floor/mainship/metal/full,
 /area/mainship/living/grunt_rnr)
 "nQI" = (
@@ -25120,7 +25142,7 @@
 /area/mainship/shipboard/weapon_room)
 "oOb" = (
 /obj/structure/cable,
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "oOf" = (
@@ -25495,7 +25517,7 @@
 "pbj" = (
 /obj/structure/cable,
 /obj/machinery/camera/autoname,
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "pbx" = (
@@ -29409,13 +29431,10 @@
 /turf/open/floor/carpet,
 /area/mainship/hull/upper_hull)
 "roX" = (
-/obj/machinery/landinglight/lz2{
-	dir = 1
-	},
-/obj/effect/turf_decal/warning_stripes/thin,
+/obj/effect/turf_decal/warning_stripes/cargo,
+/obj/machinery/vending/cargo_supply,
 /obj/machinery/light/mainship,
-/obj/effect/ai_node,
-/turf/open/floor/mainship/metal/full,
+/turf/open/floor/mainship/metal,
 /area/mainship/hallways/hangar)
 "roZ" = (
 /obj/effect/turf_decal/siding/metal{
@@ -29948,7 +29967,9 @@
 	},
 /obj/machinery/power/smes{
 	charge = 0;
-	name = "SMES #4"
+	name = "SMES #4";
+	input_level = 200000;
+	output_level = 190000
 	},
 /obj/structure/cable,
 /turf/open/floor/mainship/stripesquare,
@@ -31390,13 +31411,11 @@
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/hallways/aft_hallway)
 "szj" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 4
 	},
-/turf/open/floor/mainship/emerald{
-	dir = 5
-	},
+/obj/machinery/vending/MarineMed,
+/turf/open/floor/mainship/emerald/full,
 /area/mainship/squads/charlie)
 "szz" = (
 /obj/effect/ai_node,
@@ -32475,7 +32494,7 @@
 	dir = 1
 	},
 /obj/machinery/camera/autoname,
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "thX" = (
@@ -32742,7 +32761,7 @@
 /obj/machinery/atmospherics/pipe/simple/scrubbers/hidden/layer3{
 	dir = 8
 	},
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "tqj" = (
@@ -33625,11 +33644,11 @@
 /turf/open/floor/mainship/blue/full,
 /area/mainship/command/cic)
 "tWx" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 4
 	},
-/turf/open/floor/mainship/metal,
+/obj/machinery/vending/MarineMed,
+/turf/open/floor/mainship/red/full,
 /area/mainship/squads/alpha)
 "tWH" = (
 /obj/structure/sign/semiotic/north{
@@ -34449,7 +34468,6 @@
 /obj/effect/turf_decal/siding/metal{
 	dir = 4
 	},
-/obj/structure/dropship_equipment/shuttle/grenade_launcher,
 /turf/open/floor/mainship/metal,
 /area/mainship/hallways/aft_hallway)
 "uwm" = (
@@ -35818,7 +35836,9 @@
 	},
 /obj/machinery/power/smes{
 	charge = 0;
-	name = "SMES #3"
+	name = "SMES #3";
+	input_level = 200000;
+	output_level = 190000
 	},
 /obj/structure/cable,
 /turf/open/floor/mainship/stripesquare,
@@ -36049,7 +36069,7 @@
 /obj/machinery/light/mainship{
 	dir = 1
 	},
-/obj/machinery/power/fusion_engine/random,
+/obj/machinery/power/fusion_engine/preset,
 /turf/open/floor/plating/plating_catwalk/dark,
 /area/mainship/engineering/engine_core)
 "vxU" = (
@@ -37828,11 +37848,11 @@
 /turf/open/floor/mainship/red,
 /area/mainship/squads/alpha)
 "wAQ" = (
-/obj/machinery/loadout_vendor,
 /obj/machinery/light/mainship{
 	dir = 4
 	},
-/turf/open/floor/mainship/metal,
+/obj/machinery/vending/MarineMed,
+/turf/open/floor/mainship/blue/full,
 /area/mainship/squads/delta)
 "wBM" = (
 /obj/effect/turf_decal/arrows{
@@ -39968,7 +39988,9 @@
 	},
 /obj/machinery/power/smes{
 	charge = 0;
-	name = "SMES #1"
+	name = "SMES #1";
+	input_level = 190000;
+	output_level = 200000
 	},
 /obj/structure/cable,
 /turf/open/floor/mainship/stripesquare,
@@ -70700,10 +70722,10 @@ xpo
 ehj
 xpo
 eyG
+eMV
 kNR
 iwc
-iwc
-fPJ
+etc
 etc
 chJ
 etc
@@ -70958,7 +70980,7 @@ ehj
 xpo
 xpo
 eMV
-iwc
+roX
 iwc
 mDQ
 etc
@@ -71214,10 +71236,10 @@ aAn
 ehX
 etB
 ezm
-roX
+sFh
+fPJ
 iwc
-iwc
-fUV
+etc
 fry
 chJ
 qlJ
@@ -71472,7 +71494,7 @@ xpo
 xpo
 xpo
 eMV
-iwc
+fUV
 iwc
 etc
 etc
@@ -77632,7 +77654,7 @@ xhq
 nOe
 wyT
 cfb
-dfF
+gwg
 eEg
 dvJ
 ejF
@@ -78403,7 +78425,7 @@ xhq
 nBZ
 wyT
 cfb
-dfF
+fzw
 oZG
 sXV
 vGV
@@ -82516,7 +82538,7 @@ nYl
 eDk
 pTc
 xhq
-oZG
+mzU
 sXV
 sFX
 nju
@@ -83806,8 +83828,8 @@ iaP
 jKo
 mIx
 mIx
-iaP
-iaP
+gdW
+gdW
 rIQ
 pnv
 dVw
@@ -84063,7 +84085,7 @@ sWt
 uTk
 pGx
 bOA
-oRo
+krL
 oRo
 oRo
 gQV

@@ -16,7 +16,7 @@
 	set desc = "Change into another caste in the same tier."
 	set category = "Alien"
 
-	if(world.time - (GLOB.key_to_time_of_caste_swap[key] ? GLOB.key_to_time_of_caste_swap[key] : -INFINITY) < (15 MINUTES))
+	if(world.time - (GLOB.key_to_time_of_caste_swap[key] ? GLOB.key_to_time_of_caste_swap[key] : -INFINITY) < (10 MINUTES))
 		to_chat(src, span_warning("Your caste swap timer is not done yet."))
 		return
 
@@ -168,7 +168,6 @@
 	new_xeno.transfer_to_hive(hivenumber)
 	new_xeno.life_kills_total = life_kills_total
 	new_xeno.biomass = biomass
-	new_xeno.biomass_gain_bonus = biomass_gain_bonus
 	if(new_xeno.hunter_data)
 		new_xeno.hunter_data.clean_data()
 		qdel(new_xeno.hunter_data)
@@ -249,8 +248,8 @@
 	if(xeno_flags & XENO_LEADER && new_xeno.xeno_caste.can_flags & CASTE_CAN_BE_LEADER) // xeno leader is removed by Destroy()
 		hive.add_leader(new_xeno)
 		new_xeno.hud_set_queen_overwatch()
-		if(hive.living_xeno_queen)
-			new_xeno.handle_xeno_leader_pheromones(hive.living_xeno_queen)
+		if(hive.living_xeno_ruler)
+			new_xeno.handle_xeno_leader_pheromones(hive.living_xeno_ruler)
 
 		new_xeno.update_leader_icon(TRUE)
 

@@ -101,7 +101,10 @@
 
 ///Removes a desant
 /obj/hitbox/proc/remove_desant(atom/movable/desant)
-	SET_PLANE_IMPLICIT(desant, LAZYACCESS(tank_desants, desant))
+	var/old_plane = LAZYACCESS(tank_desants, desant)
+	if(isnull(old_plane)) //not ours, or already removed. Never write a null plane, that makes the desant invisible
+		old_plane = GAME_PLANE
+	SET_PLANE_IMPLICIT(desant, old_plane)
 	desant.remove_traits(list(TRAIT_TANK_DESANT, TRAIT_NOSUBMERGE), VEHICLE_TRAIT)
 	LAZYREMOVE(tank_desants, desant)
 	UnregisterSignal(desant, COMSIG_QDELETING)
@@ -123,6 +126,8 @@
 /obj/hitbox/proc/on_exited(atom/source, atom/movable/AM, direction)
 	SIGNAL_HANDLER
 	if(!HAS_TRAIT(AM, TRAIT_TANK_DESANT))
+		return
+	if(!(AM in tank_desants)) //the trait is global, only the hitbox that owns this desant may remove it
 		return
 	if(AM.loc in locs)
 		return
@@ -254,6 +259,17 @@
 	vehicle_width = 64
 	bound_x = 0
 	bound_y = -32
+
+/obj/hitbox/medium/owner_turned(datum/source, old_dir, new_dir)
+	. = ..()
+	if(!.)
+		return
+	var/list/old_locs = locs.Copy()
+	bound_height = vehicle_length
+	bound_width = vehicle_width
+	bound_x = initial(bound_x)
+	bound_y = initial(bound_y)
+	SEND_SIGNAL(src, COMSIG_MULTITILE_VEHICLE_ROTATED, loc, new_dir, null, old_locs)
 
 /obj/hitbox/medium/on_attempt_drive(atom/movable/movable_parent, mob/living/user, direction)
 	if(ISDIAGONALDIR(direction))
@@ -475,6 +491,12 @@
 			bound_y = -32
 			root.pixel_x = -40
 			root.pixel_y = -32
+
+	//the bounds changed, anyone who is no longer under the hitbox must stop riding, otherwise they get dragged along while floating
+	for(var/atom/movable/desant AS in tank_desants.Copy())
+		if(desant.loc in locs)
+			continue
+		remove_desant(desant)
 
 	SEND_SIGNAL(src, COMSIG_MULTITILE_VEHICLE_ROTATED, loc, new_dir, null, old_locs)
 
