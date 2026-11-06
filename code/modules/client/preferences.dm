@@ -91,7 +91,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/age = 20
 	var/species = "Human"
 	var/ethnicity = "Western"
-	var/good_eyesight = TRUE
 	var/preferred_squad = "None"
 	var/alternate_option = RETURN_TO_LOBBY
 	///Quick equip slots, up to [MAX_QUICK_EQUIP_SLOTS]. One per quick equip hotkey.
@@ -209,6 +208,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/hear_ooc_anywhere_as_staff = TRUE
 	var/show_ooc_country_flag = TRUE
 
+	/// New TGUI Preference preview
+	var/map_name = "player_pref_map"
+	var/atom/movable/screen/map_view/preference_preview/screen_main
+
 	/// If unique action will only act on the item in the active hand. If false, it will try to act on the item on the inactive hand as well in certain conditions.
 	var/unique_action_use_active_hand = TRUE
 
@@ -250,6 +253,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	parent = C
 
+	// Initialize map objects
+	screen_main = new
+	screen_main.generate_view("screen")
+
 	if(!IsGuestKey(C.key))
 		load_path(C.ckey)
 		loadout_manager = new
@@ -259,7 +266,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			return
 
 	// We don't have a savefile or we failed to load them
-	random_character()
+	random_character(/datum/species/human)
 	menuoptions = list()
 	key_bindings = deep_copy_list(GLOB.hotkey_keybinding_list_by_key) // give them default keybinds and update their movement keys
 	save_keybinds()
@@ -276,9 +283,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 /datum/preferences/proc/ShowChoices(mob/user)
 	if(!user?.client)
-		return
-	if(!SSticker || SSticker.current_state == GAME_STATE_STARTUP)
-		to_chat(src, span_warning("The game is still setting up, please try again later."))
 		return
 
 	update_preview_icon()

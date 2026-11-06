@@ -52,6 +52,7 @@
 #define COOLDOWN_RAVAGER_FLAMER_ACT "cooldown_ravager_flamer_act"
 #define COOLDOWN_DROPPOD_TARGETTING "cooldown_droppod_targetting"
 #define COOLDOWN_TRY_TTS "cooldown_try_tts"
+#define COOLDOWN_CHECK_DISCORD "cooldown_check_discord"
 #define COOLDOWN_EVACUATION "evacuation"
 #define COOLDOWN_SENTIENT_HUGGER "sentient_hugger"
 #define COOLDOWN_EVASION_ACTIVATION "cooldown_evasion_activation"
@@ -73,6 +74,7 @@
 #define COOLDOWN_MECHA_ARMOR "mecha_armor"
 #define COOLDOWN_MECHA_MELEE_ATTACK "mecha_melee"
 #define COOLDOWN_MECHA_SMOKE "mecha_smoke"
+#define COOLDOWN_MECHA_DASH "mecha_dash"
 #define COOLDOWN_MECHA_SKYFALL "mecha_skyfall"
 #define COOLDOWN_MECHA_MISSILE_STRIKE "mecha_missile_strike"
 
