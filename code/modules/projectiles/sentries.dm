@@ -440,6 +440,14 @@ GLOBAL_LIST_INIT(sentry_ignore_List, set_sentry_ignore_List())
 	var/obj/item/weapon/gun/internal_gun = get_internal_item()
 	if(!internal_gun)
 		return
+	if(QDELETED(gun_target)) // Maybe they just got gibbed or deleted.
+		sentry_stop_fire()
+		return
+	if(isliving(gun_target))
+		var/mob/living/living_target = gun_target
+		if(living_target.stat == DEAD)
+			sentry_stop_fire()
+			return
 	if(CHECK_BITFIELD(internal_gun.reciever_flags, AMMO_RECIEVER_REQUIRES_UNIQUE_ACTION) && length(internal_gun.chamber_items))
 		INVOKE_ASYNC(internal_gun, TYPE_PROC_REF(/obj/item/weapon/gun, do_unique_action))
 	if(!CHECK_BITFIELD(internal_gun.deploy_flags, IS_DEPLOYED) || get_dist(src, gun_target) > range || (!CHECK_BITFIELD(get_dir(src, gun_target), dir) && !CHECK_BITFIELD(internal_gun.turret_flags, TURRET_RADIAL)) || !check_target_path(gun_target))
@@ -525,7 +533,12 @@ GLOBAL_LIST_INIT(sentry_ignore_List, set_sentry_ignore_List())
 				continue
 			if(AM.type in GLOB.sentry_ignore_List) //todo:accurately populate GLOB.sentry_ignore_List
 				continue
-			if(AM.allow_pass_flags & (gun.ammo_datum_type::ammo_behavior_flags  & AMMO_ENERGY ? (PASS_GLASS|PASS_PROJECTILE) : PASS_PROJECTILE))
+			if(AM.allow_pass_flags & PASS_GLASS)
+				if(gun.ammo_datum_type::ammo_behavior_flags & AMMO_BLOCKED_BY_GLASS)
+					return FALSE
+				if(gun.ammo_datum_type::ammo_behavior_flags & AMMO_ENERGY)
+					continue
+			if(AM.allow_pass_flags & PASS_PROJECTILE)
 				continue
 			return FALSE
 

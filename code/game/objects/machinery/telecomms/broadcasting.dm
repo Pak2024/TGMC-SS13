@@ -200,9 +200,27 @@
 		hearer.Hear(rendered, virt, language, message, frequency, spans)
 
 	var/atom/movable/speaker = virt?.source
-	var/list/tts_listeners = filter_tts_listeners(speaker, receive, frequency, (frequency == FREQ_COMMAND || frequency == FREQ_COMMAND_SOM) ? RADIO_TTS_COMMAND : NONE)
-	if(length(tts_listeners))
-		INVOKE_ASYNC(SStts, TYPE_PROC_REF(/datum/controller/subsystem/tts, queue_tts_message), speaker, html_decode(message), language, speaker.voice, speaker.voice_filter, tts_listeners, FALSE, pitch = speaker.pitch, special_filters = TTS_FILTER_RADIO, directionality = FALSE)
+
+	var/can_use_tts = TRUE
+	var/static/list/muted_roles = list(
+		SQUAD_MARINE,
+		SQUAD_ENGINEER,
+		SQUAD_CORPSMAN,
+		SQUAD_SMARTGUNNER
+	)
+	if(ishuman(speaker))
+		var/mob/living/carbon/human/human_speaker = speaker
+		if(human_speaker.job && (human_speaker.job.title in muted_roles))
+			if(!human_speaker.assigned_squad || human_speaker.assigned_squad.squad_leader != human_speaker)
+				can_use_tts = FALSE
+
+	if(can_use_tts)
+		var/list/tts_listeners = filter_tts_listeners(speaker, receive, frequency, (frequency == FREQ_COMMAND || frequency == FREQ_COMMAND_SOM) ? RADIO_TTS_COMMAND : NONE)
+		if(length(tts_listeners))
+			var/list/extra_filters = list(TTS_FILTER_RADIO)
+			if(isrobot(speaker))
+				extra_filters += TTS_FILTER_SILICON
+			INVOKE_ASYNC(SStts, TYPE_PROC_REF(/datum/controller/subsystem/tts, queue_tts_message), speaker, html_decode(message), language, speaker.voice, speaker.voice_filter, tts_listeners, FALSE, pitch = speaker.pitch, special_filters = extra_filters.Join("|"), directionality = FALSE)
 
 	var/spans_part = ""
 	if(length(spans))

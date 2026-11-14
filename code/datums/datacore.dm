@@ -3,17 +3,14 @@ GLOBAL_DATUM_INIT(datacore, /datum/datacore, new)
 /datum/data
 	var/name = "data"
 
-
 /datum/data/record
 	name = "record"
 	var/list/fields = list()
-
 
 /datum/datacore
 	var/list/medical = list()
 	var/list/general = list()
 	var/list/security = list()
-
 
 // TODO: cleanup
 /datum/datacore/proc/get_manifest(monochrome, ooc)
@@ -119,67 +116,6 @@ GLOBAL_DATUM_INIT(datacore, /datum/datacore, new)
 	return dat
 
 /// Gathers the information necessary to display the hive's leader/queen status to lobby.
-/datum/datacore/proc/get_xeno_manifest(monochrome)
-	var/even = 0
-
-	var/dat = {"
-	<head><style>
-		.manifest {border-collapse:collapse;}
-		.manifest td, th {border:1px solid [monochrome?"white":"#24252A; background-color:#1B1C1E; color:white"]; padding:.25em}
-		.manifest th {height: 2em; [monochrome?"border-top-width: 3px":"background-color: #123C5E; color:white"]}
-		.manifest tr.head th { [monochrome?"border-top-width: 1px":"background-color: #123C5E;"] }
-		.manifest td:first-child {text-align:right}
-		.manifest tr.alt td {[monochrome?"border-top-width: 2px":"background-color: #36373C"]}
-	</style></head>
-	<table class="manifest" width='350px'>
-	<tr class='head'><th>Caste</th><th>Name</th></tr>
-	"}
-
-	var/datum/hive_status/normal/HN = GLOB.hive_datums[XENO_HIVE_NORMAL]
-	if(HN.living_xeno_ruler)
-		dat += "<tr><th colspan=3>Hive Ruler</th></tr>"
-		dat += "<tr[even ? " class='alt'" : ""]><td>[HN.living_xeno_ruler.xeno_caste.display_name]</td><td>[HN.living_xeno_ruler.name]</td></tr>"
-		even = !even
-
-	if(length(HN.xeno_leader_list) > 0)
-		dat += "<tr><th colspan=3>Hive Leaders</th></tr>"
-		for(var/xeno AS in HN.xeno_leader_list)
-			var/mob/living/carbon/xenomorph/leader = xeno
-			dat += "<tr[even ? " class='alt'" : ""]><td>[leader.xeno_caste.display_name]</td><td>[leader.name]</td></tr>"
-			even = !even
-
-	if(length(HN.xenos_by_tier[XENO_TIER_THREE]))
-		dat += "<tr><th colspan=3>T3 Xenomorphs</th></tr>"
-		for(var/xeno AS in HN.xenos_by_tier[XENO_TIER_THREE])
-			var/mob/living/carbon/xenomorph/t3_xeno = xeno
-			dat += "<tr[even ? " class='alt'" : ""]><td>[t3_xeno.xeno_caste.display_name]</td><td>[t3_xeno.name]</td></tr>"
-			even = !even
-
-	if(length(HN.xenos_by_tier[XENO_TIER_TWO]))
-		dat += "<tr><th colspan=3>T2 Xenomorphs</th></tr>"
-		for(var/xeno AS in HN.xenos_by_tier[XENO_TIER_TWO])
-			var/mob/living/carbon/xenomorph/t2_xeno = xeno
-			dat += "<tr[even ? " class='alt'" : ""]><td>[t2_xeno.xeno_caste.display_name]</td><td>[t2_xeno.name]</td></tr>"
-			even = !even
-
-	if(length(HN.xenos_by_tier[XENO_TIER_ONE]))
-		dat += "<tr><th colspan=3>T1 Xenomorphs</th></tr>"
-		for(var/xeno AS in HN.xenos_by_tier[XENO_TIER_ONE])
-			var/mob/living/carbon/xenomorph/t1_xeno = xeno
-			dat += "<tr[even ? " class='alt'" : ""]><td>[t1_xeno.xeno_caste.display_name]</td><td>[t1_xeno.name]</td></tr>"
-			even = !even
-
-	if(length(HN.xenos_by_tier[XENO_TIER_ZERO]))
-		dat += "<tr><th colspan=3>T0 Xenomorphs</th></tr>"
-		for(var/xeno AS in HN.xenos_by_tier[XENO_TIER_ZERO])
-			var/mob/living/carbon/xenomorph/t0_xeno = xeno
-			dat += "<tr[even ? " class='alt'" : ""]><td>[t0_xeno.xeno_caste.display_name]</td><td>[t0_xeno.name]</td></tr>"
-			even = !even
-
-	dat += "</table>"
-
-	return dat
-
 /datum/datacore/proc/manifest()
 	medical = list()
 	general = list()
@@ -265,8 +201,8 @@ GLOBAL_DATUM_INIT(datacore, /datum/datacore, new)
 	M.fields["alg_d"] = "No allergies have been detected in this patient."
 	M.fields["cdi"] = "None"
 	M.fields["cdi_d"] = "No diseases have been diagnosed at the moment."
-	M.fields["last_scan_time"] = null
-	M.fields["last_scan_result"] = "No scan data on record" // body scanner results
+	M.fields["historic_scan"] = null
+	M.fields["historic_scan_time"] = 0
 	M.fields["autodoc_data"] = list()
 	M.fields["autodoc_manual"] = list()
 	if(H.med_record)
@@ -340,9 +276,25 @@ GLOBAL_DATUM_INIT(datacore, /datum/datacore, new)
 	M.fields["alg_d"] = "No allergies have been detected in this patient."
 	M.fields["cdi"] = "None"
 	M.fields["cdi_d"] = "No diseases have been diagnosed at the moment."
-	M.fields["last_scan_time"] = 0
-	M.fields["last_scan_result"] = "No scan data on record"
+	M.fields["historic_scan"] = null
+	M.fields["historic_scan_time"] = 0
 	M.fields["autodoc_data"] = list()
 	M.fields["autodoc_manual"] = list()
 	GLOB.datacore.medical += M
 	return M
+
+/**
+ * Finds and returns the medical record of `human` using their `real_name`.
+ *
+ * Setting `allow_record_creation` to TRUE will allow creating and returning a
+ * fresh record datum if one can't be found. Otherwise, null will be returned
+ * if no record can be found and creation isn't allowed.
+ */
+/proc/find_medical_record(mob/living/carbon/human/human, allow_record_creation = FALSE)
+	var/datum/data/record/final_record
+	for(var/datum/data/record/candidate in GLOB.datacore.medical)
+		if(candidate.fields["name"] == human.real_name)
+			final_record = candidate
+	if(isnull(final_record) && allow_record_creation)
+		final_record = create_medical_record(human)
+	return final_record

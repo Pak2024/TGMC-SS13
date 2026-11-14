@@ -187,7 +187,7 @@
 
 	visible_message(span_warning("[src] throws [thrown_thing]."), null, null, 5)
 
-	playsound(src, 'sound/effects/throw.ogg', 30, 1)
+	playsound(src, SFX_THROW, min(10*min(get_dist(loc,target),thrown_thing.throw_range), 30), 1)
 
 	thrown_thing.throw_at(target, thrown_thing.throw_range + throw_modifiers["range_modifier"], max(1, thrown_thing.throw_speed + throw_modifiers["speed_modifier"]), src, spin_throw, !throw_modifiers["targetted_throw"], throw_modifiers["targetted_throw"])
 
@@ -316,9 +316,14 @@
 	if(!length(gear))
 		return
 
+	var/mob/living/carbon/human/human_mob = ishuman(src) ? src : null
+	var/player_squad = human_mob?.assigned_squad?.name || P.preferred_squad
+
 	for(var/i in GLOB.gear_datums)
 		var/datum/gear/G = GLOB.gear_datums[i]
 		if(!G || !gear.Find(i))
+			continue
+		if(G.squad && G.squad != player_squad)
 			continue
 		if(!equip_to_slot_or_del(new G.path, G.slot)) //try to put in the slot it says its supposed to go, if you can't: put it in a bag
 			equip_to_slot_or_del(new G.path, SLOT_IN_BACKPACK)

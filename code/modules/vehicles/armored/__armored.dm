@@ -174,6 +174,12 @@
 	if(armored_flags & ARMORED_HAS_HEADLIGHTS)
 		initialize_controller_action_type(/datum/action/vehicle/sealed/armored/toggle_lights, VEHICLE_CONTROL_SETTINGS)
 	initialize_controller_action_type(/datum/action/vehicle/sealed/armored/horn, VEHICLE_CONTROL_SETTINGS)
+	//Мегафончик
+	initialize_controller_action_type(/datum/action/vehicle/sealed/armored/megaphone, VEHICLE_CONTROL_SETTINGS)
+	//Стреляла тоже хочет ворчать
+	initialize_controller_action_type(/datum/action/vehicle/sealed/armored/megaphone, VEHICLE_CONTROL_EQUIPMENT)
+
+
 	if(interior)
 		return
 	initialize_passenger_action_type(/datum/action/vehicle/sealed/armored/eject)
@@ -229,7 +235,12 @@
 		. += "Middle click to toggle weapon safety."
 		. += "It's currently holding [LAZYLEN(occupants)]/[max_occupants] crew."
 	. += span_notice("There is [isnull(primary_weapon) ? "nothing" : "[primary_weapon]"] in the primary attachment point, [isnull(secondary_weapon) ? "nothing" : "[secondary_weapon]"] installed in the secondary slot, [isnull(driver_utility_module) ? "nothing" : "[driver_utility_module]"] in the driver utility slot and [isnull(gunner_utility_module) ? "nothing" : "[gunner_utility_module]"] in the gunner utility slot.")
-	if(!isxeno(user))
+	var/is_fallen_xeno = FALSE
+	if(isxeno(user))
+		if(HAS_TRAIT(user, TRAIT_VALHALLA_XENO))
+			is_fallen_xeno = TRUE
+
+	if(!isxeno(user) || is_fallen_xeno)
 		. += "<b>It is currently at <u>[PERCENT(obj_integrity / max_integrity)]%</u> integrity.</b>"
 
 /obj/vehicle/sealed/armored/get_mechanics_info()

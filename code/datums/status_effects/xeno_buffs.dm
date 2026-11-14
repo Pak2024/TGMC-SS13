@@ -413,7 +413,7 @@
 	new /obj/effect/temp_visual/telekinesis(get_turf(owner_xeno))
 	to_chat(owner_xeno, span_notice("We feel our wounds close up."))
 
-	var/amount = owner_xeno.maxHealth * GORGER_REJUVENATE_HEAL
+	var/amount = (owner_xeno.maxHealth * GORGER_REJUVENATE_HEAL) * 1.5
 	owner_xeno.heal_xeno_damage(amount, FALSE)
 	tick_damage = 0
 
@@ -678,10 +678,12 @@
 	if(xeno_owner.plasma_stored < plasma_drain)
 		to_chat(xeno_owner, span_notice("Our feast has come to an end..."))
 		xeno_owner.remove_status_effect(STATUS_EFFECT_XENO_FEAST)
+		return
 
 	var/heal_amount = xeno_owner.maxHealth * 0.08
-	xeno_owner.heal_xeno_damage(heal_amount, FALSE)
-	xeno_owner.adjust_overheal(heal_amount * 0.5)
+	var/self_heal_amount = heal_amount * 1.5
+	xeno_owner.heal_xeno_damage(self_heal_amount, FALSE)
+	xeno_owner.adjust_overheal(self_heal_amount * 0.5)
 	xeno_owner.use_plasma(plasma_drain)
 
 	for(var/mob/living/carbon/xenomorph/target_xeno AS in cheap_get_xenos_near(xeno_owner, 4))
@@ -781,8 +783,10 @@
 	var/health_ticks_remaining
 	///Sunder recovery ticks
 	var/sunder_ticks_remaining
+	/// Should the TRAIT_INNATE_HEALING trait be given?
+	var/innate_healing = FALSE
 
-/datum/status_effect/healing_infusion/on_creation(mob/living/new_owner, set_duration = HIVELORD_HEALING_INFUSION_DURATION, stacks_to_apply = HIVELORD_HEALING_INFUSION_TICKS)
+/datum/status_effect/healing_infusion/on_creation(mob/living/new_owner, set_duration = HIVELORD_HEALING_INFUSION_DURATION, stacks_to_apply = HIVELORD_HEALING_INFUSION_TICKS, new_innate_healing)
 	if(!isxeno(new_owner))
 		CRASH("something applied [id] on a nonxeno, dont do that")
 
@@ -790,6 +794,8 @@
 	owner = new_owner
 	health_ticks_remaining = stacks_to_apply //Apply stacks
 	sunder_ticks_remaining = stacks_to_apply
+	if(new_innate_healing)
+		innate_healing = new_innate_healing
 	return ..()
 
 
@@ -798,12 +804,16 @@
 	if(!.)
 		return
 	ADD_TRAIT(owner, TRAIT_HEALING_INFUSION, TRAIT_STATUS_EFFECT(id))
+	if(innate_healing)
+		ADD_TRAIT(owner, TRAIT_INNATE_HEALING, TRAIT_STATUS_EFFECT(id))
 	owner.add_filter("hivelord_healing_infusion_outline", 3, outline_filter(1, COLOR_VERY_PALE_LIME_GREEN)) //Set our cool aura; also confirmation we have the buff
 	RegisterSignal(owner, COMSIG_XENOMORPH_HEALTH_REGEN, PROC_REF(healing_infusion_regeneration)) //Register so we apply the effect whenever the target heals
 	RegisterSignal(owner, COMSIG_XENOMORPH_SUNDER_REGEN, PROC_REF(healing_infusion_sunder_regeneration)) //Register so we apply the effect whenever the target heals
 
 /datum/status_effect/healing_infusion/on_remove()
 	REMOVE_TRAIT(owner, TRAIT_HEALING_INFUSION, TRAIT_STATUS_EFFECT(id))
+	if(innate_healing)
+		REMOVE_TRAIT(owner, TRAIT_INNATE_HEALING, TRAIT_STATUS_EFFECT(id))
 	owner.remove_filter("hivelord_healing_infusion_outline")
 	UnregisterSignal(owner, list(COMSIG_XENOMORPH_HEALTH_REGEN, COMSIG_XENOMORPH_SUNDER_REGEN))
 
@@ -986,7 +996,7 @@
 /datum/status_effect/blessing/warding/on_apply()
 	if(!isxeno(owner))
 		return FALSE
-	armor_modifier = getArmor(37.8 * strength, 8.1 * strength, 13.5 * strength, 8.1 * strength)
+	armor_modifier = getArmor(15, 15, 15, 15)
 	owner.soft_armor = owner.soft_armor.attachArmor(armor_modifier)
 	return TRUE
 
@@ -1415,3 +1425,24 @@
 	var/mob/living/carbon/xenomorph/xeno_owner = owner
 	xeno_owner.xeno_melee_damage_modifier -= damage_modifier
 	xeno_owner.remove_filter("[id]_outline")
+
+// ***************************************
+// *********** Xenomorph cloaking (cloaking gas of Cloaking Mirage)
+// ***************************************
+/datum/status_effect/xenomorph_cloaking
+	id = "xenomorph_cloaking"
+	duration = -1
+	status_type = STATUS_EFFECT_UNIQUE
+	alert_type = null
+
+/datum/status_effect/xenomorph_cloaking/on_apply()
+	if(!isxeno(owner))
+		return FALSE
+	animate(owner, 0.5 SECONDS, alpha = HUNTER_STEALTH_STILL_ALPHA)
+	return TRUE
+
+/datum/status_effect/xenomorph_cloaking/on_remove()
+	// Hunter's Stealth manages the alpha by itself while it is active.
+	if(!HAS_TRAIT(owner, TRAIT_STEALTH))
+		animate(owner, 0.5 SECONDS, alpha = 255)
+	return ..()

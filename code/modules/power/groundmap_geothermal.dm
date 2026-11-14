@@ -4,6 +4,7 @@
 #define GEOTHERMAL_HEAVY_DAMAGE 3
 
 GLOBAL_VAR_INIT(generators_on_ground, 0)
+GLOBAL_LIST_EMPTY(geothermal_generators)
 
 /obj/machinery/power/geothermal
 	name = "\improper G-11 geothermal generator"
@@ -36,6 +37,7 @@ GLOBAL_VAR_INIT(generators_on_ground, 0)
 	update_minimap_icon()
 
 	if(is_ground_level(z))
+		GLOB.geothermal_generators += src
 		GLOB.generators_on_ground += 1
 
 	if(corrupted)
@@ -43,6 +45,7 @@ GLOBAL_VAR_INIT(generators_on_ground, 0)
 
 /obj/machinery/power/geothermal/Destroy() //just in case
 	if(is_ground_level(z))
+		GLOB.geothermal_generators -= src
 		GLOB.generators_on_ground -= 1
 	return ..()
 
@@ -179,7 +182,7 @@ GLOBAL_VAR_INIT(generators_on_ground, 0)
 		return TRUE
 	return FALSE //Nope, all fine
 
-/obj/machinery/power/geothermal/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/machinery/power/geothermal/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	. = ..()
 	if(corrupted) //you have no reason to interact with it if its already corrupted
 		return

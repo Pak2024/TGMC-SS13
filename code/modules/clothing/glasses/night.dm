@@ -67,43 +67,76 @@
 	vision_flags = SEE_TURFS
 	prescription = TRUE
 
-/obj/item/clothing/glasses/night/optgoggles
-	name = "\improper Optical imager ballistic goggles"
-	desc = "Standard issue TGMC goggles. This pair has been fitted with an internal optical imaging scanner."
+/obj/item/clothing/glasses/night/bigsunglasses
+	name = "\improper KTLD designer sunglasses"
+	desc = "A pair of larger than average designer sunglasses. This pair has been fitted with a KTLD head mounted sight."
+	icon_state = "optsunglasses"
+	worn_icon_state = "optsunglasses"
+	deactive_state = "bigsunglasses"
+	toggleable = TRUE
+	vision_flags = SEE_TURFS
+	prescription = TRUE
+	species_exception = list(/datum/species/robot)
+
+/obj/item/clothing/glasses/night/eyepatch
+	name = "\improper KTLD eyepatch"
+	desc = "An eyepatch fitted with a KTLD head mounted sight."
+	icon_state = "optpatch"
+	worn_icon_state = "optpatch"
+	deactive_state = "deactivated_patch"
+	toggleable = TRUE
+	vision_flags = SEE_TURFS
+	armor_protection_flags = NONE
+	/// То, какой глаз закрывает повязка (FALSE = левый, TRUE = правый)
+	var/right_eye = FALSE
+	species_exception = list(/datum/species/robot)
+
+/obj/item/clothing/glasses/night/eyepatch/update_icon_state()
+	. = ..()
+	if(active)
+		icon_state = right_eye ? "optpatch_a" : "optpatch"
+	else
+		icon_state = right_eye ? "deactivated_patch_a" : "deactivated_patch"
+	worn_icon_state = icon_state
+
+/obj/item/clothing/glasses/night/eyepatch/verb/switcheye()
+	set name = "Switch Eyepatch Side"
+	set category = "IC.Clothing"
+	set src in usr
+
+	if(!isliving(usr) || usr.incapacitated())
+		return
+
+	right_eye = !right_eye
+	to_chat(usr, span_notice("You adjust the eyepatch to cover your [right_eye ? "right" : "left"] eye."))
+	update_icon()
+	if(ismob(loc))
+		var/mob/user = loc
+		user.update_inv_glasses()
+
+/obj/item/clothing/glasses/night/mgoggles
+	name = "\improper KTLD marine ballistic goggles"
+	desc = "Standard issue TGMC goggles. This pair has been fitted with a KTLD head mounted sight."
 	icon_state = "optgoggles"
 	worn_icon_state = "optgoggles"
 	deactive_state = "deactivated_mgoggles"
 	toggleable = TRUE
+	vision_flags = SEE_TURFS
 	soft_armor = list(MELEE = 40, BULLET = 40, LASER = 0, ENERGY = 15, BOMB = 35, BIO = 10, FIRE = 30, ACID = 30)
+	equip_slot_flags = ITEM_SLOT_EYES|ITEM_SLOT_MASK
 	goggles_layer = TRUE
-	lighting_cutoff = LIGHTING_CUTOFF_REAL_LOW
+	w_class = WEIGHT_CLASS_TINY
+	species_exception = list(/datum/species/robot)
 
-/obj/item/clothing/glasses/night/optgoggles/prescription
-	name = "\improper Optical imager prescription ballistic goggles"
-	desc = "Standard issue TGMC prescription goggles. This pair has been fitted with an internal optical imaging scanner."
-	prescription = TRUE
-
-/obj/item/clothing/glasses/night/imager_goggles
-	name = "optical imager goggles"
-	desc = "Uses image scanning to increase visibility of even the most dimly lit surroundings except total darkness"
-	icon_state = "securityhud"
-	deactive_state = "deactivated_sec" // there are differences in mob sprite
+/obj/item/clothing/glasses/night/orange
+	name = "\improper KTLD orange glasses"
+	desc = "A pair of orange glasses. This pair has been fitted with a KTLD head mounted sight."
+	icon_state = "optical_orange"
+	worn_icon_state = "optical_orange"
+	deactive_state = "deactivated_orange"
 	toggleable = TRUE
-	lighting_cutoff = LIGHTING_CUTOFF_REAL_LOW
-
-/obj/item/clothing/glasses/night/imager_goggles/sunglasses
-	name = "\improper Optical imager sunglasses"
-	desc = "A pair of designer sunglasses. This pair has been fitted with an internal optical imager scanner."
-	icon_state = "optsunglasses"
-	worn_icon_state = "optsunglasses"
-	deactive_state = "deactivated_sunglasses"
-	sprite_sheets = list("Combat Robot" = 'icons/mob/species/robot/glasses.dmi')
-
-/obj/item/clothing/glasses/night/imager_goggles/eyepatch
-	name = "\improper Meson eyepatch"
-	desc = "An eyepatch fitted with the optical imager interface. For the disabled and/or edgy Marine."
-	icon_state = "optpatch"
-	deactive_state = "deactivated_patch"
+	vision_flags = SEE_TURFS
+	species_exception = list(/datum/species/robot)
 
 /obj/item/clothing/glasses/night/yautja
 	name = "bio-mask nightvision"

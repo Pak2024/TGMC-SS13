@@ -609,6 +609,8 @@
 	var/mob/living/carbon/xenomorph/debuff_creator
 	/// Used for the fire effect.
 	var/obj/vis_melt_fire/visual_fire
+	/// The percentage of brute/burn healing that is negated for the owner. Set from the pyrogen that last added stacks (Burnt Wounds).
+	var/healing_debuff = 0
 
 /obj/vis_melt_fire
 	name = "ouch ouch ouch"
@@ -628,10 +630,13 @@
 	debuff_owner.balloon_alert(debuff_owner, "Melting fire")
 	playsound(debuff_owner.loc, 'sound/bullets/acid_impact1.ogg', 30)
 	RegisterSignal(debuff_owner, COMSIG_LIVING_DO_RESIST, PROC_REF(call_resist_debuff))
+	set_healing_debuff(new_creator)
 
 /// on remove has owner set to null
 /datum/status_effect/stacking/melting_fire/on_remove()
 	owner.vis_contents -= visual_fire
+	UnregisterSignal(owner, list(COMSIG_HUMAN_BRUTE_DAMAGE, COMSIG_HUMAN_BURN_DAMAGE))
+	healing_debuff = 0
 	debuff_owner = null
 	QDEL_NULL(visual_fire)
 	return ..()
@@ -655,6 +660,33 @@
 		return
 	debuff_creator.heal_xeno_damage(2, FALSE)
 	debuff_creator.gain_plasma(5, TRUE)
+
+/datum/status_effect/stacking/melting_fire/add_stacks(stacks_added, atom/xeno_creator)
+	. = ..()
+	// Only an explicit creator updates the healing reduction. Decay (no creator) must not reset it.
+	if(xeno_creator && !QDELETED(src))
+		set_healing_debuff(xeno_creator)
+
+/// Sets the healing reduction from the given pyrogen's melting_fire_healing_reduction, and (un)registers the damage signals accordingly.
+/datum/status_effect/stacking/melting_fire/proc/set_healing_debuff(atom/xeno_creator)
+	if(!debuff_owner)
+		return
+	var/new_healing_debuff = 0
+	if(isxenopyrogen(xeno_creator))
+		var/mob/living/carbon/xenomorph/pyrogen/pyrogen_creator = xeno_creator
+		new_healing_debuff = pyrogen_creator.melting_fire_healing_reduction
+	if(healing_debuff && !new_healing_debuff)
+		UnregisterSignal(debuff_owner, list(COMSIG_HUMAN_BRUTE_DAMAGE, COMSIG_HUMAN_BURN_DAMAGE))
+	else if(!healing_debuff && new_healing_debuff)
+		RegisterSignals(debuff_owner, list(COMSIG_HUMAN_BRUTE_DAMAGE, COMSIG_HUMAN_BURN_DAMAGE), PROC_REF(on_heal))
+	healing_debuff = new_healing_debuff
+
+/// If the owner heals, a percentage of that healing is negated.
+/datum/status_effect/stacking/melting_fire/proc/on_heal(datum/source, amount, list/amount_mod)
+	SIGNAL_HANDLER
+	if(amount >= 0 || !healing_debuff)
+		return
+	amount_mod += floor(amount) * healing_debuff
 
 /// Called when the debuff's owner uses the Resist action for this debuff.
 /datum/status_effect/stacking/melting_fire/proc/call_resist_debuff()
@@ -1015,7 +1047,7 @@
 	. = ..()
 	playsound(owner.loc, "sound/bullets/acid_impact1.ogg", 30)
 	particle_holder = new(owner, /particles/melting_acid_status)
-	particle_holder.particles.spawning = 1 + round(stacks / 4)
+	particle_holder.particles.spawning = 1 + round(stacks / 2)
 
 /datum/status_effect/stacking/melting_acid/on_remove()
 	QDEL_NULL(particle_holder)
@@ -1026,7 +1058,7 @@
 	if(!owner)
 		return
 	playsound(owner.loc, "sound/bullets/acid_impact1.ogg", 4)
-	particle_holder.particles.spawning = 1 + round(stacks / 4)
+	particle_holder.particles.spawning = 1 + round(stacks / 2)
 	particle_holder.pixel_x = -2
 	particle_holder.pixel_y = 0
 	owner.apply_damage(5, BURN, null, ACID)
@@ -1052,3 +1084,16 @@
 	scale = generator(GEN_VECTOR, list(0.3, 0.3), list(1, 1), NORMAL_RAND)
 	friction = -0.05
 	color = "#59ff4a"
+
+// ***************************************
+// *********** Lifedrain
+// ***************************************
+/datum/status_effect/incapacitating/lifedrain
+	id = "life_drain"
+	duration = 10 SECONDS
+	alert_type = /atom/movable/screen/alert/status_effect/lifedrain
+
+/atom/movable/screen/alert/status_effect/lifedrain
+	name = "Lifedrain"
+	desc = "Your life force transfers to xenos when they slash you!"
+	icon_state = "skullemoji"

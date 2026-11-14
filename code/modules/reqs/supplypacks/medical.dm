@@ -19,7 +19,7 @@
 	contains = list(
 		/obj/item/reagent_containers/hypospray/autoinjector/sulfasalazine,
 	)
-	cost = 250
+	cost = 175
 
 /datum/supply_packs/medical/biomass
 	name = "Biomass beaker"
@@ -34,6 +34,11 @@
 		/obj/item/clothing/glasses/hud/health,
 	)
 	cost = 20
+
+/datum/supply_packs/medical/Med_hud_implant
+	name = "Medical HUD implanter"
+	contains = list(/obj/item/implanter/hud/medical)
+	cost = 75
 
 /datum/supply_packs/medical/medical
 	name = "Pills and chemicals"
@@ -183,7 +188,7 @@
 /datum/supply_packs/medical/healthanalyzer_gloves
 	name = "Health scanner gloves"
 	notes = "contains health scanner gloves."
-	contains = list(/obj/item/healthanalyzer/gloves)
+	contains = list(/obj/item/clothing/gloves/healthanalyzer)
 	cost = 60
 	containertype = /obj/structure/closet/crate/secure/surgery
 	access = ACCESS_MARINE_MEDBAY
@@ -237,6 +242,14 @@
 		/obj/item/stack/nanopaste,
 	) // Кто-то скажет, что это имба, а я вам скажу, что этот набор уже есть в игре буквально самой первой строчкой в медкарго, я просто перепаковал его выставив на общее обозрение.
 	cost = 300
+
+/datum/supply_packs/medical/cryomix
+	name = "Cryo beaker"
+	notes = "contains cryomix beaker"
+	contains = list (
+		/obj/item/reagent_containers/glass/beaker/cryomix,
+	)
+	cost = 250
 
 /datum/supply_packs/medical/combat_robot_medicine
 	name = "Combat repairing for robots"

@@ -157,6 +157,7 @@
 	READ_FILE(S["sound_tts"], sound_tts)
 	READ_FILE(S["volume_tts"], volume_tts)
 	READ_FILE(S["radio_tts_flags"], radio_tts_flags)
+	READ_FILE(S["accessible_tgui_themes"], accessible_tgui_themes)
 	READ_FILE(S["fast_mc_refresh"], fast_mc_refresh)
 	READ_FILE(S["split_admin_tabs"], split_admin_tabs)
 	READ_FILE(S["hear_ooc_anywhere_as_staff"], hear_ooc_anywhere_as_staff)
@@ -394,6 +395,7 @@
 	WRITE_FILE(S["sound_tts"], sound_tts)
 	WRITE_FILE(S["volume_tts"], volume_tts)
 	WRITE_FILE(S["radio_tts_flags"], radio_tts_flags)
+	WRITE_FILE(S["accessible_tgui_themes"], accessible_tgui_themes)
 	WRITE_FILE(S["slot_draw_order"], slot_draw_order_pref)
 	WRITE_FILE(S["status_toggle_flags"], status_toggle_flags)
 
@@ -491,7 +493,6 @@
 	READ_FILE(S["age"], age)
 	READ_FILE(S["species"], species)
 	READ_FILE(S["ethnicity"], ethnicity)
-	READ_FILE(S["good_eyesight"], good_eyesight)
 	READ_FILE(S["preferred_squad"], preferred_squad)
 	READ_FILE(S["alternate_option"], alternate_option)
 	READ_FILE(S["job_preferences"], job_preferences)
@@ -525,6 +526,9 @@
 	READ_FILE(S["citizenship"], citizenship)
 	READ_FILE(S["religion"], religion)
 
+	READ_FILE(S["tts_voice"], tts_voice)
+	READ_FILE(S["tts_pitch"], tts_pitch)
+
 	READ_FILE(S["med_record"], med_record)
 	READ_FILE(S["sec_record"], sec_record)
 	READ_FILE(S["gen_record"], gen_record)
@@ -547,7 +551,6 @@
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
 	species = sanitize_inlist(species, GLOB.all_species, initial(species))
 	ethnicity = sanitize_ethnicity(ethnicity)
-	good_eyesight = sanitize_integer(good_eyesight, FALSE, TRUE, initial(good_eyesight))
 	preferred_squad = sanitize_inlist(preferred_squad, SELECTABLE_SQUADS, initial(preferred_squad))
 	alternate_option = sanitize_integer(alternate_option, 0, 2, initial(alternate_option))
 	job_preferences = SANITIZE_LIST(job_preferences)
@@ -595,7 +598,7 @@
 	religion = sanitize_inlist(religion, RELIGION_CHOICES, initial(religion))
 
 	tts_voice = sanitize_inlist_tts(tts_voice)
-	tts_pitch = sanitize_integer(tts_pitch, -12, 12, initial(tts_pitch))
+	tts_pitch = sanitize_integer(tts_pitch, -2, 2, initial(tts_pitch))
 
 	med_record = sanitize_text(med_record, initial(med_record))
 	sec_record = sanitize_text(sec_record, initial(sec_record))
@@ -667,7 +670,6 @@
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
 	species = sanitize_inlist(species, GLOB.all_species, initial(species))
 	ethnicity = sanitize_ethnicity(ethnicity)
-	good_eyesight = sanitize_integer(good_eyesight, FALSE, TRUE, initial(good_eyesight))
 	preferred_squad = sanitize_inlist(preferred_squad, SELECTABLE_SQUADS, initial(preferred_squad))
 	alternate_option = sanitize_integer(alternate_option, 0, 2, initial(alternate_option))
 	job_preferences = SANITIZE_LIST(job_preferences)
@@ -758,7 +760,6 @@
 	WRITE_FILE(S["age"], age)
 	WRITE_FILE(S["species"], species)
 	WRITE_FILE(S["ethnicity"], ethnicity)
-	WRITE_FILE(S["good_eyesight"], good_eyesight)
 	WRITE_FILE(S["preferred_squad"], preferred_squad)
 	WRITE_FILE(S["alternate_option"], alternate_option)
 	WRITE_FILE(S["job_preferences"], job_preferences)
@@ -791,6 +792,9 @@
 
 	WRITE_FILE(S["citizenship"], citizenship)
 	WRITE_FILE(S["religion"], religion)
+
+	WRITE_FILE(S["tts_voice"], tts_voice)
+	WRITE_FILE(S["tts_pitch"], tts_pitch)
 
 	WRITE_FILE(S["med_record"], med_record)
 	WRITE_FILE(S["sec_record"], sec_record)
