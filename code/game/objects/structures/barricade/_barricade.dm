@@ -44,6 +44,11 @@
 		faction = user.faction
 
 /obj/structure/barricade/handle_barrier_chance(mob/living/M)
+	if(istype(M, /mob/living/carbon/xenomorph))
+		var/mob/living/carbon/xenomorph/X = M
+		if(istype(X.xeno_caste, /datum/xeno_caste/warrior/bulwark))
+			return prob(25)
+
 	return prob(max(30, (100 * obj_integrity) / max_integrity))
 
 /obj/structure/barricade/examine(mob/user)
@@ -79,13 +84,16 @@
 /obj/structure/barricade/attack_animal(mob/user)
 	return attack_alien(user)
 
-/obj/structure/barricade/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/structure/barricade/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	if(xeno_attacker.status_flags & INCORPOREAL)
 		return FALSE
 
 	if(is_wired)
 		balloon_alert(xeno_attacker, "Wire slices into us")
-		xeno_attacker.apply_damage(10, blocked = MELEE , sharp = TRUE, updating_health = TRUE)
+		var/damage_to_deal = 10
+		if(istype(xeno_attacker.xeno_caste, /datum/xeno_caste/warrior/bulwark))
+			damage_to_deal = 5
+		xeno_attacker.apply_damage(damage_to_deal, blocked = MELEE , sharp = TRUE, updating_health = TRUE)
 	return ..()
 
 /obj/structure/barricade/attackby(obj/item/I, mob/user, params)
@@ -110,7 +118,7 @@
 		balloon_alert(user, "It's melting!")
 		return TRUE
 
-	playsound(loc, 'sound/effects/barbed_wire_movement.ogg', 25, 1)
+	playsound(loc, 'sound/effects/barbed_wire_movement.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 	B.use(1)
 	wire()
@@ -131,7 +139,7 @@
 	if(!do_after(user, 2 SECONDS, NONE, src, BUSY_ICON_BUILD))
 		return TRUE
 
-	playsound(loc, 'sound/items/wirecutter.ogg', 25, TRUE)
+	playsound(loc, 'sound/items/wirecutter.ogg', 25, TRUE, MEDIUM_SOUND_RANGE)
 	balloon_alert_to_viewers("Removes the barbed wire")
 	modify_max_integrity(max_integrity - 50)
 	can_wire = TRUE

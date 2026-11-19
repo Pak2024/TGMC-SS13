@@ -78,7 +78,7 @@
 		if(WT.remove_fuel(1, user))
 			user.visible_message(span_notice("[user] starts welding [src] with [WT]."), \
 			span_notice("You start welding [src] with [WT]."))
-			playsound(loc, 'sound/items/weldingtool_weld.ogg', 25)
+			playsound(loc, 'sound/items/weldingtool_weld.ogg', 25, FALSE, MEDIUM_SOUND_RANGE)
 			if(I.use_tool(src, user, 5 SECONDS, 1, 25, null, BUSY_ICON_BUILD)) // todo clean this proc up its so bay-ey :(
 				if(!welded)
 					user.visible_message(span_notice("[user] welds [src] shut."), \
@@ -127,7 +127,7 @@
 	..()
 	update_icon_nopipes()
 
-/obj/machinery/atmospherics/components/unary/vent_pump/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/machinery/atmospherics/components/unary/vent_pump/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	if(xeno_attacker.status_flags & INCORPOREAL)
 		return
 	if(!welded || !(do_after(xeno_attacker, 2 SECONDS, IGNORE_HELD_ITEM, src, BUSY_ICON_HOSTILE)))

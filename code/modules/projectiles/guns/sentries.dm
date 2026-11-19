@@ -211,7 +211,7 @@
 
 	icon_state = initial(icon_state) + "_active"
 	active = TRUE
-	playsound(loc, arm_sound, 25, 1, 6)
+	playsound(loc, arm_sound, 25, 1, SHORT_SOUND_RANGE)
 	var/obj/item/card/id/user_id = user?.get_idcard(TRUE)
 	if(user_id)
 		sentry_iff_signal = user_id?.iff_signal
@@ -239,7 +239,26 @@
 	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE
 
 /obj/item/weapon/gun/sentry/basic/premade/radial
-	turret_range = 9
+	turret_flags = TURRET_HAS_CAMERA|TURRET_ALERTS|TURRET_RADIAL
+	item_flags = TWOHANDED
+	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE|DEPLOYED_NO_PICKUP
+
+/obj/item/weapon/gun/sentry/mini/premade/radial
+	turret_flags = TURRET_HAS_CAMERA|TURRET_ALERTS|TURRET_RADIAL
+	item_flags = TWOHANDED
+	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE|DEPLOYED_NO_PICKUP
+
+/obj/item/weapon/gun/sentry/sniper/premade/radial
+	turret_flags = TURRET_HAS_CAMERA|TURRET_ALERTS|TURRET_RADIAL
+	item_flags = TWOHANDED
+	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE|DEPLOYED_NO_PICKUP
+
+/obj/item/weapon/gun/sentry/shotgun/premade/radial
+	turret_flags = TURRET_HAS_CAMERA|TURRET_ALERTS|TURRET_RADIAL
+	item_flags = TWOHANDED
+	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE|DEPLOYED_NO_PICKUP
+
+/obj/item/weapon/gun/sentry/flamer/premade/radial
 	turret_flags = TURRET_HAS_CAMERA|TURRET_ALERTS|TURRET_RADIAL
 	item_flags = TWOHANDED
 	deploy_flags = IS_DEPLOYABLE|DEPLOY_ON_INITIALIZE|DEPLOYED_NO_PICKUP

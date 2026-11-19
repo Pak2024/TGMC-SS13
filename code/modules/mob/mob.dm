@@ -14,6 +14,8 @@
 		client = null
 	clear_fullscreens()
 	if(mind)
+		if(mind.current == src)
+			mind.current = null
 		mind = null
 	if(hud_used)
 		QDEL_NULL(hud_used)
@@ -850,7 +852,7 @@
 /// Updates the grab state of the mob and updates movespeed
 /mob/setGrabState(newstate)
 	. = ..()
-	if(isnull(.))
+	if(!.)
 		return
 	if(grab_state == GRAB_PASSIVE)
 		remove_movespeed_modifier(MOVESPEED_ID_MOB_GRAB_STATE)

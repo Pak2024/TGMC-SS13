@@ -38,7 +38,7 @@
 	user.do_attack_animation(src, used_item = I)
 	I.cut_apart(user, name, src, charge_cost)
 	take_damage(max(0, I.force * (2 + PLASMACUTTER_RESIN_MULTIPLIER)), I.damtype, MELEE)
-	playsound(src, SFX_ALIEN_RESIN_BREAK, 25)
+	playsound(src, SFX_ALIEN_RESIN_BREAK, 25, FALSE, MEDIUM_SOUND_RANGE)
 	return TRUE
 
 /turf/closed/wall/resin/thick
@@ -78,7 +78,7 @@
 /turf/closed/wall/resin/ex_act(severity)
 	take_damage(severity * RESIN_EXPLOSIVE_MULTIPLIER, BRUTE, BOMB)
 
-/turf/closed/wall/resin/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/turf/closed/wall/resin/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	if(xeno_attacker.status_flags & INCORPOREAL)
 		return
 	if(xeno_attacker.a_intent != INTENT_HARM)
@@ -96,7 +96,7 @@
 	xeno_attacker.do_attack_animation(src, ATTACK_EFFECT_CLAW)
 	xeno_attacker.visible_message(span_xenonotice("\The [xeno_attacker] tears down \the [src]!"), \
 	span_xenonotice("We tear down \the [src]."))
-	playsound(src, SFX_ALIEN_RESIN_BREAK, 25)
+	playsound(src, SFX_ALIEN_RESIN_BREAK, 25, FALSE, MEDIUM_SOUND_RANGE)
 	dismantle_wall()
 
 /turf/closed/wall/resin/attack_hand(mob/living/user)
@@ -117,7 +117,7 @@
 
 	damage *= max(0, multiplier)
 	take_damage(damage, I.damtype, MELEE)
-	playsound(src, SFX_ALIEN_RESIN_BREAK, 25)
+	playsound(src, SFX_ALIEN_RESIN_BREAK, 25, FALSE, MEDIUM_SOUND_RANGE)
 
 /turf/closed/wall/resin/dismantle_wall()
 	ScrapeAway()

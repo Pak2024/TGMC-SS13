@@ -51,8 +51,8 @@
 	desc = "A standard issued TGMC turtleneck colored blue, with a slight hint of bravery."
 	icon_state = "delta_merc"
 
-/obj/item/clothing/under/marine/squad/neck/charile
-	name = "\improper TGMC Charile turtleneck"
+/obj/item/clothing/under/marine/squad/neck/charlie
+	name = "\improper TGMC Charlie turtleneck"
 	desc = "A standard issued TGMC turtleneck colored purple, you're reminded of how proper squad cohesion can make or break a mission."
 	icon_state = "charlie_merc"
 
@@ -372,7 +372,6 @@
 	desc = "A beige suit with a red armband. Sturdy and thick, simply imposing. A mysterious crest emblazons it."
 	icon_state = "mercenary_heavy_uniform"
 	min_cold_protection_temperature = ICE_PLANET_MIN_COLD_PROTECTION_TEMPERATURE
-	soft_armor = list(MELEE = 10, BULLET = 10, LASER = 0, ENERGY = 0, BOMB = 10, BIO = 1, FIRE = 0, ACID = 0)
 
 /obj/item/clothing/under/marine/veteran/mercenary/miner
 	name = "mercenary miner fatigues"
@@ -596,6 +595,16 @@
 	worn_icon_state = "camo"
 	adjustment_variants = list(
 		"Down" = "_d",
+	)
+
+/obj/item/clothing/under/marine/bravo_hawaii
+	name = "\improper Bravo Hawaiian shirt"
+	desc = "A comfortable shirt for drinking beer on the beaches of LV, the label on the back says: 'Exclusive to Bravo, made by Chinese Colonian Children'"
+	icon_state = "bhavai"
+	worn_icon_state = "bhavai"
+	adjustment_variants = list(
+		"Without Cuff" = "_d",
+		"Rolled Sleeves" = "_h",
 	)
 
 /obj/item/clothing/under/marine/whites/blacks

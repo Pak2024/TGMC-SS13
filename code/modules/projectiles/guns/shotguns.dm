@@ -14,7 +14,6 @@
 	reload_sound = 'sound/weapons/guns/interact/shotgun_shell_insert.ogg'
 	hand_reload_sound = 'sound/weapons/guns/interact/shotgun_shell_insert.ogg'
 	cocked_sound = 'sound/weapons/guns/interact/shotgun_reload.ogg'
-	opened_sound = 'sound/weapons/guns/interact/shotgun_open.ogg'
 	wield_sound = 'sound/weapons/guns/shotgun/Deploy_Wave_SHOTGUN.ogg'
 	gun_features_flags = GUN_CAN_POINTBLANK|GUN_AMMO_COUNTER|GUN_WIELDED_FIRING_ONLY|GUN_SMOKE_PARTICLES
 	reciever_flags = AMMO_RECIEVER_HANDFULS
@@ -501,15 +500,15 @@
 	aim_speed_modifier = 0.8
 
 	fire_delay = 1.75 SECONDS
-	accuracy_mult = 1.15
-	accuracy_mult_unwielded = 0.7
+	accuracy_mult = 1.2
+	accuracy_mult_unwielded = 0.75
 	scatter = -1
 	scatter_unwielded = 12
 	recoil = -3
 	recoil_unwielded = 4
 	cock_delay = 1.2 SECONDS
 	aim_slowdown = 1
-	wield_delay = 1.4 SECONDS
+	wield_delay = 1.3 SECONDS
 	movement_acc_penalty_mult = 4.5
 
 	placed_overlay_iconstate = "wood"
@@ -569,7 +568,7 @@
 	recoil_unwielded = 4
 
 	aim_slowdown = 1
-	wield_delay = 1.2 SECONDS
+	wield_delay = 1.1 SECONDS
 	movement_acc_penalty_mult = 5
 
 	placed_overlay_iconstate = "wood"

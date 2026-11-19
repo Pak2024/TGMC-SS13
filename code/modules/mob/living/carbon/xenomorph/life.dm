@@ -59,7 +59,7 @@
 	var/ruler_healing_penalty = 0.5
 	if(hive?.living_xeno_ruler?.loc?.z == T.z || xeno_caste.can_flags & CASTE_CAN_HEAL_WITHOUT_QUEEN || (SSticker?.mode.round_type_flags & MODE_XENO_RULER)) //if the living queen's z-level is the same as ours.
 		ruler_healing_penalty = 1
-	if(loc_weeds_type || xeno_caste.caste_flags & CASTE_INNATE_HEALING) //We regenerate on weeds or can on our own.
+	if(loc_weeds_type || xeno_caste.caste_flags & CASTE_INNATE_HEALING || HAS_TRAIT(src, TRAIT_INNATE_HEALING)) //We regenerate on weeds or can on our own.
 		if(lying_angle || resting || xeno_caste.caste_flags & CASTE_QUICK_HEAL_STANDING)
 			heal_wounds(XENO_RESTING_HEAL * ruler_healing_penalty * loc_weeds_type ? initial(loc_weeds_type.resting_buff) : 1, TRUE, seconds_per_tick)
 		else
@@ -169,8 +169,8 @@
 		return
 
 	// Cap passive biomass gain at 50 (but allow refunds to exceed this)
-	if(biomass < 50)
-		biomass = min(biomass + biomass_gain, 50)
+	if(biomass < 100)
+		biomass = min(biomass + biomass_gain, 100)
 
 /// Calculate passive biomass gain rate per minute
 /mob/living/carbon/xenomorph/proc/get_passive_biomass_gain_rate()
@@ -190,7 +190,7 @@
 			corrupted_generators_bonus = (corrupted_count / GLOB.generators_on_ground) / 60.0
 
 	// Calculate biomass gain rate
-	biomass_gain_rate = biomass_gain_bonus / 60.0 // Psydrain bonus (always works)
+	biomass_gain_rate = min(XENO_BIOMASS_GAIN_BONUS_MAX, hive?.biomass_gain_bonus || 0) / 60.0 // Psydrain bonus (always works)
 
 	// Add corrupted generators biomass gain if conditions are met
 	biomass_gain_rate += corrupted_generators_bonus
@@ -201,12 +201,15 @@
 	if(has_living_hivemind)
 		biomass_gain_rate += 0.5 / 60.0 // Hivemind bonus: +0.5 per minute
 
+	// Mutation tower bonus: passive biomass gain per minute
+	biomass_gain_rate += (hive?.get_mutation_boost() || 0) / 60.0
+
 	// Valhalla boost: +99.9 biomass per minute
 	if(is_valhalla)
 		biomass_gain_rate += 99.9 / 60.0
 
 	// No passive gain if biomass is already above 50
-	if(biomass > 50)
+	if(biomass > 100)
 		biomass_gain_rate = 0.0
 
 	return biomass_gain_rate
@@ -287,6 +290,7 @@
 	med_hud_set_health()
 	update_stat()
 	update_wounds()
+	SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_HEALTH)
 
 /mob/living/carbon/xenomorph/handle_slowdown()
 	if(slowdown)

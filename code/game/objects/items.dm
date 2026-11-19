@@ -1252,8 +1252,8 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 
 	standing = center_image(standing, inhands ? inhand_x_dimension : worn_x_dimension, inhands ? inhand_y_dimension : worn_y_dimension)
 
-	standing.pixel_x += inhands ? inhand_x_offset : worn_x_offset
-	standing.pixel_y += inhands ? inhand_y_offset : worn_y_offset
+	standing.pixel_w += inhands ? inhand_x_offset : worn_x_offset
+	standing.pixel_z += inhands ? inhand_y_offset : worn_y_offset
 	standing.alpha = alpha
 	standing.color = color
 
@@ -1361,7 +1361,7 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 ///The basic spin trick
 /obj/item/proc/basic_spin_trick(mob/living/carbon/human/user, direction = 1, obj/item/double)
 	set waitfor = 0
-	playsound(user, 'sound/effects/spin.ogg', 25, 1)
+	playsound(user, 'sound/effects/spin.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	if(double)
 		user.visible_message("[user] deftly flicks and spins [src] and [double]!", span_notice("You flick and spin [src] and [double]!"))
 		animation_wrist_flick(double, 1)
@@ -1369,7 +1369,7 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 		user.visible_message("[user] deftly flicks and spins [src]!", span_notice("You flick and spin [src]!"))
 	animation_wrist_flick(src, direction)
 	sleep(0.3 SECONDS)
-	if(loc && user) playsound(user, 'sound/effects/thud.ogg', 25, 1)
+	if(loc && user) playsound(user, 'sound/effects/thud.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 ///The fancy trick. Woah.
 /obj/item/proc/throw_catch_trick(mob/living/carbon/human/user)
@@ -1393,7 +1393,7 @@ modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
 	if(!loc || !user)
 		return
 	invisibility = 0
-	playsound(user, 'sound/effects/thud.ogg', 25, 1)
+	playsound(user, 'sound/effects/thud.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 	if(user.get_active_held_item() != src)
 		return

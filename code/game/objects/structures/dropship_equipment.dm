@@ -430,7 +430,7 @@
 		return
 	if(!COOLDOWN_FINISHED(src, use_cooldown))
 		console.say("Emitter system recharging. Unable to deploy smoke.")
-		playsound(console, 'sound/machines/buzz-sigh.ogg', 25)
+		playsound(console, 'sound/machines/buzz-sigh.ogg', 25, FALSE, MEDIUM_SOUND_RANGE)
 		return
 
 	pellet_type = new(landing_spot)
@@ -912,7 +912,7 @@
 	icon = 'icons/obj/structures/mainship_props64.dmi'
 	firing_sound = 'sound/weapons/gunship_laser.ogg'
 	firing_delay = 50 //5 seconds
-	point_cost = 750
+	point_cost = 500
 	dropship_equipment_flags = USES_AMMO|IS_WEAPON|IS_INTERACTABLE
 	ammo_type_used = CAS_LASER_BATTERY
 

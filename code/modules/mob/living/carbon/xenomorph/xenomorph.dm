@@ -27,7 +27,7 @@
 		hivenumber = XENO_HIVE_ADMEME //so admins can safely spawn xenos in Thunderdome for tests.
 
 	set_initial_hivenumber(prevent_ruler=do_not_set_as_ruler)
-	voice = "Woman (Journalist)" // TODO when we get tagging make this pick female only
+	voice = "Женский 3" // TODO when we get tagging make this pick female only
 
 	switch(stat)
 		if(CONSCIOUS)
@@ -351,7 +351,7 @@
 	if(hivenumber == XENO_HIVE_CORRUPTED) // we can grab friendly benos
 		return TRUE
 	H.Paralyze(rand(xeno_caste.tacklemin,xeno_caste.tacklemax) * 20)
-	playsound(H.loc, 'sound/weapons/pierce.ogg', 25, 1)
+	playsound(H.loc, 'sound/weapons/pierce.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	H.visible_message(span_warning("[H] tried to pull [src] but instead gets a tail swipe to the head!"))
 	H.stop_pulling()
 	return FALSE
@@ -677,4 +677,8 @@ Returns TRUE when loc_weeds_type changes. Returns FALSE when it doesn’t change
 
 		icon = selection.icon
 		effects_icon = selection.effects_icon
+		max_wound_states = selection.max_wound_states
+		current_skin = selection
+		if(selection.select_sound)
+			playsound(loc, selection.select_sound, 25, 1)
 		admin_ticket_log("[key_name_admin(usr)] has modified the appearance of [src] to [answer] skin.")

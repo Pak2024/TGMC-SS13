@@ -38,7 +38,7 @@
 /obj/docking_port/mobile/escape_pod/proc/launch(manual = FALSE)
 	if(!can_launch || launch_status == NOLAUNCH)
 		return
-	playsound(return_center_turf(),'sound/effects/escape_pod_warmup.ogg', 25, 1)
+	playsound(return_center_turf(),'sound/effects/escape_pod_warmup.ogg', 25, TRUE)
 	if(manual)
 		launch_status = EARLY_LAUNCHED
 	else
@@ -65,7 +65,7 @@
 /obj/docking_port/mobile/escape_pod/proc/do_launch()
 	if(!can_launch)
 		return
-	playsound(return_center_turf(),'sound/effects/escape_pod_launch.ogg', 25, 1)
+	playsound(return_center_turf(),'sound/effects/escape_pod_launch.ogg', 25, TRUE, LOUD_SOUND_RANGE)
 	count_escaped_humans()
 	SSshuttle.moveShuttleToTransit(shuttle_id, TRUE)
 
@@ -230,5 +230,5 @@
 /obj/machinery/door/airlock/evacuation/attack_hand(mob/living/user)
 	return TRUE
 
-/obj/machinery/door/airlock/evacuation/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/machinery/door/airlock/evacuation/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	return FALSE //Probably a better idea that these cannot be forced open.

@@ -64,7 +64,7 @@
 	if(istype(mag, /obj/item/ammo_magazine/tank))
 		var/obj/item/ammo_magazine/tank/t_mag = mag
 		sound = islist(t_mag.loading_sound)? pick(t_mag.loading_sound):t_mag.loading_sound
-	playsound(src, sound, 20, channel = channel)
+	playsound(src, sound, 20, FALSE, MEDIUM_SOUND_RANGE, channel = channel)
 	if(!do_after(user, weapon.rearm_time, NONE, src, extra_checks=CALLBACK(src, PROC_REF(reload_checks), user)))
 		for(var/mob/crew AS in owner.interior.occupants)
 			crew.stop_sound_channel(channel)
@@ -108,6 +108,8 @@
 ///called every time the firing animation is refreshed, not every actual fire
 /obj/structure/gun_breech/proc/on_main_fire(obj/item/ammo_magazine/owner_ammo)
 	if(owner_ammo.default_ammo.ammo_behavior_flags & AMMO_ENERGY) // todo add puffs of smoke that fly out
+		return
+	if(owner_ammo.default_ammo.ammo_behavior_flags & AMMO_FLAME) // flamers don't produce casings
 		return
 	if(owner_ammo.max_rounds == 1)
 		return

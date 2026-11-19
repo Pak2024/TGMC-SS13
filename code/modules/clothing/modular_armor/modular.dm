@@ -252,6 +252,31 @@
 	slowdown = SLOWDOWN_ARMOR_MEDIUM
 	allowed_uniform_type = /obj/item/clothing/under/rank/clown/erp
 
+// GTA ERT — light rownin kits (modules mirrored from SW/SOM-style loadouts)
+/obj/item/clothing/suit/modular/rownin/gta
+	name = "\improper street rownin skeleton"
+	desc = "A light modular harness popular with gang shooters who want mobility over plating."
+	starting_attachments = list(
+		/obj/item/armor_module/module/better_shoulder_lamp,
+		/obj/item/armor_module/storage/grenade,
+	)
+
+/obj/item/clothing/suit/modular/rownin/gta/medic
+	name = "\improper street medic rownin skeleton"
+	desc = "A light modular harness with a med pouch rack — for whoever is stuck patching the set."
+	starting_attachments = list(
+		/obj/item/armor_module/module/better_shoulder_lamp,
+		/obj/item/armor_module/storage/medical,
+	)
+
+/obj/item/clothing/suit/modular/rownin/gta/leader
+	name = "\improper street OG rownin skeleton"
+	desc = "A light modular harness with a general pouch — room for binos, radios, and bad decisions."
+	starting_attachments = list(
+		/obj/item/armor_module/module/better_shoulder_lamp,
+		/obj/item/armor_module/storage/general,
+	)
+
 /obj/item/clothing/suit/modular/hardsuit_exoskeleton
 	name = "\improper FleckTex WY-01 modular exoskeleton"
 	desc = "FleckTex Dynamics brand new modular hardsuit exoskeleton, designed for full compatiability with jaeger modules. Comes with pre-installed light armour-plating and a shoulder lamp. Mount armor pieces to it by clicking on the frame with the components. Use Alt-Click to remove any attached items."
@@ -277,6 +302,34 @@
 		/obj/item/armor_module/armor/chest/marine/hardsuit/syndicate_markone,
 		/obj/item/armor_module/armor/arms/marine/hardsuit_arms/syndicate_markone,
 		/obj/item/armor_module/armor/legs/marine/hardsuit_legs/syndicate_markone,
+	)
+
+/obj/item/clothing/suit/modular/vsd_exoskeleton
+	name = "\improper CrashCore MT/P modular exoskeleton"
+	desc = "CrashCore Industries modular hardsuit exoskeleton, made to lift up the 'Super-Heavy' armor system and designed for full compatiability with jaeger modules. Comes with pre-installed light armour-plating and a shoulder lamp. Mount armor pieces to it by clicking on the frame with the components. Use Alt-Click to remove any attached items."
+	icon_state = "exoskeleton"
+	worn_icon_state = "exoskeleton"
+	greyscale_config = /datum/greyscale_config/vsd_hardsuit/exoskeleton
+	colorable_allowed = PRESET_COLORS_ALLOWED
+	colorable_colors = ARMOR_PALETTES_LIST
+	greyscale_colors = ARMOR_PALETTE_BLACK
+	allowed_uniform_type = /obj/item/clothing/under
+
+/obj/item/clothing/suit/modular/vsd_exoskeleton/generate_attachments_allowed()
+	attachments_allowed = general_list_of_marine_modules.Copy()
+	attachments_allowed += list(
+
+		/obj/item/armor_module/armor/chest/marine/vsd_hardsuit,
+		/obj/item/armor_module/armor/arms/marine/vsd_hardsuit,
+		/obj/item/armor_module/armor/legs/marine/vsd_hardsuit,
+
+		/obj/item/armor_module/armor/chest/marine/vsd_hardsuit/clementia,
+		/obj/item/armor_module/armor/arms/marine/vsd_hardsuit/clementia,
+		/obj/item/armor_module/armor/legs/marine/vsd_hardsuit/clementia,
+
+		/obj/item/armor_module/armor/chest/marine/vsd_hardsuit/hephaestus,
+		/obj/item/armor_module/armor/arms/marine/vsd_hardsuit/hephaestus,
+		/obj/item/armor_module/armor/legs/marine/vsd_hardsuit/hephaestus,
 	)
 
 /** Core helmet module */
@@ -353,7 +406,12 @@
 		/obj/item/armor_module/armor/visor/marine/old/eva/skull,
 		/obj/item/armor_module/armor/visor/marine/old/eod,
 		/obj/item/armor_module/armor/visor/marine/old/assault,
+		/obj/item/armor_module/armor/visor/marine/mjolnir,
+		/obj/item/armor_module/armor/visor/marine/mjolnir_open,
 		/obj/item/armor_module/armor/visor/marine/xenonaut,
+		/obj/item/armor_module/armor/visor/marine/phobos,
+		/obj/item/armor_module/armor/visor/marine/clementia,
+		/obj/item/armor_module/armor/visor/marine/hephaestus,
 
 		// Accessories
 		/obj/item/armor_module/armor/badge,
@@ -375,11 +433,40 @@
 	if(attachments_by_slot[ATTACHMENT_SLOT_STORAGE] && istype(attachments_by_slot[ATTACHMENT_SLOT_STORAGE], /obj/item/armor_module/storage))
 		var/obj/item/armor_module/storage/storage_module = attachments_by_slot[ATTACHMENT_SLOT_STORAGE]
 		if(storage_module.show_storage)
-			for(var/obj/item/stored AS in storage_module.contents)
-				if(istype(stored, /obj/item/ammo_magazine/handful))
-					standing.overlays += mutable_appearance(storage_module.show_storage_icon, icon_state = stored.icon_state, layer = COLLAR_LAYER)
-				else
-					standing.overlays += mutable_appearance(storage_module.show_storage_icon, icon_state = initial(stored.icon_state), layer = COLLAR_LAYER)
+			var/datum/storage/internal/marinehelmet/helmet_storage
+			if(istype(storage_module.storage_datum, /datum/storage/internal/marinehelmet))
+				helmet_storage = storage_module.storage_datum
+			var/has_cosmetics = FALSE
+
+			if(helmet_storage)
+				for(var/obj/item/cosmetic in helmet_storage.helmet_cosmetics)
+					if(istype(cosmetic))
+						has_cosmetics = TRUE
+						break
+
+			if(has_cosmetics)
+				for(var/obj/item/cosmetic in helmet_storage.helmet_cosmetics)
+
+					if(!istype(cosmetic))
+						continue
+
+					standing.overlays += mutable_appearance(
+						storage_module.show_storage_icon,
+						icon_state = initial(cosmetic.icon_state)
+					)
+			else
+				for(var/obj/item/stored AS in storage_module.contents)
+					if(istype(stored, /obj/item/ammo_magazine/handful))
+						standing.overlays += mutable_appearance(
+							storage_module.show_storage_icon,
+							icon_state = stored.icon_state
+						)
+					else
+						standing.overlays += mutable_appearance(
+							storage_module.show_storage_icon,
+							icon_state = initial(stored.icon_state)
+						)
+
 	if(attachments_by_slot[ATTACHMENT_SLOT_VISOR])
 		return standing
 	standing.pixel_x = visorless_offset_x

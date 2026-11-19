@@ -60,12 +60,12 @@
 /datum/supply_packs/vehicles/tow_rocket
 	name = "TOW missile"
 	contains = list(/obj/item/ammo_magazine/tank/tow_missile)
-	cost = 25 // marginally cheaper due to being a single loader
+	cost = 15
 
 /datum/supply_packs/vehicles/microrocket_pod
 	name = "Microrocket pod"
 	contains = list(/obj/item/ammo_magazine/tank/microrocket_rack)
-	cost = 50
+	cost = 40
 
 /datum/supply_packs/vehicles/motorbike
 	name = "All-terrain motorbike"
@@ -143,6 +143,12 @@
 	cost = 150
 	containertype = /obj/structure/closet/crate/weapon
 
+/datum/supply_packs/vehicles/uv_claw
+	name = "UV Claw module"
+	contains = list(/obj/item/uav_turret/claw)
+	cost = 50
+	containertype = /obj/structure/closet/crate/weapon
+
 /datum/supply_packs/vehicles/uv_light_ammo
 	name = "Light UV ammo - 11x35mm"
 	contains = list(/obj/item/ammo_magazine/box11x35mm)
@@ -196,4 +202,97 @@
 		/obj/item/cell/lasgun/heavy_laser,
 	)
 	cost = 50
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt
+	name = "LVRT 'Fallow' Recce Vehicle"
+	contains = list(
+		/obj/vehicle/sealed/armored/multitile/lvrt,
+		/obj/item/pamphlet/tank_crew,
+		/obj/item/pamphlet/tank_crew,
+		/obj/item/pamphlet/tank_loader,
+	)
+	cost = 1600
+	crash_restricted = TRUE
+	containertype = /obj/structure/largecrate/supply
+
+/datum/supply_packs/vehicles/lvrt_sarden
+	name = "EM-2600 'SARDEN' Autocannon"
+	contains = list(/obj/item/armored_weapon/lvrt_sarden,)
+	cost = 300
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/weapon
+
+/datum/supply_packs/vehicles/lvrt_cannon
+	name = "EM-2500 Low Velocity Cannon"
+	contains = list(/obj/item/armored_weapon/lvrt_cannon,)
+	cost = 400
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/weapon
+
+/datum/supply_packs/vehicles/lvrt_flamer
+	name = "EM-2400 Low Impulse Flamer"
+	contains = list(/obj/item/armored_weapon/lvrt_flamer,)
+	cost = 350
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/weapon
+
+/datum/supply_packs/vehicles/lvrt_sarden_ammo
+	name = "LVRT SARDEN Autocannon ammo (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/sarden_clip,
+		/obj/item/ammo_magazine/tank/sarden_clip,
+	)
+	cost = 50
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt_sarden_ammo_he
+	name = "LVRT SARDEN Autocannon HE ammo (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/sarden_clip/high_explosive,
+		/obj/item/ammo_magazine/tank/sarden_clip/high_explosive,
+	)
+	cost = 50
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt_cannon_ammo
+	name = "EM-2500 HEAT shell (76mm) (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/lowvel_cannon_recon,
+		/obj/item/ammo_magazine/tank/lowvel_cannon_recon,
+	)
+	cost = 50
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt_cannon_ammo_he
+	name = "EM-2500 HE shell (76mm) (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/lowvel_cannon_recon/high_explosive,
+		/obj/item/ammo_magazine/tank/lowvel_cannon_recon/high_explosive,
+	)
+	cost = 50
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt_cannon_ammo_hefa
+	name = "EM-2500 HEFA shell (76mm) (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/lowvel_high_explosive_fragmenting_antipersonnel,
+		/obj/item/ammo_magazine/tank/lowvel_high_explosive_fragmenting_antipersonnel,
+	)
+	cost = 50
+	crash_restricted = TRUE
+	containertype = /obj/structure/closet/crate/ammo
+
+/datum/supply_packs/vehicles/lvrt_flamer_ammo
+	name = "EM-2400 Flamer ammo (x2)"
+	contains = list(
+		/obj/item/ammo_magazine/tank/lowvel_canister,
+		/obj/item/ammo_magazine/tank/lowvel_canister,
+	)
+	cost = 50
+	crash_restricted = TRUE
 	containertype = /obj/structure/closet/crate/ammo

@@ -123,8 +123,8 @@
 	icon_state = "mod_armor"
 	worn_icon_state = "mod_armor_a"
 	attachment_layer = COLLAR_LAYER
-	soft_armor = list(MELEE = 10, BULLET = 15, LASER = 15, ENERGY = 15, BOMB = 15, BIO = 15, FIRE = 15, ACID = 5)
-	slowdown = 0.3
+	soft_armor = list(MELEE = 10, BULLET = 15, LASER = 15, ENERGY = 15, BOMB = 15, BIO = 0, FIRE = 10, ACID = 0)
+	slowdown = 0.15
 	slot = ATTACHMENT_SLOT_MODULE
 
 /obj/item/armor_module/module/tyr_extra_armor/mark1
@@ -132,8 +132,8 @@
 	desc = "Designed for mounting on modular armor. A decent amount of additional all-around armor plating designed to grant the user extra protection against any kind of threat. This older version has worse protection. Will greatly impact mobility."
 	icon_state = "mod_armor_lower"
 	worn_icon_state = "mod_armor_lower_a"
-	soft_armor = list(MELEE = 5, BULLET = 10, LASER = 10, ENERGY = 10, BOMB = 10, BIO = 0, FIRE = 10, ACID = 0)
-	slowdown = 0.4
+	soft_armor = list(MELEE = 5, BULLET = 10, LASER = 10, ENERGY = 10, BOMB = 10, BIO = 0, FIRE = 5, ACID = 0)
+	slowdown = 0.15
 
 /obj/item/armor_module/module/tyr_extra_armor/som
 	name = "\improper Lorica armor reinforcement system"
@@ -153,13 +153,13 @@
 	variants_by_parent_type = list(/obj/item/clothing/head/modular/m10x = "tyr_head_xn")
 	icon_state = "tyr_head"
 	worn_icon_state = "tyr_head_a"
-	soft_armor = list(MELEE = 5, BULLET = 10, LASER = 10, ENERGY = 10, BOMB = 10, BIO = 0, FIRE = 10, ACID = 0)
+	soft_armor = list(MELEE = 5, BULLET = 10, LASER = 10, ENERGY = 10, BOMB = 10, BIO = 0, FIRE = 5, ACID = 0)
 	slot = ATTACHMENT_SLOT_HEAD_MODULE
 
 /obj/item/armor_module/module/tyr_head/mark2
 	name = "\improper Tyr Mk.2 armor reinforcement system helmet module"
 	desc = "Designed for mounting on a modular helmet. When attached, this system provides substantial resistance to most damaging hazards, ranging from xeno slashes to friendly fire incidents."
-	soft_armor = list(MELEE = 10, BULLET = 15, LASER = 15, ENERGY = 15, BOMB = 15, BIO = 5, FIRE = 15, ACID = 5)
+	soft_armor = list(MELEE = 10, BULLET = 15, LASER = 15, ENERGY = 15, BOMB = 15, BIO = 0, FIRE = 10, ACID = 0)
 
 /obj/item/armor_module/module/tyr_extra_armor/som
 	name = "\improper Lorica armor reinforcement system"
@@ -198,12 +198,12 @@
 */
 /obj/item/armor_module/module/mimir_environment_protection
 	name = "\improper Mimir Mk.2 environmental resistance system"
-	desc = "Designed for mounting on modular armor. This newer model provides great resistance to acid, biological, and radiological attacks. Pairing this with a Mimir helmet module and mask will make the user impervious to any gas clouds. Will impact mobility."
+	desc = "Designed for mounting on modular armor. This newer model provides great resistance to acid, biological, and radiological attacks. Pairing this with a Mimir helmet module and mask will make the user impervious to xeno gas clouds. Will impact mobility."
 	icon = 'icons/mob/modular/modular_armor_modules.dmi'
 	icon_state = "mod_biohazard"
 	worn_icon_state = "mod_biohazard_a"
 	soft_armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 40, FIRE = 0, ACID = 30)
-	slowdown = 0.3
+	slowdown = 0.15
 	slot = ATTACHMENT_SLOT_MODULE
 	///siemens (electro resist) coefficient mod for gas protection.
 	var/siemens_coefficient_mod = -0.9
@@ -226,13 +226,11 @@
 
 /obj/item/armor_module/module/mimir_environment_protection/mark1
 	name = "\improper Mimir Mk.1 environmental resistance system"
-	desc = "Designed for mounting on modular armor. This older model provides minor resistance to acid, biological, and radiological attacks. Pairing this with a Mimir helmet module and mask will make the user almost impervious to any gas clouds. Will impact mobility."
+	desc = "Designed for mounting on modular armor. This older model provides minor resistance to acid, biological, and radiological attacks. Pairing this with a Mimir helmet module and mask will make the user impervious to xeno gas clouds. Will impact mobility."
 	icon_state = "mod_biohazard"
 	worn_icon_state = "mod_biohazard_a"
 	soft_armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 15, FIRE = 0, ACID = 15)
-	slowdown = 0.3
-	permeability_coefficient_mod = -0.5
-	gas_transfer_coefficient_mod = -0.5
+	slowdown = 0.15
 
 //SOM version
 /obj/item/armor_module/module/mimir_environment_protection/som
@@ -243,7 +241,7 @@
 
 /obj/item/armor_module/module/mimir_environment_protection/mimir_helmet
 	name = "\improper Mimir Mk.2 environmental resistance system helmet module"
-	desc = "Designed for mounting on a modular helmet. Provides good resistance to xeno gas clouds. This newer model provides great resistance to acid, biological, and even radiological attacks."
+	desc = "Designed for mounting on a modular helmet. Provides good resistance to xeno gas clouds."
 	icon = 'icons/mob/modular/modular_armor_modules.dmi'
 	icon_state = "mimir_head"
 	worn_icon_state = "mimir_head_a"
@@ -1036,7 +1034,6 @@
 	icon = 'icons/mob/modular/modular_armor_modules.dmi'
 	icon_state = "mod_pluto"
 	worn_icon_state = "mod_pluto_a"
-	slowdown = 0.1
 	slot = ATTACHMENT_SLOT_MODULE
 
 /obj/item/armor_module/module/pluto/on_attach(obj/item/attaching_to, mob/user)

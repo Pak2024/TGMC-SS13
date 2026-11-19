@@ -159,7 +159,7 @@
 		M.emote("me", EMOTE_VISIBLE, "[M.friendly] [src]")
 	else
 		if(M.attack_sound)
-			playsound(loc, M.attack_sound, 25, 1)
+			playsound(loc, M.attack_sound, 25, 1, MEDIUM_SOUND_RANGE)
 		visible_message(span_danger("[M] [M.attacktext] [src]!"))
 		log_combat(M, src, "attacked")
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
@@ -456,14 +456,11 @@
 			to_chat(usr, span_warning("[src] is too far away."))
 			return
 
-		for(var/datum/data/record/medical_record in GLOB.datacore.medical)
-			if(!(medical_record.fields["name"] == real_name))
-				continue
-			if(medical_record.fields["last_scan_time"] && medical_record.fields["last_scan_result"])
-				var/datum/browser/popup = new(usr, "scanresults", "<div align='center'>Last Scan Result</div>", 430, 600)
-				popup.set_content(medical_record.fields["last_scan_result"])
-				popup.open(FALSE)
-			break
+		var/datum/data/record/medical_record = find_medical_record(src)
+		if(isnull(medical_record))
+			return
+		var/datum/historic_scan/scan = medical_record.fields["historic_scan"]
+		scan.ui_interact(usr)
 
 	if(href_list["lookitem"])
 		var/obj/item/I = locate(href_list["lookitem"])
@@ -547,7 +544,7 @@
 /mob/living/carbon/human/proc/play_xylophone()
 	visible_message(span_warning("[src] begins playing his ribcage like a xylophone. It's quite spooky."),span_notice("You begin to play a spooky refrain on your ribcage."),span_warning("You hear a spooky xylophone melody."))
 	var/song = pick('sound/effects/xylophone1.ogg','sound/effects/xylophone2.ogg','sound/effects/xylophone3.ogg')
-	playsound(loc, song, 25, 1)
+	playsound(loc, song, 25, 1, MEDIUM_SOUND_RANGE)
 
 
 /mob/living/carbon/human/proc/is_lung_ruptured()
@@ -601,11 +598,7 @@
 	set name = "View Crew Manifest"
 	set category = "IC"
 
-	var/dat = GLOB.datacore.get_manifest()
-
-	var/datum/browser/popup = new(src, "manifest", "<div align='center'>Crew Manifest</div>", 370, 420)
-	popup.set_content(dat)
-	popup.open(FALSE)
+	GLOB.crew_manifest.open_ui(src)
 
 
 /mob/living/carbon/human/species
@@ -921,12 +914,11 @@
 	return TRUE
 
 
-/mob/living/carbon/human/do_camera_update(oldloc, obj/item/radio/headset/mainship/H)
-	if(QDELETED(H?.camera) || oldloc == get_turf(src))
+/mob/living/carbon/human/do_camera_update(obj/item/radio/headset/mainship/headset)
+	if(wear_ear != headset || QDELETED(headset?.camera))
 		return
 
-	var/datum/cameranet/net = H.camera.parent_cameranet
-	net.updatePortableCamera(H.camera)
+	headset.camera.parent_cameranet.updatePortableCamera(headset.camera)
 
 
 /mob/living/carbon/human/update_camera_location(oldloc)
@@ -940,7 +932,7 @@
 	if(QDELETED(H.camera))
 		return
 
-	addtimer(CALLBACK(src, PROC_REF(do_camera_update), oldloc, H), 1 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(do_camera_update), H), 1 SECONDS, TIMER_UNIQUE)
 
 
 /mob/living/carbon/human/get_language_holder()
@@ -966,7 +958,7 @@
 /mob/living/carbon/human/attack_ghost(mob/dead/observer/user)
 	if(!user.health_scan)
 		return FALSE
-	user.health_analyzer.analyze_vitals(src, user)
+	user.scanner_functionality.analyze_vitals(src, user)
 	return TRUE
 
 ///Checks if we have an AI behavior active

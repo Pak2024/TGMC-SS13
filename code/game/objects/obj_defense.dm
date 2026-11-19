@@ -47,11 +47,11 @@
 	switch(damage_type)
 		if(BRUTE)
 			if(damage_amount)
-				playsound(loc, 'sound/weapons/smash.ogg', 25, 1)
+				playsound(loc, 'sound/weapons/smash.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 			else
-				playsound(loc, 'sound/weapons/tap.ogg', 25, 1)
+				playsound(loc, 'sound/weapons/tap.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		if(BURN)
-			playsound(loc, 'sound/items/welder.ogg', 25, 1)
+			playsound(loc, 'sound/items/welder.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 /obj/ex_act(severity, direction)
 	if(CHECK_BITFIELD(resistance_flags, INDESTRUCTIBLE))
@@ -115,7 +115,7 @@
 		if(. && !play_soundeffect)
 			playsound(loc, 'sound/effects/meteorimpact.ogg', 100, 1)
 
-/obj/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/obj/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	// SHOULD_CALL_PARENT(TRUE) // TODO: fix this
 	if(xeno_attacker.status_flags & INCORPOREAL) //Ghosts can't attack machines
 		return FALSE
@@ -129,7 +129,7 @@
 		xeno_attacker.visible_message(span_danger("[xeno_attacker] has slashed [src]!"),
 		span_danger("We slash [src]!"))
 		xeno_attacker.do_attack_animation(src, ATTACK_EFFECT_CLAW)
-		playsound(loc, SFX_ALIEN_CLAW_METAL, 25)
+		playsound(loc, SFX_ALIEN_CLAW_METAL, 25, FALSE, MEDIUM_SOUND_RANGE)
 	attack_generic(xeno_attacker, damage_amount, damage_type, damage_flag, effects, armor_penetration)
 	return TRUE
 

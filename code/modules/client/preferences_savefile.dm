@@ -157,6 +157,7 @@
 	READ_FILE(S["sound_tts"], sound_tts)
 	READ_FILE(S["volume_tts"], volume_tts)
 	READ_FILE(S["radio_tts_flags"], radio_tts_flags)
+	READ_FILE(S["accessible_tgui_themes"], accessible_tgui_themes)
 	READ_FILE(S["fast_mc_refresh"], fast_mc_refresh)
 	READ_FILE(S["split_admin_tabs"], split_admin_tabs)
 	READ_FILE(S["hear_ooc_anywhere_as_staff"], hear_ooc_anywhere_as_staff)
@@ -171,6 +172,8 @@
 	READ_FILE(S["mute_self_combat_messages"], mute_self_combat_messages)
 	READ_FILE(S["mute_others_combat_messages"], mute_others_combat_messages)
 	READ_FILE(S["show_xeno_rank"], show_xeno_rank)
+
+	READ_FILE(S["stim_sequences"], stim_sequences)
 
 	// Runechat options
 	READ_FILE(S["chat_on_map"], chat_on_map)
@@ -247,6 +250,10 @@
 	mute_self_combat_messages = sanitize_integer(mute_self_combat_messages, FALSE, TRUE, initial(mute_self_combat_messages))
 	mute_others_combat_messages = sanitize_integer(mute_others_combat_messages, FALSE, TRUE, initial(mute_others_combat_messages))
 	show_xeno_rank = sanitize_integer(show_xeno_rank, FALSE, TRUE, initial(show_xeno_rank))
+
+	stim_sequences = sanitize_islist(stim_sequences, list())
+	for(var/spell_sequence in stim_sequences)
+		stim_sequences[spell_sequence] = sanitize_islist(stim_sequences[spell_sequence], list(), null, TRUE, GLOB.stim_type_lookup)
 
 	chat_on_map = sanitize_integer(chat_on_map, FALSE, TRUE, initial(chat_on_map))
 	max_chat_length = sanitize_integer(max_chat_length, 1, CHAT_MESSAGE_MAX_LENGTH, initial(max_chat_length))
@@ -332,6 +339,10 @@
 	slot_draw_order_pref = sanitize_islist(slot_draw_order_pref, SLOT_DRAW_ORDER, length(SLOT_DRAW_ORDER), TRUE, SLOT_DRAW_ORDER)
 	status_toggle_flags = sanitize_integer(status_toggle_flags, NONE, MAX_BITFLAG, initial(status_toggle_flags))
 
+	stim_sequences = sanitize_islist(stim_sequences, list())
+	for(var/spell_sequence in stim_sequences)
+		stim_sequences[spell_sequence] = sanitize_islist(stim_sequences[spell_sequence], list(), null, TRUE, GLOB.stim_type_lookup)
+
 	// Runechat
 	chat_on_map = sanitize_integer(chat_on_map, FALSE, TRUE, initial(chat_on_map))
 	max_chat_length = sanitize_integer(max_chat_length, 1, CHAT_MESSAGE_MAX_LENGTH, initial(max_chat_length))
@@ -394,12 +405,15 @@
 	WRITE_FILE(S["sound_tts"], sound_tts)
 	WRITE_FILE(S["volume_tts"], volume_tts)
 	WRITE_FILE(S["radio_tts_flags"], radio_tts_flags)
+	WRITE_FILE(S["accessible_tgui_themes"], accessible_tgui_themes)
 	WRITE_FILE(S["slot_draw_order"], slot_draw_order_pref)
 	WRITE_FILE(S["status_toggle_flags"], status_toggle_flags)
 
 	WRITE_FILE(S["mute_self_combat_messages"], mute_self_combat_messages)
 	WRITE_FILE(S["mute_others_combat_messages"], mute_others_combat_messages)
 	WRITE_FILE(S["show_xeno_rank"], show_xeno_rank)
+
+	WRITE_FILE(S["stim_sequences"], stim_sequences)
 
 	// Runechat options
 	WRITE_FILE(S["chat_on_map"], chat_on_map)
@@ -456,10 +470,10 @@
 
 	READ_FILE(S["synthetic_name"], synthetic_name)
 	READ_FILE(S["synthetic_type"], synthetic_type)
-	READ_FILE(S["squad_robot_name"], squad_robot_name)
 	READ_FILE(S["squad_robot_type"], squad_robot_type)
 	READ_FILE(S["xeno_name"], xeno_name)
 	READ_FILE(S["ai_name"], ai_name)
+	READ_FILE(S["names_by_species"], names_by_species)
 
 //RUTGMC EDIT
 	READ_FILE(S["pred_name"], predator_name)
@@ -491,7 +505,6 @@
 	READ_FILE(S["age"], age)
 	READ_FILE(S["species"], species)
 	READ_FILE(S["ethnicity"], ethnicity)
-	READ_FILE(S["good_eyesight"], good_eyesight)
 	READ_FILE(S["preferred_squad"], preferred_squad)
 	READ_FILE(S["alternate_option"], alternate_option)
 	READ_FILE(S["job_preferences"], job_preferences)
@@ -525,6 +538,9 @@
 	READ_FILE(S["citizenship"], citizenship)
 	READ_FILE(S["religion"], religion)
 
+	READ_FILE(S["tts_voice"], tts_voice)
+	READ_FILE(S["tts_pitch"], tts_pitch)
+
 	READ_FILE(S["med_record"], med_record)
 	READ_FILE(S["sec_record"], sec_record)
 	READ_FILE(S["gen_record"], gen_record)
@@ -536,10 +552,10 @@
 
 	synthetic_name = reject_bad_name(synthetic_name, TRUE)
 	synthetic_type = sanitize_inlist(synthetic_type, SYNTH_TYPES, initial(synthetic_type))
-	squad_robot_name = reject_bad_name(squad_robot_name, TRUE)
 	squad_robot_type = sanitize_inlist(squad_robot_type, ROBOT_TYPES, initial(squad_robot_type))
 	xeno_name = reject_bad_name(xeno_name)
 	ai_name = reject_bad_name(ai_name, TRUE)
+	names_by_species = sanitize_islist(names_by_species, list())
 
 	real_name = reject_bad_name(real_name, TRUE)
 	random_name = sanitize_integer(random_name, TRUE, TRUE, initial(random_name))
@@ -547,7 +563,6 @@
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
 	species = sanitize_inlist(species, GLOB.all_species, initial(species))
 	ethnicity = sanitize_ethnicity(ethnicity)
-	good_eyesight = sanitize_integer(good_eyesight, FALSE, TRUE, initial(good_eyesight))
 	preferred_squad = sanitize_inlist(preferred_squad, SELECTABLE_SQUADS, initial(preferred_squad))
 	alternate_option = sanitize_integer(alternate_option, 0, 2, initial(alternate_option))
 	job_preferences = SANITIZE_LIST(job_preferences)
@@ -595,7 +610,7 @@
 	religion = sanitize_inlist(religion, RELIGION_CHOICES, initial(religion))
 
 	tts_voice = sanitize_inlist_tts(tts_voice)
-	tts_pitch = sanitize_integer(tts_pitch, -12, 12, initial(tts_pitch))
+	tts_pitch = sanitize_integer(tts_pitch, -2, 2, initial(tts_pitch))
 
 	med_record = sanitize_text(med_record, initial(med_record))
 	sec_record = sanitize_text(sec_record, initial(sec_record))
@@ -603,8 +618,6 @@
 	exploit_record = sanitize_text(exploit_record, initial(exploit_record))
 	flavor_text = sanitize_text(flavor_text, initial(flavor_text))
 
-	if(!squad_robot_name)
-		squad_robot_name = "Toaster"
 	if(!synthetic_name)
 		synthetic_name = "David"
 	if(!xeno_name)
@@ -635,7 +648,6 @@
 
 	synthetic_name = reject_bad_name(synthetic_name, TRUE)
 	synthetic_type = sanitize_inlist(synthetic_type, SYNTH_TYPES, initial(synthetic_type))
-	squad_robot_name = reject_bad_name(squad_robot_name, TRUE)
 	squad_robot_type = sanitize_inlist(squad_robot_type, ROBOT_TYPES, initial(squad_robot_type))
 	xeno_name = reject_bad_name(xeno_name)
 	ai_name = reject_bad_name(ai_name, TRUE)
@@ -667,7 +679,6 @@
 	age = sanitize_integer(age, AGE_MIN, AGE_MAX, initial(age))
 	species = sanitize_inlist(species, GLOB.all_species, initial(species))
 	ethnicity = sanitize_ethnicity(ethnicity)
-	good_eyesight = sanitize_integer(good_eyesight, FALSE, TRUE, initial(good_eyesight))
 	preferred_squad = sanitize_inlist(preferred_squad, SELECTABLE_SQUADS, initial(preferred_squad))
 	alternate_option = sanitize_integer(alternate_option, 0, 2, initial(alternate_option))
 	job_preferences = SANITIZE_LIST(job_preferences)
@@ -723,10 +734,10 @@
 
 	WRITE_FILE(S["synthetic_name"], synthetic_name)
 	WRITE_FILE(S["synthetic_type"], synthetic_type)
-	WRITE_FILE(S["squad_robot_name"], squad_robot_name)
 	WRITE_FILE(S["squad_robot_type"], squad_robot_type)
 	WRITE_FILE(S["xeno_name"], xeno_name)
 	WRITE_FILE(S["ai_name"], ai_name)
+	WRITE_FILE(S["names_by_species"], names_by_species)
 
 //RUTGMC EDIT
 	WRITE_FILE(S["pred_name"], predator_name)
@@ -758,7 +769,6 @@
 	WRITE_FILE(S["age"], age)
 	WRITE_FILE(S["species"], species)
 	WRITE_FILE(S["ethnicity"], ethnicity)
-	WRITE_FILE(S["good_eyesight"], good_eyesight)
 	WRITE_FILE(S["preferred_squad"], preferred_squad)
 	WRITE_FILE(S["alternate_option"], alternate_option)
 	WRITE_FILE(S["job_preferences"], job_preferences)
@@ -791,6 +801,9 @@
 
 	WRITE_FILE(S["citizenship"], citizenship)
 	WRITE_FILE(S["religion"], religion)
+
+	WRITE_FILE(S["tts_voice"], tts_voice)
+	WRITE_FILE(S["tts_pitch"], tts_pitch)
 
 	WRITE_FILE(S["med_record"], med_record)
 	WRITE_FILE(S["sec_record"], sec_record)

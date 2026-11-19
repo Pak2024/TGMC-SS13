@@ -440,6 +440,8 @@
 		/obj/item/attachable/bayonetknife/som,
 		/obj/item/attachable/scope/mini,
 		/obj/item/attachable/scope/unremovable/mg27,
+		/obj/item/attachable/b11_scope,
+		/obj/item/attachable/b15_scope,
 	)
 	attachable_offset = list("muzzle_x" = 45, "muzzle_y" = 19,"rail_x" = 18, "rail_y" = 24, "under_x" = 28, "under_y" = 13, "stock_x" = 0, "stock_y" = 0)
 
@@ -490,7 +492,6 @@
 	reload_sound = 'sound/weapons/guns/interact/shotgun_shell_insert.ogg'
 	hand_reload_sound = 'sound/weapons/guns/interact/shotgun_shell_insert.ogg'
 	cocked_sound = 'sound/weapons/guns/interact/shotgun_reload.ogg'
-	opened_sound = 'sound/weapons/guns/interact/shotgun_open.ogg'
 	gun_features_flags = GUN_AMMO_COUNTER|GUN_WIELDED_FIRING_ONLY|GUN_WIELDED_STABLE_FIRING_ONLY
 	reciever_flags = AMMO_RECIEVER_HANDFULS
 	default_ammo_type = /datum/ammo/bullet/sniper/clf_heavyrifle

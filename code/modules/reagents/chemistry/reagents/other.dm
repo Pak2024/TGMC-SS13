@@ -123,6 +123,7 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	trait_flags = BRADYCARDICS
+	cryoblacklist = TRUE
 
 /datum/reagent/space_drugs/on_mob_life(mob/living/L, metabolism)
 	L.set_drugginess(15)
@@ -152,6 +153,7 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "bitterness"
+	cryoblacklist = TRUE
 
 /datum/reagent/serotrotium/on_mob_life(mob/living/L, metabolism)
 	if(prob(7))
@@ -218,6 +220,8 @@
 	reagent_state = LIQUID
 	color = "#484848" // rgb: 72, 72, 72
 	taste_multi = 0
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/mercury/on_mob_life(mob/living/L, metabolism)
 	if(!L.incapacitated(TRUE) && !L.pulledby && isfloorturf(L.loc))
@@ -258,6 +262,8 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "chlorine"
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/chlorine/on_mob_life(mob/living/L, metabolism)
 	L.take_limb_damage(0.5*effect_str, 0)
@@ -277,6 +283,8 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "acid"
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/fluorine/on_mob_life(mob/living/L, metabolism)
 	L.adjust_tox_loss(0.5*effect_str)
@@ -310,6 +318,7 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "metal"
+	cryoblacklist = TRUE
 
 /datum/reagent/lithium/on_mob_life(mob/living/L, metabolism)
 	if(!L.incapacitated(TRUE) && !L.pulledby && isfloorturf(L.loc))
@@ -346,6 +355,7 @@
 	reagent_state = SOLID
 	color = "#C7C7C7" // rgb: 199,199,199
 	taste_description = "the colour blue and regret"
+	reagent_ui_priority = REAGENT_UI_TOXINS
 
 /datum/reagent/radium/on_mob_life(mob/living/L, metabolism)
 	L.apply_effect(effect_str/L.metabolism_efficiency, EFFECT_STAMLOSS)
@@ -366,6 +376,7 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "iron"
+	cryoblacklist = TRUE
 
 /datum/reagent/iron/overdose_process(mob/living/L, metabolism)
 	L.apply_damages(1, 0, 1)
@@ -390,6 +401,8 @@
 	description = "A silvery-white metallic chemical element in the actinide series, weakly radioactive."
 	color = "#B8B8C0" // rgb: 184, 184, 192
 	taste_description = "the inside of a reactor"
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/uranium/on_mob_life(mob/living/L, metabolism)
 	L.apply_effect(1/L.metabolism_efficiency, EFFECT_STAMLOSS)//WHAT THE HELL DID YOU THINK WOULD HAPPEN
@@ -421,8 +434,10 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "gross metal"
+	reagent_ui_priority = REAGENT_UI_TOXINS
 	///The effect creates when this reagent is splashed on the ground
 	var/effect_type = /obj/effect/decal/cleanable/liquid_fuel
+	cryoblacklist = TRUE
 
 /datum/reagent/fuel/reaction_turf(turf/T, volume)
 	if(volume <= 3 || !isfloorturf(T))
@@ -465,6 +480,7 @@
 	taste_description = "sourness"
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
+	cryoblacklist = TRUE
 
 /datum/reagent/space_cleaner/reaction_obj(obj/O, volume)
 	. = ..()
@@ -493,6 +509,7 @@
 	taste_description = "sourness"
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
+	cryoblacklist = TRUE
 
 /datum/reagent/cryptobiolin/on_mob_life(mob/living/L, metabolism)
 	L.dizzy(2)
@@ -512,6 +529,8 @@
 	taste_description = "numbness"
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/impedrezene/on_mob_life(mob/living/L, metabolism)
 	L.jitter(-5)
@@ -589,6 +608,8 @@
 	overdose_threshold = REAGENTS_OVERDOSE
 	overdose_crit_threshold = REAGENTS_OVERDOSE_CRITICAL
 	taste_description = "bitterness"
+	reagent_ui_priority = REAGENT_UI_TOXINS
+	cryoblacklist = TRUE
 
 /datum/reagent/lipozine/on_mob_life(mob/living/L, metabolism)
 	if(!iscarbon(L))
@@ -615,6 +636,7 @@
 	name = "Sterilizine"
 	description = "Sterilizes wounds in preparation for surgery."
 	color = "#C8A5DC" // rgb: 200, 165, 220
+	reagent_ui_priority = REAGENT_UI_TOXINS
 
 
 /datum/reagent/sterilizine/reaction_mob(mob/living/L, method = TOUCH, volume, show_message = TRUE, touch_protection = 0)
