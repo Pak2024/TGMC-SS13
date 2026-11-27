@@ -1,6 +1,7 @@
 /datum/game_mode/last_stand
 	name = "Last Stand"
 	config_tag = "Last Stand"
+	esc_menu_name = "Last Stand"
 	xeno_abilities_flags = ABILITY_LAST_STAND
 	round_type_flags = MODE_XENO_SPAWN_PROTECT
 	valid_job_types = list(
@@ -20,7 +21,6 @@
 		/datum/job/terragov/squad/smartgunner = 4,
 		/datum/job/terragov/squad/leader = 4,
 		/datum/job/terragov/squad/standard = -1,
-		/datum/job/terragov/squad/robot = -1,
 	)
 	xenorespawn_time = 1 MINUTES
 
@@ -149,7 +149,7 @@
 /datum/game_mode/last_stand/declare_completion()
 	. = ..()
 	to_chat(world, span_round_header("|[round_finished]|"))
-	var/sound/S = sound(pick('sound/theme/neutral_hopeful1.ogg','sound/theme/neutral_hopeful2.ogg'), channel = CHANNEL_CINEMATIC)
+	var/sound/S = sound(pick('sound/theme/draw.ogg'), channel = CHANNEL_CINEMATIC)
 	SEND_SOUND(world, S)
 
 	log_game("[round_finished]\nGame mode: [name]\nRound time: [duration2text()]\nEnd round player population: [length(GLOB.clients)]\nTotal xenos spawned: [GLOB.round_statistics.total_xenos_created]\nTotal humans spawned: [GLOB.round_statistics.total_humans_created]")

@@ -1,5 +1,10 @@
 #define TELEPORTING_COST 650
 
+//get_acid_delay() usese for how long it take time to apply acid on item/object/wall. References from code/game/atoms/_atom.dm code/game/turfs/walls/r_wall.dm code/game/turfs/walls/walls.dm
+//acid dealay for deployable teleporter machinery
+/obj/machinery/deployable/teleporter/get_acid_delay()
+	return 4 SECONDS
+
 /obj/machinery/deployable/teleporter
 	density = FALSE
 	max_integrity = 200
@@ -44,7 +49,7 @@
 
 	if(!powered() && (!kit.cell || kit.cell.charge < TELEPORTING_COST))
 		to_chat(user, span_warning("A red light flashes on \the [src]. It seems it doesn't have enough power."))
-		playsound(loc,'sound/machines/buzz-two.ogg', 25, FALSE)
+		playsound(loc,'sound/machines/buzz-two.ogg', 25, FALSE, MEDIUM_SOUND_RANGE)
 		return
 
 	if(!COOLDOWN_FINISHED(kit, teleport_cooldown))
@@ -121,7 +126,7 @@
 		return
 	if(!do_after(user, 2 SECONDS, NONE, src))
 		return FALSE
-	playsound(loc, 'sound/items/crowbar.ogg', 25, 1)
+	playsound(loc, 'sound/items/crowbar.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	to_chat(user , span_notice("You remove [kit.cell] from \the [src]."))
 	user.put_in_hands(kit.cell)
 	kit.cell = null
@@ -154,7 +159,7 @@
 	user.temporarilyRemoveItemFromInventory(I)
 	I.forceMove(kit)
 	kit.cell = I
-	playsound(loc, 'sound/items/deconstruct.ogg', 25, 1)
+	playsound(loc, 'sound/items/deconstruct.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	update_icon()
 
 /obj/machinery/deployable/teleporter/update_icon_state()
@@ -164,6 +169,10 @@
 		icon_state = default_icon_state + "_on"
 		return
 	icon_state = default_icon_state
+
+//acid delay for teleporter item
+/obj/item/teleporter_kit/get_acid_delay()
+	return 4 SECONDS
 
 /obj/item/teleporter_kit
 	name = "\improper ASRS Bluespace teleporter"

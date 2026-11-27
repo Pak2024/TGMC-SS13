@@ -5,7 +5,7 @@
 	return g
 
 /proc/get_limb_icon_name(datum/species/S, gender, limb_name, ethnicity)
-	if(S.name == "Human" || S.name == "Yautja" || S.name == "Synthetic")
+	if(S.name == "Human" || S.name == "Yautja" || S.name == "Synthetic" || S.name == "Engineer Synthetic" || S.name == "Medical Synthetic" || S.name == "Prototype Supersoldier")
 		switch(limb_name)
 			if ("torso", "chest")
 				return "[ethnicity]_torso_[get_gender_name(gender)]"
@@ -353,7 +353,7 @@
 	if(!has_working_organs())
 		return DEFIB_FAIL_BAD_ORGANS
 
-	if(health + get_oxy_loss() + additional_health_increase <= get_death_threshold())
+	if((health + getOxyLoss() + additional_health_increase <= get_death_threshold()) && !HAS_TRAIT(src, TRAIT_IMMEDIATE_DEFIB))
 		return DEFIB_FAIL_TOO_MUCH_DAMAGE
 
 	return DEFIB_POSSIBLE

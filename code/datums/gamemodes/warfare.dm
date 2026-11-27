@@ -6,13 +6,13 @@
 /datum/game_mode/infestation/warfare
 	name = "Warfare"
 	config_tag = "Warfare"
+	esc_menu_name = "Canterbury" // Потому что спавн происходит прямо на нём а не на Талосе
 	silo_scaling = 0 //HA HA, cuz MODE_SILO_RESPAWN is there
 	required_players = 2
 	round_type_flags = MODE_INFESTATION|MODE_LATE_OPENING_SHUTTER_TIMER|MODE_PSY_POINTS|MODE_DEAD_GRAB_FORBIDDEN|MODE_SILOS_SPAWN_MINIONS|MODE_ALLOW_XENO_QUICKBUILD|MODE_HAS_EXCAVATION|MODE_HAS_MINERS|MODE_SILO_RESPAWN
 	xeno_abilities_flags = ABILITY_DISTRESS
 	valid_job_types = list(
 		/datum/job/terragov/squad/standard = -1,
-		/datum/job/terragov/squad/robot = -1,
 		/datum/job/terragov/squad/engineer = 1,
 		/datum/job/terragov/squad/corpsman = 1,
 		/datum/job/terragov/squad/smartgunner = 1,
@@ -53,6 +53,7 @@
 	// Spawn the ship
 	if(TGS_CLIENT_COUNT >= 25)
 		shuttle_id = SHUTTLE_BIGBURY
+		esc_menu_name = "Bigbury" // Заменяем Кантебери
 	*/
 	if(!SSmapping.shuttle_templates[shuttle_id])
 		message_admins("Gamemode: couldn't find a valid shuttle template for [shuttle_id]")

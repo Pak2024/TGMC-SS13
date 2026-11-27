@@ -463,6 +463,12 @@ function draw_listedturf() {
 				window.location.href = clickcatcher;
 			}
 		}(part);
+		var b = document.createElement("div");
+		var clickcatcher = "";
+		b.className = "link";
+		b.onmousedown = clickfunc;
+		b.textContent = part[0] + " ";
+		table.appendChild(b);
 		if (storedimages[part[1]] == null && part[2]) {
 			var img = document.createElement("img");
 			img.src = part[2];
@@ -470,21 +476,15 @@ function draw_listedturf() {
 			storedimages[part[1]] = part[2];
 			img.onerror = iconError;
 			img.onmousedown = clickfunc;
-			table.appendChild(img);
+			b.appendChild(img);
 		} else {
 			var img = document.createElement("img");
 			img.onerror = iconError;
 			img.onmousedown = clickfunc;
 			img.src = storedimages[part[1]];
 			img.id = part[1];
-			table.appendChild(img);
+			b.appendChild(img);
 		}
-		var b = document.createElement("div");
-		var clickcatcher = "";
-		b.className = "link";
-		b.onmousedown = clickfunc;
-		b.textContent = part[0];
-		table.appendChild(b);
 		table.appendChild(document.createElement("br"));
 	}
 	document.getElementById("statcontent").appendChild(table);
@@ -706,11 +706,13 @@ function set_theme(which) {
 	if (which == "light") {
 		document.body.className = "";
 		document.documentElement.className = 'light';
-		set_style_sheet("browserOutput_white");
+		document.body.style.backgroundColor = "#ffffff";
+		document.documentElement.style.backgroundColor = "#ffffff";
 	} else if (which == "dark") {
 		document.body.className = "dark";
 		document.documentElement.className = 'dark';
-		set_style_sheet("browserOutput");
+		document.body.style.backgroundColor = "#151515";
+		document.documentElement.style.backgroundColor = "#151515";
 	}
 }
 
@@ -729,21 +731,6 @@ function set_tabs_style(style) {
 		menu.classList.remove('menu-wrap');
 		menu.classList.remove('tabs-classic');
 	}
-}
-
-function set_style_sheet(sheet) {
-	if (document.getElementById("goonStyle")) {
-		var currentSheet = document.getElementById("goonStyle");
-		currentSheet.parentElement.removeChild(currentSheet);
-	}
-	var head = document.getElementsByTagName('head')[0];
-	var sheetElement = document.createElement("link");
-	sheetElement.id = "goonStyle";
-	sheetElement.rel = "stylesheet";
-	sheetElement.type = "text/css";
-	sheetElement.href = sheet + ".css";
-	sheetElement.media = 'all';
-	head.appendChild(sheetElement);
 }
 
 function restoreFocus() {

@@ -101,7 +101,7 @@
 			return
 	return ..()
 
-/turf/closed/wall/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = 0, isrightclick = FALSE)
+/turf/closed/wall/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, damage_flag = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)
 	if(xeno_attacker.status_flags & INCORPOREAL)
 		return
 	if(acided_hole && (xeno_attacker.mob_size == MOB_SIZE_BIG || xeno_attacker.xeno_caste.caste_flags & CASTE_IS_STRONG)) //Strong and/or big xenos can tear open acided walls
@@ -414,7 +414,7 @@
 		if(3)
 			user.visible_message(span_notice("[user] struggles to pry off the cover."),
 			span_notice("You struggle to pry off the cover."))
-			playsound(src, 'sound/items/crowbar.ogg', 25, 1)
+			playsound(src, 'sound/items/crowbar.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 			if(!do_after(user, 6 SECONDS, NONE, src, BUSY_ICON_BUILD))
 				return
@@ -428,7 +428,7 @@
 		if(6)
 			user.visible_message(span_notice("[user] struggles to pry off the inner sheath."),
 			span_notice("You struggle to pry off the inner sheath."))
-			playsound(src, 'sound/items/crowbar.ogg', 25, 1)
+			playsound(src, 'sound/items/crowbar.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 			if(!do_after(user, 6 SECONDS, NONE, src, BUSY_ICON_BUILD))
 				return
@@ -452,7 +452,7 @@
 		return
 	user.visible_message(span_notice("[user] starts loosening the anchoring bolts securing the support rods."),
 	span_notice("You start loosening the anchoring bolts securing the support rods."))
-	playsound(src, 'sound/items/ratchet.ogg', 25, 1)
+	playsound(src, 'sound/items/ratchet.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 
 	if(!do_after(user, 6 SECONDS, NONE, src, BUSY_ICON_BUILD))
 		return

@@ -17,6 +17,7 @@
 	max_integrity = 150
 	active_power_usage = 3500 //The pneumatic pump power. 3 HP ~ 2200W
 	idle_power_usage = 100
+	interaction_flags = INTERACT_MACHINE_TGUI
 	allow_pass_flags = PASS_LOW_STRUCTURE|PASSABLE
 	/// Item mode 0=off 1=charging 2=charged
 	var/mode = 1
@@ -125,12 +126,12 @@
 		return
 	if(mode == 0) //It's off but still not unscrewed
 		mode = -1 //Set it to doubleoff
-		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1)
+		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("You remove the screws around the power connection."))
 		return
 	else if(mode == -1)
 		mode = 0
-		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1)
+		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("You attach the screws around the power connection."))
 		return
 
@@ -145,7 +146,7 @@
 	if(!W.remove_fuel(0, user))
 		to_chat(user, span_warning("You need more welding fuel to complete this task."))
 		return
-	playsound(loc, 'sound/items/welder2.ogg', 25, 1)
+	playsound(loc, 'sound/items/welder2.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	to_chat(user, span_notice("You start slicing the floorweld off the disposal unit."))
 	if(!do_after(user, 20, NONE, src, BUSY_ICON_BUILD, extra_checks = CALLBACK(W, TYPE_PROC_REF(/obj/item/tool/weldingtool, isOn))))
 		return
@@ -229,62 +230,62 @@
 	return TRUE
 
 
-/obj/machinery/disposal/interact(mob/user)
+/obj/machinery/disposal/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "DisposalUnit", name)
+		ui.open()
+
+/obj/machinery/disposal/ui_data(mob/user)
+	. = list()
+	.["flush"] = flush
+	.["full_pressure"] = mode == 2
+	.["pressure_charging"] = mode == 1
+	.["panel_open"] = (machine_stat & NOPOWER) || mode == -1
+	.["per"] = CLAMP01(disposal_pressure / SEND_PRESSURE)
+	.["isai"] = isAI(user)
+
+/obj/machinery/disposal/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
 		return
-	var/dat = "<B>Status</B><HR>"
 
-	if(!isAI(user))  //AI can't pull flush handle
-		if(flush)
-			dat += "Disposal handle: <A href='byond://?src=[text_ref(src)];handle=0'>Disengage</A> <B>Engaged</B>"
-		else
-			dat += "Disposal handle: <B>Disengaged</B> <A href='byond://?src=[text_ref(src)];handle=1'>Engage</A>"
-
-		dat += "<BR><HR><A href='byond://?src=[text_ref(src)];eject=1'>Eject contents</A><HR>"
-
-	if(mode <= 0)
-		dat += "Pump: <B>Off</B> On</A><BR>"
-	else if(mode == 1)
-		dat += "Pump: <B>On</B> (pressurizing)<BR>"
-	else
-		dat += "Pump: <B>On</B> (idle)<BR>"
-
-	dat += "Pressure: [disposal_pressure*100/SEND_PRESSURE]%<BR>"
-
-	var/datum/browser/popup = new(user, "disposal", "<div align='center'>Waste Disposal Unit</div>", 360, 220)
-	popup.set_content(dat)
-	popup.open(FALSE)
-	onclose(user, "disposal")
-
-//Handle machine interaction
-/obj/machinery/disposal/Topic(href, href_list)
-	. = ..()
-	if(.)
-		return
-	if(usr.loc == src)
-		to_chat(usr, span_warning("You cannot reach the controls from inside."))
+	if(ui.user.loc == src)
+		to_chat(ui.user, span_warning("You cannot reach the controls from inside."))
 		return
 
-	if(mode == -1 && !href_list["eject"]) // only allow ejecting if mode is -1
-		to_chat(usr, span_warning("The disposal units power is disabled."))
-		return
 	if(flushing)
 		return
 
-	if(href_list["pump"])
-		if(text2num(href_list["pump"]))
+	switch(action)
+		if("handle-0")
+			flush = FALSE
+			update()
+			return TRUE
+		if("handle-1")
+			if(isAI(ui.user))
+				return
+			if(mode != -1 && !(machine_stat & NOPOWER))
+				flush = TRUE
+				update()
+			return TRUE
+		if("pump-0")
+			if(mode > 0)
+				mode = 0
+				update()
+			return TRUE
+		if("pump-1")
+			if(mode == -1 || (machine_stat & NOPOWER))
+				return
 			mode = 1
-		else
-			mode = 0
-		update()
-
-	if(href_list["handle"])
-		flush = text2num(href_list["handle"])
-		update()
-
-	if(href_list["eject"])
-		eject()
+			update()
+			return TRUE
+		if("eject")
+			if(mode == -1)
+				to_chat(ui.user, span_warning("The disposal unit's power is disabled."))
+				return
+			eject()
+			return TRUE
 
 //Eject the contents of the disposal unit
 /obj/machinery/disposal/proc/eject()
@@ -373,7 +374,7 @@
 
 	sleep(1 SECONDS)
 	if(last_sound < world.time + 1)
-		playsound(src, 'sound/machines/disposalflush.ogg', 15, 0)
+		playsound(src, 'sound/machines/disposalflush.ogg', 15, 0, SHORT_SOUND_RANGE)
 		last_sound = world.time
 	sleep(0.5 SECONDS) //Wait for animation to finish
 
@@ -398,7 +399,7 @@
 //Called when holder is expelled from a disposal, should usually only occur if the pipe network is modified
 /obj/machinery/disposal/proc/expel(obj/structure/disposalholder/H)
 	var/turf/target
-	playsound(src, 'sound/machines/hiss.ogg', 25, 0)
+	playsound(src, 'sound/machines/hiss.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 	if(H) //Somehow, someone managed to flush a window which broke mid-transit and caused the disposal to go in an infinite loop trying to expel null, hopefully this fixes it
 		for(var/atom/movable/AM in H)
 			target = get_offset_target_turf(loc, rand(5) - rand(5), rand(5) - rand(5))
@@ -556,7 +557,7 @@
 
 	TIMER_COOLDOWN_START(living_user, COOLDOWN_DISPOSAL, 10 SECONDS)
 
-	playsound(loc, 'sound/effects/clang.ogg', 25)
+	playsound(loc, 'sound/effects/clang.ogg', 25, FALSE, MEDIUM_SOUND_RANGE)
 
 
 //Disposal pipes
@@ -667,7 +668,7 @@
 		else //Otherwise limit to 10 tiles
 			target = get_ranged_target_turf(T, direction, 10)
 
-		playsound(src, 'sound/machines/hiss.ogg', 25, 0)
+		playsound(src, 'sound/machines/hiss.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 		if(H)
 			for(var/atom/movable/AM in H)
 				AM.loc = T
@@ -678,7 +679,7 @@
 
 	else //No specified direction, so throw in random direction
 
-		playsound(src, 'sound/machines/hiss.ogg', 25, 0)
+		playsound(src, 'sound/machines/hiss.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 		if(H)
 			for(var/atom/movable/AM in H)
 				target = get_offset_target_turf(T, rand(5) - rand(5), rand(5) - rand(5))
@@ -700,7 +701,7 @@
 		to_chat(user, span_warning("You need more welding fuel to cut [src]."))
 		return
 
-	playsound(loc, 'sound/items/welder2.ogg', 25, 1)
+	playsound(loc, 'sound/items/welder2.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	//Check if anything changed over 2 seconds
 	var/turf/uloc = user.loc
 	var/atom/wloc = W.loc
@@ -1000,7 +1001,7 @@
 			return
 
 		sort_tag = O.currTag
-		playsound(loc, 'sound/machines/twobeep.ogg', 25, 1)
+		playsound(loc, 'sound/machines/twobeep.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("Changed tag to '[sort_tag]'."))
 		updatename()
 		updatedesc()
@@ -1072,7 +1073,7 @@
 			return
 
 		sortType = O.currTag
-		playsound(loc, 'sound/machines/twobeep.ogg', 25, 1)
+		playsound(loc, 'sound/machines/twobeep.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("Changed filter to '[sortType]'."))
 		updatename()
 		updatedesc()
@@ -1186,7 +1187,7 @@
 		to_chat(user, span_warning("You need more welding fuel to cut the pipe."))
 		return
 
-	playsound(loc, 'sound/items/welder2.ogg', 25, 1)
+	playsound(loc, 'sound/items/welder2.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	//Check if anything changed over 2 seconds
 	var/turf/uloc = user.loc
 	var/atom/wloc = W.loc
@@ -1267,9 +1268,9 @@
 /obj/structure/disposaloutlet/proc/expel(obj/structure/disposalholder/H)
 
 	flick("outlet-open", src)
-	playsound(src, 'sound/machines/warning-buzzer.ogg', 25, 0)
+	playsound(src, 'sound/machines/warning-buzzer.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 	sleep(2 SECONDS) //Wait until correct animation frame
-	playsound(src, 'sound/machines/hiss.ogg', 25, 0)
+	playsound(src, 'sound/machines/hiss.ogg', 25, 0, MEDIUM_SOUND_RANGE)
 
 	if(H)
 		for(var/atom/movable/AM in H)
@@ -1282,10 +1283,10 @@
 	. = ..()
 	mode = !mode
 	if(mode)
-		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1)
+		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("You remove the screws around the power connection."))
 	else
-		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1)
+		playsound(loc, 'sound/items/screwdriver.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 		to_chat(user, span_notice("You attach the screws around the power connection."))
 
 /obj/structure/disposaloutlet/welder_act(mob/living/user, obj/item/I)
@@ -1298,7 +1299,7 @@
 		to_chat(user, span_warning("You need more welding fuel to complete this task."))
 		return
 
-	playsound(loc, 'sound/items/welder2.ogg', 25, 1)
+	playsound(loc, 'sound/items/welder2.ogg', 25, 1, MEDIUM_SOUND_RANGE)
 	to_chat(user, span_notice("You start slicing the floorweld off the disposal outlet."))
 
 	if(!do_after(user, 2 SECONDS, NONE, src, BUSY_ICON_BUILD, extra_checks = CALLBACK(W, TYPE_PROC_REF(/obj/item/tool/weldingtool, isOn))))

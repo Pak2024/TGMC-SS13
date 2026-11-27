@@ -51,6 +51,7 @@ Make your way to the cafeteria for some post-cryosleep chow, and then get equipp
 		<br /><br />
 		<b>Duty</b>: Carry out orders made by your acting Squad Leader, deal with any threats that oppose the TGMC.
 	"}
+	job_desc = "Выполняйте приказы командира отряда и устраняйте угрозы."
 	minimap_icon = "private"
 
 /datum/job/terragov/squad/standard/after_spawn(mob/living/carbon/new_mob, mob/user, latejoin = FALSE)
@@ -80,83 +81,14 @@ Make your way to the cafeteria for some post-cryosleep chow, and then get equipp
 What you lack alone, you gain standing shoulder to shoulder with the men and women of the TerraGov Marine Corps. Ooh-rah!"})
 
 /datum/job/terragov/squad/standard/npc
+	title = "Squad Marine (NPC)"
+	total_positions = 0
+	job_flags = JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	multiple_outfits = TRUE
 	outfits = list(
 		/datum/outfit/job/npc/tgmc/standard,
 		/datum/outfit/job/npc/tgmc/standard/shotgunner,
 	)
-
-//Squad Combat Robot
-/datum/job/terragov/squad/robot
-	title = SQUAD_ROBOT
-	paygrade = "E1"
-	comm_title = "Rob"
-	access = list(ACCESS_MARINE_ROBOT, ACCESS_MARINE_PREP)
-	minimal_access = list(ACCESS_MARINE_PREP, ACCESS_MARINE_DROPSHIP, ACCESS_MARINE_ROBOT)
-	display_order = JOB_DISPLAY_ORDER_SQUAD_ROBOT
-	outfit = /datum/outfit/job/marine/robot
-	total_positions = -1
-	job_flags = JOB_FLAG_SPECIALNAME|JOB_FLAG_LATEJOINABLE|JOB_FLAG_ROUNDSTARTJOINABLE|JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_ADDTOMANIFEST|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
-	jobworth = list(
-		/datum/job/xenomorph = LARVA_POINTS_REGULAR,
-		/datum/job/terragov/squad/smartgunner = SMARTIE_POINTS_REGULAR,
-		/datum/job/terragov/squad/corpsman = SMARTIE_POINTS_REGULAR,
-		/datum/job/terragov/squad/engineer = SMARTIE_POINTS_REGULAR,
-		/datum/job/terragov/silicon/synthetic = SYNTH_POINTS_REGULAR,
-		/datum/job/terragov/command/mech_pilot = MECH_POINTS_REGULAR,
-		/datum/job/terragov/command/assault_crewman = ARMORED_VEHICLE_POINTS_REGULAR,
-	)
-	html_description = {"
-		<b>Difficulty</b>: Easy<br /><br />
-		<b>You answer to the</b> acting Squad Leader<br /><br />
-		<b>Unlock Requirement</b>: Starting Role<br /><br />
-		<b>Gamemode Availability</b>: Crash, Nuclear War<br /><br /><br />
-		TerraGov’s Squad Marines make up the bread and butter of Terra's fighting forces. They are fitted with the standard arsenal that the TGMC offers, and they can take up a variety of roles, being a sniper, a pyrotechnician, a machinegunner, rifleman and more. They’re often high in numbers and divided into squads, but they’re the lowest ranking individuals, with a low degree of skill, not adapt to engineering or medical roles. Still, they are not limited to the arsenal they can take on the field to deal whatever threat that lurks against Terra.
-		<br /><br />
-		<b>Duty</b>: Carry out orders made by your acting Squad Leader, deal with any threats that oppose the TGMC.
-	"}
-	minimap_icon = "robot"
-
-/datum/job/terragov/squad/robot/after_spawn(mob/living/carbon/new_mob, mob/user, latejoin = FALSE)
-	. = ..()
-	if(!ishuman(new_mob))
-		return
-	var/mob/living/carbon/human/new_human = new_mob
-	var/playtime_mins = user?.client?.get_exp(title)
-	if(!playtime_mins || playtime_mins < 1 )
-		return
-	switch(playtime_mins)
-		if(0 to 600) // starting
-			new_human.wear_id.paygrade = "E1"
-		if(601 to 6000) // 10hrs
-			new_human.wear_id.paygrade = "E2"
-		if(6001 to 18000) // 100 hrs
-			new_human.wear_id.paygrade = "E3"
-		if(18001 to 60000) // 300 hrs
-			new_human.wear_id.paygrade = "E3E"
-		if(60001 to INFINITY) // 1000 hrs
-			new_human.wear_id.paygrade = "E8" //If you play way too much TGMC. 1000 hours.
-	new_human.wear_id.update_label()
-
-/datum/job/terragov/squad/robot/get_special_name(client/preference_source)
-	return preference_source.prefs.squad_robot_name
-
-/datum/job/terragov/squad/robot/return_spawn_type(datum/preferences/prefs)
-	switch(prefs?.squad_robot_type)
-		if("Hammerhead")
-			return /mob/living/carbon/human/species/robot/alpharii
-		if("Chilvaris")
-			return /mob/living/carbon/human/species/robot/charlit
-		if("Ratcher")
-			return /mob/living/carbon/human/species/robot/deltad
-		if("Sterling")
-			return /mob/living/carbon/human/species/robot/bravada
-	return /mob/living/carbon/human/species/robot
-
-/datum/job/terragov/squad/robot/radio_help_message(mob/M)
-	. = ..()
-	to_chat(M, {"\nYou are a rank-and-file marine of the TGMC, and that is your strength.
-What you lack alone, you gain standing shoulder to shoulder with the men and women of the TerraGov Marine Corps. Ooh-rah!"})
 
 //Squad Engineer
 /datum/job/terragov/squad/engineer
@@ -192,6 +124,7 @@ What you lack alone, you gain standing shoulder to shoulder with the men and wom
 		<br /><br />
 		<b>Duty</b>: Construct and reinforce the FOB that has been ordered by your acting Squad Leader, fix power generators and mining drills in the AO and stay on guard for any dangers that threaten your FOB.
 	"}
+	job_desc = "Стройте и укрепляйте баррикады по приказу командира отряда, чините генераторы и буровые установки в районе операции и следите за угрозами для вашей базы."
 	minimap_icon = "engi"
 
 /datum/job/terragov/squad/engineer/radio_help_message(mob/M)
@@ -200,6 +133,9 @@ What you lack alone, you gain standing shoulder to shoulder with the men and wom
 Your squaddies will look to you when it comes to construction in the field of battle."})
 
 /datum/job/terragov/squad/engineer/npc
+	title = "Squad Engineer (NPC)"
+	total_positions = 0
+	job_flags = JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	outfit = /datum/outfit/job/npc/tgmc/squad_engineer
 
 /datum/job/terragov/squad/engineer/after_spawn(mob/living/carbon/new_mob, mob/user, latejoin = FALSE)
@@ -255,6 +191,7 @@ Your squaddies will look to you when it comes to construction in the field of ba
 		<br /><br />
 		<b>Duty</b>: Tend the injuries of your fellow marines or related personnel, keep them at fighting strength. Evacuate those who are incapacitated or rendered incapable of fighting due to severe wounds or larvae infections.
 	"}
+	job_desc = "Лечите ранения своих сослуживцев, поддерживая их боеспособность. Эвакуируйте недееспособных или потерявших возможность сражаться из-за тяжёлых ранений или заражения."
 	minimap_icon = "medic"
 
 /datum/job/terragov/squad/corpsman/radio_help_message(mob/M)
@@ -263,6 +200,9 @@ Your squaddies will look to you when it comes to construction in the field of ba
 You may not be a fully-fledged doctor, but you stand between life and death when it matters."})
 
 /datum/job/terragov/squad/corpsman/npc
+	title = "Squad Corpsman (NPC)"
+	total_positions = 0
+	job_flags = JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	outfit = /datum/outfit/job/npc/tgmc/corpsman
 
 /datum/job/terragov/squad/corpsman/after_spawn(mob/living/carbon/new_mob, mob/user, latejoin = FALSE)
@@ -315,6 +255,7 @@ You may not be a fully-fledged doctor, but you stand between life and death when
 		<br /><br />
 		<b>Duty</b>: Be the backline of your pointmen, provide heavy weapons support with your smart weapon.
 	"}
+	job_desc = "Прикрывайте передовых бойцов, обеспечивая огневую поддержку."
 	minimap_icon = "smartgunner"
 
 /datum/job/terragov/squad/smartgunner/radio_help_message(mob/M)
@@ -322,6 +263,9 @@ You may not be a fully-fledged doctor, but you stand between life and death when
 	to_chat(M, {"\nYou are the smartgunner. Your job is to provide IFF weapons support."})
 
 /datum/job/terragov/squad/smartgunner/npc
+	title = "Squad Smartgunner (NPC)"
+	total_positions = 0
+	job_flags = JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	outfit = /datum/outfit/job/npc/tgmc/smartgunner
 
 /datum/job/terragov/squad/smartgunner/after_spawn(mob/living/carbon/new_mob, mob/user, latejoin = FALSE)
@@ -405,6 +349,7 @@ You can serve a variety of roles, so choose carefully."})
 		<br /><br />
 		<b>Duty</b>: Be a responsible leader of your squad, make sure your squad communicates frequently all the time and ensure they are working together for the task at hand. Stay safe, as you’re a valuable leader.
 	"}
+	job_desc = "Будьте ответственным лидером своего отряда, следите за постоянной связью между бойцами и слаженной работой над задачей. Берегите себя - вы ценный кадр."
 	minimap_icon = "leader"
 
 /datum/job/terragov/squad/leader/radio_help_message(mob/M)
@@ -413,6 +358,9 @@ You can serve a variety of roles, so choose carefully."})
 You are also in charge of communicating with command and letting them know about the situation first hand. Keep out of harm's way."})
 
 /datum/job/terragov/squad/leader/npc
+	title = "Squad Leader (NPC)"
+	total_positions = 0
+	job_flags = JOB_FLAG_ALLOWS_PREFS_GEAR|JOB_FLAG_PROVIDES_BANK_ACCOUNT|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	outfit = /datum/outfit/job/npc/tgmc/squad_leader
 
 /datum/job/terragov/squad/leader/after_spawn(mob/living/carbon/C, mob/user, latejoin = FALSE)
@@ -449,7 +397,7 @@ You are also in charge of communicating with command and letting them know about
 	total_positions = 0
 	job_flags = JOB_FLAG_ADDTOMANIFEST|JOB_FLAG_PROVIDES_SQUAD_HUD|JOB_FLAG_CAN_SEE_ORDERS
 	jobworth = list(
-		/datum/job/xenomorph = LARVA_POINTS_REGULAR,
+		/datum/job/xenomorph = LARVA_POINTS_MINOR,
 		/datum/job/terragov/silicon/synthetic = SYNTH_POINTS_REGULAR,
 		/datum/job/terragov/command/mech_pilot = MECH_POINTS_REGULAR,
 		/datum/job/terragov/command/assault_crewman = ARMORED_VEHICLE_POINTS_REGULAR,

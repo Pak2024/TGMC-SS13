@@ -199,9 +199,6 @@
 			if(CHARGE_BULL, CHARGE_BULL_HEADBUTT, CHARGE_BULL_GORE) //Xeno Bull
 				if(MODULUS(valid_steps_taken, 4) == 0)
 					playsound(xeno_owner, SFX_ALIEN_FOOTSTEP_LARGE, 50)
-			if(CHARGE_BEHEMOTH)
-				if(MODULUS(valid_steps_taken, 2) == 0)
-					playsound(xeno_owner, SFX_BEHEMOTH_ROLLING, 30)
 
 	lastturf = xeno_owner.loc
 
@@ -232,7 +229,7 @@
 	if(xeno_owner.incapacitated() || xeno_owner.now_pushing)
 		return NONE
 
-	if(charge_type & (CHARGE_BULL|CHARGE_BULL_HEADBUTT|CHARGE_BULL_GORE|CHARGE_BEHEMOTH) && !isliving(crushed))
+	if(charge_type & (CHARGE_BULL|CHARGE_BULL_HEADBUTT|CHARGE_BULL_GORE) && !isliving(crushed))
 		do_stop_momentum()
 		return COMPONENT_MOVABLE_PREBUMP_STOPPED
 
@@ -251,7 +248,7 @@
 
 	if(isliving(crushed))
 		var/mob/living/crushed_living = crushed
-		playsound(crushed_living.loc, crush_sound, 25, 1)
+		playsound(crushed_living.loc, crush_sound, 25, 1, MEDIUM_SOUND_RANGE)
 		if(crushed_living.buckled)
 			crushed_living.buckled.unbuckle_mob(crushed_living)
 		animation_flash_color(crushed_living)
@@ -271,7 +268,7 @@
 		var/obj/crushed_obj = crushed
 		if(istype(crushed_obj, /obj/structure/xeno/silo) || istype(crushed_obj, /obj/structure/xeno/turret))
 			return precrush2signal(crushed_obj.post_crush_act(xeno_owner, src))
-		playsound(crushed_obj.loc, "punch", 25, 1)
+		playsound(crushed_obj.loc, "punch", 25, 1, MEDIUM_SOUND_RANGE)
 		var/crushed_behavior = crushed_obj.crushed_special_behavior()
 		var/obj_damage_mult = 1
 		if(isarmoredvehicle(crushed) || ishitbox(crushed))

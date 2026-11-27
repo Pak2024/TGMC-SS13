@@ -1,5 +1,3 @@
-#define LIMB_MAX_DAMAGE_SEVER_RATIO 0.8
-
 /****************************************************
 				EXTERNAL ORGANS
 ****************************************************/
@@ -202,7 +200,7 @@ RU TGMC EDIT */
 		if(splint_health <= 0)
 			remove_limb_flags(LIMB_SPLINTED)
 			to_chat(owner, span_userdanger("The splint on your [display_name] comes apart!"))
-			playsound(owner, 'sound/items/splint_break.ogg', 100, sound_range = 1, falloff = 5)
+			playsound(owner, 'sound/items/splint_break.ogg', 100, FALSE, ADJACENT_SOUND_RANGE, 5)
 		else
 			splint_health = max(splint_health - (brute + burn), 0)
 

@@ -13,7 +13,6 @@
 #define JOB_DISPLAY_ORDER_SQUAD_CORPSMAN 9
 #define JOB_DISPLAY_ORDER_SUQAD_ENGINEER 10
 #define JOB_DISPLAY_ORDER_SQUAD_MARINE 11
-#define JOB_DISPLAY_ORDER_SQUAD_ROBOT 12
 #define JOB_DISPLAY_ORDER_XENO_QUEEN 13
 #define JOB_DISPLAY_ORDER_XENOMORPH 14
 #define JOB_DISPLAY_ORDER_REQUISITIONS_OFFICER 15
@@ -136,7 +135,6 @@ GLOBAL_LIST_INIT(jobs_marines, list(
 	SQUAD_CORPSMAN,
 	SQUAD_ENGINEER,
 	SQUAD_MARINE,
-	SQUAD_ROBOT,
 ))
 GLOBAL_LIST_INIT(jobs_regular_all, list(
 	CAPTAIN,
@@ -158,7 +156,6 @@ GLOBAL_LIST_INIT(jobs_regular_all, list(
 	SQUAD_CORPSMAN,
 	SQUAD_ENGINEER,
 	SQUAD_MARINE,
-	SQUAD_ROBOT,
 	SURVIVOR,
 ))
 GLOBAL_LIST_INIT(jobs_xenos, list(
@@ -206,6 +203,7 @@ GLOBAL_LIST_INIT(jobs_fallen_marine, typecacheof(list(/datum/job/fallen/marine),
 // how much a job is going to contribute towards burrowed larva. see config for points required to larva. old balance was 1 larva per 3 humans.
 #define LARVA_POINTS_SHIPSIDE 1
 #define LARVA_POINTS_SHIPSIDE_STRONG 1.5
+#define LARVA_POINTS_MINOR 2.5
 #define LARVA_POINTS_REGULAR 3.25
 #define LARVA_POINTS_STRONG 6
 

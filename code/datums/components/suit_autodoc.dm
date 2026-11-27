@@ -22,7 +22,8 @@
 
 */
 /datum/component/suit_autodoc
-	var/obj/item/healthanalyzer/integrated/analyzer
+	/// The health scanner functionality
+	var/datum/health_scan/analyzer
 
 	var/chem_cooldown = 2.5 MINUTES
 
@@ -71,7 +72,7 @@
 	if(!istype(parent, /obj/item))
 		return COMPONENT_INCOMPATIBLE
 
-	analyzer = new
+	analyzer = new(parent, SKILL_MEDICAL_UNTRAINED)
 	if(!isnull(chem_cooldown))
 		src.chem_cooldown = chem_cooldown
 
@@ -180,7 +181,7 @@
 	STOP_PROCESSING(SSobj, src)
 	if(!silent)
 		wearer.balloon_alert(wearer, "Automedical suite deactivates")
-		playsound(parent,'sound/voice/b18/deactivate.ogg', 15, 0, 1)
+		playsound(parent,'sound/voice/b18/deactivate.ogg', 15, FALSE, ADJACENT_SOUND_RANGE)
 
 /**
 	Enable processing and calls out to register signals from the user.
@@ -196,7 +197,7 @@
 	START_PROCESSING(SSobj, src)
 	if(!silent)
 		wearer.balloon_alert(wearer, "Automedical suite activates")
-		playsound(parent,'sound/voice/b18/activate.ogg', 15, 0, 1)
+		playsound(parent,'sound/voice/b18/activate.ogg', 15, FALSE, ADJACENT_SOUND_RANGE)
 
 /**
 	Proc for the damange taken signal, calls treat_injuries
@@ -325,7 +326,7 @@
 */
 /datum/component/suit_autodoc/proc/scan_user(datum/source)
 	SIGNAL_HANDLER
-	INVOKE_ASYNC(analyzer, TYPE_PROC_REF(/obj/item, attack), wearer, wearer, TRUE)
+	INVOKE_ASYNC(analyzer, TYPE_PROC_REF(/datum/health_scan, analyze_vitals), wearer, wearer)
 
 /**
 	Proc to show the suit configuration page
@@ -395,7 +396,7 @@
 		action_toggle()
 
 	else if(href_list["analyzer"]) //Integrated scanner
-		analyzer.attack(wearer, wearer, TRUE)
+		analyzer.analyze_vitals(wearer, wearer)
 
 	else if(href_list["automed_damage"])
 		damage_threshold += text2num(href_list["automed_damage"])

@@ -38,6 +38,7 @@
 //Set status for med-hud.
 /mob/living/carbon/human/proc/set_status_hud()
 	var/image/status_hud = hud_list[STATUS_HUD]
+	status_hud.icon = 'icons/mob/hud/human_misc.dmi'
 	status_hud.icon_state = ""
 	status_hud.overlays.Cut()
 	if(species.species_flags & HEALTH_HUD_ALWAYS_DEAD)
@@ -124,32 +125,40 @@
 				return TRUE
 
 			if(reagents.has_reagent(/datum/reagent/medicine/russian_red))
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "russian_red"
 				return TRUE
 
 			var/nanites_amt = reagents.get_reagent_amount(/datum/reagent/medicalnanites)
 			if(nanites_amt > 25)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "nanites"
 				return TRUE
 			else if(nanites_amt > 15)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "nanites_medium"
 				return TRUE
 			else if(nanites_amt > 0)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "nanites_low"
 				return TRUE
 
 			if(reagents.has_reagent(/datum/reagent/medicine/ifosfamide))
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "ifosfamide"
 				return TRUE
 
 			var/sulfa_amt = reagents.get_reagent_amount(/datum/reagent/medicine/sulfasalazine)
 			if(sulfa_amt > 60)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "sulfasalazine"
 				return TRUE
 			else if(sulfa_amt > 30)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "sulfasalazine_low"
 				return TRUE
 			else if(sulfa_amt > 0)
+				status_hud.icon = 'icons/mob/hud/reagent.dmi'
 				status_hud.icon_state = "sulfasalazine_crit_low"
 				return TRUE
 
@@ -413,6 +422,7 @@
 	var/static/image/intoxicated_amount_image = image('icons/mob/hud/intoxicated.dmi', icon_state = "intoxicated_amount0")
 	var/static/image/intoxicated_high_image = image('icons/mob/hud/intoxicated.dmi', icon_state = "intoxicated_high")
 	var/static/image/dancer_marked_image = image('icons/mob/hud/human_misc.dmi', icon_state = "marked_debuff")
+	var/static/image/lifedrain = image('icons/mob/hud/human_misc.dmi', icon_state = "lifedrain")
 	var/static/image/hive_target_image = image('icons/mob/hud/human_misc.dmi', icon_state = "hive_target")
 
 	//Xeno debuff section start
@@ -424,6 +434,9 @@
 
 	if(has_status_effect(STATUS_EFFECT_DANCER_TAGGED))
 		xeno_debuff.overlays += dancer_marked_image
+
+	if(has_status_effect(STATUS_EFFECT_LIFEDRAIN))
+		xeno_debuff.overlays += lifedrain
 
 	if(has_status_effect(STATUS_EFFECT_INTOXICATED))
 		var/datum/status_effect/stacking/intoxicated/debuff = has_status_effect(STATUS_EFFECT_INTOXICATED)
